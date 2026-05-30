@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://manabiya.stock-overflow24.com/sitemap.xml
+Sitemap: https://stock-overflow24.com/sitemap.xml

@@ -25,7 +25,7 @@ jobs:
           protocol: ftp
           port: 21
           local-dir: ./
-          server-dir: /public_html/manabiya.stock-overflow24.com/
+          server-dir: /public_html/stock-overflow24.com/
           exclude: |
             **/.git*
             **/.git*/**
