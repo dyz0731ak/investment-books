@@ -35,3 +35,15 @@ jobs:
             build.py
             requirements.txt
             data/**
+            redirect-manabiya/**
+
+      - name: Redirect manabiya -> apex (旧サブドメインを本店へ301転送)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          port: 21
+          local-dir: ./redirect-manabiya/
+          server-dir: /public_html/manabiya.stock-overflow24.com/

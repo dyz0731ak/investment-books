@@ -1,0 +1,4 @@
+# manabiya.stock-overflow24.com に来たアクセスを apex(stock-overflow24.com) へ301転送。
+# 重複コンテンツ回避のため、投資本サイト本体は apex に一本化する。
+RewriteEngine On
+RewriteRule ^(.*)$ https://stock-overflow24.com/$1 [R=301,L]
