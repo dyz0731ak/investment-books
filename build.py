@@ -210,6 +210,9 @@ def render_html(books: list[dict]) -> str:
 <meta property="og:title" content="投資初心者が最初に読むべき『投資の名著』8選">
 <meta property="og:description" content="長く読み継がれる投資の定番だけを厳選。最初の一冊で迷わないためのランキング。">
 <meta property="og:type" content="article">
+<meta property="og:image" content="https://manabiya.stock-overflow24.com/assets/sheep-icon.png">
+<link rel="icon" type="image/png" href="assets/sheep-icon.png">
+<link rel="apple-touch-icon" href="assets/sheep-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700;900&display=swap" rel="stylesheet">
@@ -219,7 +222,7 @@ def render_html(books: list[dict]) -> str:
 <header class="site-header">
   <div class="header-inner">
     <a class="brand" href="/">
-      <span class="brand-mark">🐑</span>
+      <img class="brand-mark" src="assets/sheep-icon.png" alt="{SITE_NAME}" width="40" height="50">
       <span class="brand-text">
         <span class="brand-name">{SITE_NAME}</span>
         <span class="brand-tagline">{SITE_TAGLINE}</span>
@@ -273,7 +276,7 @@ def render_html(books: list[dict]) -> str:
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <p class="footer-brand">🐑 {SITE_NAME}</p>
+    <p class="footer-brand"><img class="footer-mark" src="assets/sheep-icon.png" alt="" width="28" height="35">{SITE_NAME}</p>
     <nav class="footer-nav">
       <a href="#ranking">ランキング</a>
       <a href="#about">このサイトについて</a>

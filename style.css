@@ -37,7 +37,7 @@ img{max-width:100%}
   backdrop-filter:saturate(150%) blur(8px); border-bottom:1px solid var(--line)}
 .header-inner{max-width:1040px; margin:0 auto; padding:12px 20px; display:flex; align-items:center; gap:14px}
 .brand{display:flex; align-items:center; gap:11px; text-decoration:none; color:var(--ink)}
-.brand-mark{font-size:27px; filter:drop-shadow(0 2px 3px rgba(168,127,35,.25))}
+.brand-mark{display:block; width:auto; height:46px; filter:drop-shadow(0 2px 3px rgba(168,127,35,.2))}
 .brand-text{display:flex; flex-direction:column; line-height:1.25}
 .brand-name{font-family:var(--serif); font-weight:900; font-size:1.32rem; letter-spacing:.03em}
 .brand-tagline{font-size:.68rem; color:var(--ink-soft); letter-spacing:.06em}
@@ -169,7 +169,9 @@ img{max-width:100%}
 /* ===== Footer ===== */
 .site-footer{background:var(--cream-2); border-top:3px solid var(--gold); margin-top:40px}
 .footer-inner{max-width:var(--maxw); margin:0 auto; padding:32px 18px; text-align:center}
-.footer-brand{font-family:var(--serif); font-weight:900; font-size:1.12rem; margin:0 0 12px}
+.footer-brand{font-family:var(--serif); font-weight:900; font-size:1.12rem; margin:0 0 12px;
+  display:inline-flex; align-items:center; gap:8px}
+.footer-mark{height:34px; width:auto}
 .footer-nav{display:flex; justify-content:center; flex-wrap:wrap; gap:18px; margin-bottom:16px}
 .footer-nav a{color:var(--gold-d); text-decoration:none; font-size:.85rem; font-weight:500}
 .footer-note{font-size:.73rem; color:var(--ink-soft); line-height:1.7; margin:4px auto; max-width:580px}
