@@ -1,6 +1,6 @@
 # 迷える子羊たちの株ノート（投資本の紹介サイト）
 
-`hon.stock-overflow24.com` で公開する、投資の名著を紹介する静的サイト。
+`manabiya.stock-overflow24.com` で公開する、投資の名著を紹介する静的サイト。
 楽天ブックスAPIから表紙・価格・楽天アフィリ購入リンクを取得し、`index.html` に焼き込む。
 
 ## 構成
@@ -26,7 +26,7 @@ python3 build.py
 ## デプロイ（ConoHa WING + GitHub Actions）
 [[収益化サイト運用ハブ]] / 「サブドメインで静的サイトを公開する手順」に準拠。
 
-1. ConoHa WING で `hon.stock-overflow24.com` を作成（無料独自SSL ON）
+1. ConoHa WING で `manabiya.stock-overflow24.com` を作成（無料独自SSL ON）
 2. FTPアカウント作成
 3. GitHub Secrets に登録: `FTP_SERVER` / `FTP_USERNAME` / `FTP_PASSWORD`
 4. main へ push → 自動デプロイ
