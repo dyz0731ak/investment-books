@@ -155,16 +155,14 @@ def render_card(b: dict) -> str:
 
 
 PERSONAS = [
-    ("🐑", "<strong>何から始めるか分からない</strong>初心者。まず1冊で全体像をつかみたい人。"),
-    ("📈", "<strong>NISA・つみたて</strong>を始めたいけど、銘柄選びで迷っている人。"),
-    ("🧭", "流行りの手法ではなく、<strong>長く使える原理原則</strong>を身につけたい人。"),
+    "<strong>何から始めるか分からない</strong>初心者。まず1冊で全体像をつかみたい人。",
+    "<strong>NISA・つみたて</strong>を始めたいけど、銘柄選びで迷っている人。",
+    "流行りの手法ではなく、<strong>長く使える原理原則</strong>を身につけたい人。",
 ]
 
 
 def render_personas() -> str:
-    cells = "".join(
-        f'<div class="persona"><span class="persona-emoji">{e}</span><p class="persona-text">{t}</p></div>'
-        for e, t in PERSONAS)
+    cells = "".join(f'<div class="persona"><p class="persona-text">{t}</p></div>' for t in PERSONAS)
     return f'<div class="personas">{cells}</div>'
 
 
@@ -176,6 +174,25 @@ def render_toc(books: list[dict]) -> str:
       <p class="toc-title">この記事の目次（おすすめ8冊）</p>
       <ul class="toc-list">{items}</ul>
     </nav>'''
+
+
+RELATED = [
+    ("📊", "投資の砦", "日本株・米国株の急騰銘柄やストップ高、決算速報がひと目で分かるリアルタイム・ダッシュボード。本で学んだら、実際の相場をのぞいてみよう。",
+     "https://dashboard.stock-overflow24.com/", "ダッシュボードを見る"),
+    ("📖", "やさしい投資用語辞典", "「PER・PBR・ROEって何？」——投資の専門用語をやさしく解説。本を読んでいて分からない言葉が出てきたら、ここで調べよう。",
+     "https://yougo.stock-overflow24.com/", "用語を調べる"),
+]
+
+
+def render_related() -> str:
+    cards = "".join(f'''<a class="related-card" href="{esc(u)}">
+        <span class="related-body">
+          <span class="related-name">{esc(n)}</span>
+          <span class="related-desc">{esc(d)}</span>
+          <span class="related-go">{esc(cta)} ›</span>
+        </span>
+      </a>''' for e, n, d, u, cta in RELATED)
+    return f'<div class="related-grid">{cards}</div>'
 
 
 def render_compare(books: list[dict]) -> str:
@@ -240,7 +257,7 @@ def render_html(books: list[dict]) -> str:
 
 <section class="hero">
   <div class="hero-inner">
-    <p class="hero-eyebrow">📈 編集部が選ぶ・投資のバイブル</p>
+    <p class="hero-eyebrow">編集部が選ぶ・投資のバイブル</p>
     <h1 class="hero-title">投資初心者が最初に読むべき<br><em>『投資の名著』8選</em></h1>
     <p class="hero-lead">「投資を始めたいけれど、何から学べばいいのかわからない…」——そんな<strong>迷える子羊</strong>のあなたへ。世界中の投資家に長く読み継がれてきた<strong>定番の名著だけ</strong>を、選ぶ理由つきで厳選しました。</p>
     <div class="hero-rule"></div>
@@ -268,6 +285,11 @@ def render_html(books: list[dict]) -> str:
     {render_compare(books)}
   </section>
 
+  <section id="related">
+    <h2 class="section-title">投資をもっと深める <span class="section-sub">姉妹サイト</span></h2>
+    {render_related()}
+  </section>
+
   <section id="about" class="about-box">
     <h2 class="section-title">このサイトについて</h2>
     <p>「{SITE_NAME}」は、投資を学びたい人が“最初の一冊”で迷わないように、長く読み継がれてきた定番の本を厳選して紹介するサイトです。流行に左右されない原理原則を大切にしています。まずは気になった1冊から、あなたの投資の土台を作っていきましょう。</p>
@@ -279,6 +301,8 @@ def render_html(books: list[dict]) -> str:
     <p class="footer-brand"><img class="footer-mark" src="assets/sheep-icon.png" alt="" width="28" height="35">{SITE_NAME}</p>
     <nav class="footer-nav">
       <a href="#ranking">ランキング</a>
+      <a href="https://dashboard.stock-overflow24.com/">投資の砦</a>
+      <a href="https://yougo.stock-overflow24.com/">用語辞典</a>
       <a href="#about">このサイトについて</a>
       <a href="#">お問い合わせ</a>
       <a href="#">プライバシーポリシー</a>

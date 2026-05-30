@@ -71,8 +71,8 @@ img{max-width:100%}
 /* ===== 目次 (TOC) ===== */
 .toc{background:var(--paper); border:1px solid var(--line); border-radius:14px;
   padding:18px 22px; margin:8px 0 34px; box-shadow:var(--shadow-card)}
-.toc-title{font-family:var(--serif); font-weight:700; font-size:1rem; margin:0 0 10px; color:var(--ink)}
-.toc-title::before{content:"📑 "}
+.toc-title{font-family:var(--serif); font-weight:700; font-size:1rem; margin:0 0 12px; color:var(--ink);
+  padding-left:12px; border-left:4px solid var(--gold); line-height:1.3}
 .toc-list{list-style:none; margin:0; padding:0; display:grid; gap:8px}
 .toc-list a{display:flex; align-items:baseline; gap:8px; text-decoration:none; color:var(--ink); font-size:.92rem}
 .toc-list a:hover{color:var(--gold-d)}
@@ -87,9 +87,9 @@ img{max-width:100%}
 
 /* ===== Personas（こんな人に） ===== */
 .personas{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:0 0 14px}
-.persona{background:var(--paper); border:1px solid var(--line); border-radius:14px; padding:20px 16px; text-align:center; box-shadow:var(--shadow-card)}
-.persona-emoji{font-size:30px; display:block; margin-bottom:8px}
-.persona-text{font-size:.86rem; line-height:1.7}
+.persona{background:var(--paper); border:1px solid var(--line); border-top:3px solid var(--gold);
+  border-radius:4px 4px 14px 14px; padding:20px 18px; box-shadow:var(--shadow-card)}
+.persona-text{font-size:.88rem; line-height:1.8; margin:0}
 .persona-text strong{color:var(--gold-d)}
 
 /* ===== Lead box ===== */
@@ -160,6 +160,20 @@ img{max-width:100%}
 .compare .c-rank{font-family:var(--serif); font-weight:900; color:var(--gold-d); text-align:center; width:46px}
 .compare .c-title{font-weight:700; color:var(--ink)}
 .compare .c-link a{color:var(--rakuten); text-decoration:none; font-weight:700; white-space:nowrap}
+
+/* ===== 関連サイト（姉妹サイト） ===== */
+.related-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+.related-card{display:block; text-decoration:none;
+  background:var(--paper); border:1px solid var(--line); border-left:4px solid var(--gold);
+  border-radius:4px 14px 14px 4px; padding:20px 22px;
+  box-shadow:var(--shadow-card); transition:transform .18s, box-shadow .18s, border-color .18s}
+.related-card:hover{transform:translateY(-3px); box-shadow:var(--shadow-hover)}
+.related-body{display:flex; flex-direction:column; min-width:0}
+.related-name{font-family:var(--serif); font-weight:700; font-size:1.12rem; color:var(--ink)}
+.related-desc{font-size:.85rem; color:#6a5f4a; line-height:1.7; margin:4px 0 8px}
+.related-go{font-size:.84rem; font-weight:700; color:var(--gold-d)}
+.related-card:hover .related-go{text-decoration:underline}
+@media(max-width:680px){.related-grid{grid-template-columns:1fr}}
 
 /* ===== About / Closing ===== */
 .about-box,.closing{background:var(--cream); border:1px solid #efe2c4; border-radius:14px; padding:10px 26px 24px; margin-top:30px}
