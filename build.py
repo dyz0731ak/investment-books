@@ -121,19 +121,23 @@ def amazon_search(title: str) -> str:
     return "https://www.amazon.co.jp/s?k=" + requests.utils.quote(title)
 
 
+def rakuten_url(b: dict) -> str:
+    return b.get("url") or ("https://search.rakuten.co.jp/search/mall/" + requests.utils.quote(b["q"]) + "/")
+
+
 def render_card(b: dict) -> str:
+    rank = b["rank"]
+    rank_cls = f"book rank-{rank} is-top" if rank <= 3 else "book"
     cover = (f'<img class="book-cover" src="{esc(b["cover"])}" alt="{esc(b["title"])}の表紙" loading="lazy">'
              if b.get("cover") else f'<div class="book-cover book-cover--ph">{esc(b["title"])}</div>')
     tags = "".join(f'<span class="tag{" tag-gold" if i==0 else ""}">{esc(t)}</span>'
                    for i, t in enumerate(b["tags"]))
     points = "".join(f"<li>{esc(p)}</li>" for p in b["points"])
     price = f'<span class="book-price">楽天価格 {b["price"]:,}円〜</span>' if b.get("price") else ""
-    rakuten = b.get("url") or ("https://search.rakuten.co.jp/search/mall/" + requests.utils.quote(b["q"]) + "/")
-    amazon = amazon_search(b["title"])
     author = f'<p class="book-author">{esc(b["author"])}</p>' if b.get("author") else ""
     return f"""
-      <article class="book">
-        <div class="book-rank"><span class="rank-num">{b['rank']}</span></div>
+      <article class="{rank_cls}" id="rank{rank}">
+        <div class="book-rank"><span class="rank-num">{rank}</span></div>
         <div class="book-coverwrap">{cover}</div>
         <div class="book-body">
           <div class="book-tags">{tags}</div>
@@ -143,11 +147,55 @@ def render_card(b: dict) -> str:
           <ul class="book-points">{points}</ul>
           {price}
           <div class="book-cta">
-            <a class="btn btn-amazon" href="{esc(amazon)}" target="_blank" rel="sponsored nofollow noopener">Amazonで見る</a>
-            <a class="btn btn-rakuten" href="{esc(rakuten)}" target="_blank" rel="sponsored nofollow noopener">楽天ブックスで見る</a>
+            <a class="btn btn-amazon" href="{esc(amazon_search(b['title']))}" target="_blank" rel="sponsored nofollow noopener">Amazonで見る</a>
+            <a class="btn btn-rakuten" href="{esc(rakuten_url(b))}" target="_blank" rel="sponsored nofollow noopener">楽天ブックスで見る</a>
           </div>
         </div>
       </article>"""
+
+
+PERSONAS = [
+    ("🐑", "<strong>何から始めるか分からない</strong>初心者。まず1冊で全体像をつかみたい人。"),
+    ("📈", "<strong>NISA・つみたて</strong>を始めたいけど、銘柄選びで迷っている人。"),
+    ("🧭", "流行りの手法ではなく、<strong>長く使える原理原則</strong>を身につけたい人。"),
+]
+
+
+def render_personas() -> str:
+    cells = "".join(
+        f'<div class="persona"><span class="persona-emoji">{e}</span><p class="persona-text">{t}</p></div>'
+        for e, t in PERSONAS)
+    return f'<div class="personas">{cells}</div>'
+
+
+def render_toc(books: list[dict]) -> str:
+    items = "".join(
+        f'<li><a href="#rank{b["rank"]}"><span class="num">{b["rank"]}.</span>{esc(b["title"])}</a></li>'
+        for b in books)
+    return f'''<nav class="toc" aria-label="目次">
+      <p class="toc-title">この記事の目次（おすすめ8冊）</p>
+      <ul class="toc-list">{items}</ul>
+    </nav>'''
+
+
+def render_compare(books: list[dict]) -> str:
+    rows = ""
+    for b in books:
+        price = f'{b["price"]:,}円〜' if b.get("price") else "—"
+        feature = b["tags"][0] if b.get("tags") else ""
+        rows += f'''<tr>
+          <td class="c-rank">{b['rank']}</td>
+          <td class="c-title">{esc(b['title'])}</td>
+          <td>{esc(feature)}</td>
+          <td>{price}</td>
+          <td class="c-link"><a href="{esc(rakuten_url(b))}" target="_blank" rel="sponsored nofollow noopener">楽天 ›</a></td>
+        </tr>'''
+    return f'''<div class="compare-wrap">
+      <table class="compare">
+        <thead><tr><th>順位</th><th>書名</th><th>特徴</th><th>価格</th><th>リンク</th></tr></thead>
+        <tbody>{rows}</tbody>
+      </table>
+    </div>'''
 
 
 def render_html(books: list[dict]) -> str:
@@ -158,7 +206,10 @@ def render_html(books: list[dict]) -> str:
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>投資初心者が最初に読むべき『投資の名著』8選 | {SITE_NAME}</title>
-<meta name="description" content="投資を始めたい初心者がまず読むべき定番の名著だけを厳選。インデックス投資から相場の心構えまで、土台が作れる8冊を選ぶ理由つきで紹介します。">
+<meta name="description" content="投資を始めたい初心者がまず読むべき定番の名著だけを厳選。インデックス投資から相場の心構えまで、土台が作れる8冊をランキング形式で、選ぶ理由つきで紹介します。">
+<meta property="og:title" content="投資初心者が最初に読むべき『投資の名著』8選">
+<meta property="og:description" content="長く読み継がれる投資の定番だけを厳選。最初の一冊で迷わないためのランキング。">
+<meta property="og:type" content="article">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700;900&display=swap" rel="stylesheet">
@@ -177,38 +228,54 @@ def render_html(books: list[dict]) -> str:
     <input type="checkbox" id="navToggle" class="nav-toggle" hidden>
     <label for="navToggle" class="nav-btn" aria-label="メニュー"><span></span><span></span><span></span></label>
     <nav class="gnav">
-      <a href="#ranking">おすすめ本</a>
+      <a href="#ranking">ランキング</a>
+      <a href="#compare">比較表</a>
       <a href="#about">このサイトについて</a>
     </nav>
   </div>
 </header>
 
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">📈 編集部が選ぶ・投資のバイブル</p>
+    <h1 class="hero-title">投資初心者が最初に読むべき<br><em>『投資の名著』8選</em></h1>
+    <p class="hero-lead">「投資を始めたいけれど、何から学べばいいのかわからない…」——そんな<strong>迷える子羊</strong>のあなたへ。世界中の投資家に長く読み継がれてきた<strong>定番の名著だけ</strong>を、選ぶ理由つきで厳選しました。</p>
+    <div class="hero-rule"></div>
+    <p class="hero-meta">更新日 2026.05.30 ・ {SITE_NAME}編集部</p>
+  </div>
+</section>
+
 <main class="container">
-  <nav class="breadcrumb"><a href="/">TOP</a> <span>›</span> 投資の名著</nav>
-  <article class="post">
-    <header class="post-head">
-      <p class="post-eyebrow">📈 編集部が選ぶ・投資のバイブル</p>
-      <h1 class="post-title">投資初心者が最初に読むべき<br><em>『投資の名著』8選</em></h1>
-      <p class="post-meta">更新日: 2026.05.30 ・ {SITE_NAME}編集部</p>
-    </header>
-    <div class="lead-box">
-      <p>「投資を始めたいけれど、何から学べばいいのかわからない…」——そんな迷える子羊のあなたへ。世界中の投資家に長く読み継がれてきた<strong>定番の名著だけ</strong>を厳選しました。流行りのノウハウではなく、<strong>10年後も役に立つ原理原則</strong>が学べる8冊です。気になった本は各カードのボタンからチェックできます。</p>
-    </div>
-    <section id="ranking" class="ranking">
-      <h2 class="section-title">📚 まず読むべき投資の名著 8選</h2>
-      {cards}
-    </section>
-    <section id="about" class="about-box">
-      <h2 class="section-title">このサイトについて</h2>
-      <p>「{SITE_NAME}」は、投資を学びたい人が“最初の一冊”で迷わないように、長く読み継がれてきた定番の本を厳選して紹介するサイトです。流行に左右されない原理原則を大切にしています。</p>
-    </section>
-  </article>
+  <nav class="breadcrumb"><a href="/">TOP</a> <span>›</span> 投資の名著8選</nav>
+
+  {render_toc(books)}
+
+  <section id="for-who">
+    <h2 class="section-title">こんな人におすすめ</h2>
+    {render_personas()}
+  </section>
+
+  <section id="ranking" class="ranking">
+    <h2 class="section-title">まず読むべき投資の名著 <span class="section-sub">ランキング8選</span></h2>
+    {cards}
+  </section>
+
+  <section id="compare">
+    <h2 class="section-title">ひと目で比較 <span class="section-sub">順位・特徴・価格</span></h2>
+    {render_compare(books)}
+  </section>
+
+  <section id="about" class="about-box">
+    <h2 class="section-title">このサイトについて</h2>
+    <p>「{SITE_NAME}」は、投資を学びたい人が“最初の一冊”で迷わないように、長く読み継がれてきた定番の本を厳選して紹介するサイトです。流行に左右されない原理原則を大切にしています。まずは気になった1冊から、あなたの投資の土台を作っていきましょう。</p>
+  </section>
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
     <p class="footer-brand">🐑 {SITE_NAME}</p>
     <nav class="footer-nav">
+      <a href="#ranking">ランキング</a>
       <a href="#about">このサイトについて</a>
       <a href="#">お問い合わせ</a>
       <a href="#">プライバシーポリシー</a>
