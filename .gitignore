@@ -1,0 +1,6 @@
+.claude/
+.DS_Store
+# 認証情報は環境変数で渡す。ローカルに置く場合のための保険:
+.env
+.env.local
+*.local
