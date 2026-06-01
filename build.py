@@ -260,9 +260,24 @@ def rakuten_lookup(book, app_id, access_key, aff_id):
 def build_books():
     app_id = os.environ.get("RAKUTEN_APP_ID", ""); access_key = os.environ.get("RAKUTEN_ACCESS_KEY", "")
     aff_id = os.environ.get("RAKUTEN_AFFILIATE_ID", ""); have = bool(app_id and access_key)
+    # 楽天APIキーが無いときは、前回ビルドのキャッシュ(data/books.json)からカバー/アフィリンク等を再利用
+    cache = {}
+    try:
+        with open(os.path.join(HERE, "data", "books.json"), encoding="utf-8") as f:
+            for c in json.load(f):
+                cache[c.get("slug")] = c
+    except Exception:
+        pass
     out = []
     for b in BOOKS:
-        info = rakuten_lookup(b, app_id, access_key, aff_id) if have else {"r_title": b["q"], "r_author": "", "cover": "", "price": None, "url": ""}
+        if have:
+            info = rakuten_lookup(b, app_id, access_key, aff_id)
+        elif b["slug"] in cache:
+            c = cache[b["slug"]]
+            info = {"r_title": c.get("r_title", b["q"]), "r_author": c.get("r_author", ""),
+                    "cover": c.get("cover", ""), "price": c.get("price"), "url": c.get("url", "")}
+        else:
+            info = {"r_title": b["q"], "r_author": "", "cover": "", "price": None, "url": ""}
         nb = {**b, **info}
         nb["title"] = b["q"]            # 表示タイトルは短い検索名で統一（版表記の冗長さを避ける）
         nb["author_disp"] = info["r_author"] or b.get("author", "")
