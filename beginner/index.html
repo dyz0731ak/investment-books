@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css?v=d4c76050">
+
 </head>
 <body><header class="site-header">
   <div class="header-inner">
@@ -30,7 +31,7 @@
     <label for="navToggle" class="nav-btn" aria-label="メニュー"><span></span><span></span><span></span></label>
     <nav class="gnav"><a href="/">ホーム</a><a href="/guide/">選び方ガイド</a><a href="/#categories">カテゴリ</a></nav>
   </div>
-  <nav class="cat-bar"><div class="cat-bar-inner"><a href="/" class="cat-home">総合</a><a href="/beginner/">初心者向け</a><a href="/nisa/">NISA・つみたて</a><a href="/index/">インデックス投資</a><a href="/buffett/">バフェット流・バリュー投資</a><a href="/fire/">FIRE・経済的自由</a><a href="/realestate/">不動産投資</a><a href="/us/">米国株投資</a></div></nav>
+  <nav class="cat-bar"><div class="cat-bar-inner"><a href="/" class="cat-home">総合</a><a href="/beginner/">初心者向け</a><a href="/nisa/">NISA・つみたて</a><a href="/index/">インデックス投資</a><a href="/buffett/">バフェット流・バリュー投資</a><a href="/fire/">FIRE・経済的自由</a><a href="/realestate/">不動産投資</a><a href="/us/">米国株投資</a><a href="/dividend/">高配当・配当株</a></div></nav>
 </header>
 <main class="container container--narrowtop">
   <nav class="breadcrumb"><a href="/">TOP</a> <i>›</i> <span>初心者向け</span></nav>
@@ -38,7 +39,7 @@
     <p class="hero-eyebrow">目的別おすすめ</p>
     <h1 class="page-title">初心者向けの<br><em>おすすめ投資本</em></h1>
     <p class="page-lead">「何から始めればいい？」という投資初心者が、まず1冊で全体像をつかめる定番をまとめました。</p>
-    <p class="page-count">8冊を厳選</p>
+    <p class="page-count">11冊を厳選</p>
   </header>
   <section class="book-grid">
     <a class="grid-card" href="/books/random-walker/">
@@ -89,11 +90,29 @@
         <span class="grid-title">サイコロジー・オブ・マネー</span>
         <span class="grid-author">モーガン・ハウセル/児島　修</span>
         <span class="grid-price">楽天 1,870円〜</span>
+      </a><a class="grid-card" href="/books/okane-fuyashikata/">
+        <span class="grid-cover-wrap"><img class="grid-cover" src="https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/6707/9784866516707_1_8.jpg?_ex=400x400" alt="難しいことはわかりませんが、お金の増やし方を教えてくださいの表紙" loading="lazy"></span>
+        <span class="grid-tag">超入門</span>
+        <span class="grid-title">難しいことはわかりませんが、お金の増やし方を教えてください</span>
+        <span class="grid-author">山崎元/大橋弘祐</span>
+        <span class="grid-price">楽天 1,738円〜</span>
+      </a><a class="grid-card" href="/books/jason-okane/">
+        <span class="grid-cover-wrap"><img class="grid-cover" src="https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/0012/9784835650012_1_2.jpg?_ex=400x400" alt="ジェイソン流お金の増やし方の表紙" loading="lazy"></span>
+        <span class="grid-tag">超入門</span>
+        <span class="grid-title">ジェイソン流お金の増やし方</span>
+        <span class="grid-author">厚切りジェイソン</span>
+        <span class="grid-price">楽天 1,540円〜</span>
+      </a><a class="grid-card" href="/books/just-keep-buying/">
+        <span class="grid-cover-wrap"><img class="grid-cover" src="https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/6982/9784478116982_1_10.jpg?_ex=400x400" alt="JUST KEEP BUYINGの表紙" loading="lazy"></span>
+        <span class="grid-tag">データ重視</span>
+        <span class="grid-title">JUST KEEP BUYING</span>
+        <span class="grid-author">ニック・マジューリ/児島　修</span>
+        <span class="grid-price">楽天 1,870円〜</span>
       </a>
   </section>
   <section class="about-box">
     <h2 class="section-title">ほかのテーマも見る</h2>
-    <div class="chip-row"><a class="chip" href="/nisa/">NISA・つみたて</a><a class="chip" href="/index/">インデックス投資</a><a class="chip" href="/buffett/">バフェット流・バリュー投資</a><a class="chip" href="/fire/">FIRE・経済的自由</a><a class="chip" href="/realestate/">不動産投資</a><a class="chip" href="/us/">米国株投資</a></div>
+    <div class="chip-row"><a class="chip" href="/nisa/">NISA・つみたて</a><a class="chip" href="/index/">インデックス投資</a><a class="chip" href="/buffett/">バフェット流・バリュー投資</a><a class="chip" href="/fire/">FIRE・経済的自由</a><a class="chip" href="/realestate/">不動産投資</a><a class="chip" href="/us/">米国株投資</a><a class="chip" href="/dividend/">高配当・配当株</a></div>
   </section>
 </main><footer class="site-footer">
   <div class="footer-inner">
@@ -105,5 +124,9 @@
     <p class="footer-copy">© 2026 迷える子羊たちの株ノート</p>
   </div>
 </footer>
+<script>
+document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a.btn-amazon,a.btn-rakuten'):null;
+if(a&&typeof gtag==='function'){gtag('event','affiliate_click',{store:a.classList.contains('btn-amazon')?'amazon':'rakuten',link_url:a.href,page:location.pathname});}},true);
+</script>
 </body>
 </html>

@@ -23,6 +23,22 @@ SITE_NAME = "迷える子羊たちの株ノート"
 SITE_TAGLINE = "迷える子羊たちへ。投資の“はじめの一冊”を。"
 UPDATED = "2026.06.01"
 CSS_VER = "1"  # style.css のキャッシュバスター（main内でハッシュに更新）
+GA_ID = os.environ.get("GA4_ID", "")  # GA4測定ID（環境変数。未設定なら計測タグは出力されない）
+
+
+def ga_head():
+    if not GA_ID:
+        return ""
+    return f"""<script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());gtag('config','{GA_ID}');</script>"""
+
+
+def ga_click_script():
+    # アフィリンク(楽天/Amazon)のクリックをGA4イベントとして計測（gtag未読込なら何もしない）
+    return """<script>
+document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a.btn-amazon,a.btn-rakuten'):null;
+if(a&&typeof gtag==='function'){gtag('event','affiliate_click',{store:a.classList.contains('btn-amazon')?'amazon':'rakuten',link_url:a.href,page:location.pathname});}},true);
+</script>"""
 
 # ── 目的別テーマ ──
 THEMES = [
@@ -40,6 +56,8 @@ THEMES = [
          lead="株式とは違う資産クラス、不動産投資の基礎と始め方を学べる入門書。"),
     dict(slug="us", name="米国株投資", emoji="",
          lead="長期で世界をリードしてきた米国株。配当・成長・指数の活かし方を学ぶ。"),
+    dict(slug="dividend", name="高配当・配当株", emoji="",
+         lead="配当をコツコツ受け取りながら資産を育てる、高配当・連続増配スタイルの本。"),
 ]
 THEME_NAME = {t["slug"]: t["name"] for t in THEMES}
 
@@ -76,7 +94,7 @@ BOOKS = [
          points=["口座開設〜銘柄選びまで具体的に進められる", "新NISAの活用イメージがつかめる"],
          review="「結局、日本の個人投資家は何をどう買えばいいの？」という問いに、口座・銘柄レベルまで具体的に答えてくれる実践書です。理論より“今日から手を動かす”ことに重きが置かれているので、新NISA時代に最初の一歩を踏み出すときの道しるべになります。"),
     dict(rank=6, slug="mirai", q="株式投資の未来", author="シーゲル",
-         themes=["us"], tags=["長期投資", "配当"],
+         themes=["us", "dividend"], tags=["長期投資", "配当"],
          who="長期・配当再投資の力をデータで知りたい人",
          desc="派手な成長株より、配当を再投資する優良株が報われた——を実証。",
          points=["配当再投資の威力をデータで理解できる", "短期の値動きに振り回されなくなる"],
@@ -130,7 +148,7 @@ BOOKS = [
          points=["米国ETFの選び方が具体的", "新NISAとの相性も学べる"],
          review="米国株投資で知られる人気ブロガーによる実践入門。なぜ米国株なのか、どのETFをどう選ぶかが具体的で、これから米国株・米国ETFを始めたい人の“最初の地図”になります。新NISAでの活用ともつながる内容です。"),
     dict(rank=15, slug="beikoku-haitou", q="バカでも稼げる 米国株高配当投資", author="バフェット太郎",
-         themes=["us"], tags=["米国株", "高配当"],
+         themes=["us", "dividend"], tags=["米国株", "高配当"],
          who="米国株の高配当・連続増配に興味がある人",
          desc="米国株の高配当・連続増配株への投資をやさしく解説。",
          points=["高配当・連続増配の魅力がわかる", "ルール化された投資法"],
@@ -153,6 +171,60 @@ BOOKS = [
          desc="バフェットの“買うべき企業”の見極め方を具体的に。",
          points=["“長期で強い企業”の条件がわかる", "数字の見方が具体的"],
          review="バフェットがどんな企業を“買うべき”と考えるのか、その見極め方を具体的に解説した一冊。長期で強さを保つ企業の条件や数字の見方が整理されており、個別株でバリュー投資に挑戦したい人の参考になります。"),
+    dict(rank=19, slug="okane-fuyashikata", q="難しいことはわかりませんが、お金の増やし方を教えてください", author="山崎元",
+         themes=["beginner", "index", "nisa"], tags=["超入門", "対話形式"],
+         who="専門用語が苦手で、結論から知りたい人",
+         desc="対話形式で“結局どうすればいいか”をズバッと教えてくれる超入門。",
+         points=["難しい用語ゼロで結論にたどり着ける", "1〜2時間でサッと読める"],
+         review="お金や投資にくわしくない聞き手と専門家の対話形式で、「結局、何をどうすればいいの？」にズバッと答えてくれる超入門書。難しい用語を避けつつ、低コストの投資信託を淡々と積み立てる、という結論まで最短距離で導いてくれます。とにかく1冊で迷いを消したい人に。"),
+    dict(rank=20, slug="jason-okane", q="ジェイソン流お金の増やし方", author="厚切りジェイソン",
+         themes=["beginner", "index", "nisa"], tags=["超入門", "節約＋投資"],
+         who="節約と投資をセットでゆるく始めたい人",
+         desc="芸人でもある著者が実践する、節約＋米国インデックス投資のシンプル術。",
+         points=["支出を抑えてコツコツ積み立てる流れがわかる", "肩の力が抜けて読める"],
+         review="お笑い芸人でIT企業役員でもある著者が、自身で実践する“支出を抑えて、余ったお金を米国インデックスに淡々と積み立てる”というシンプルな方法を語る一冊。ユーモアがありつつ実用的で、難しく考えず「まず始める」気持ちにさせてくれます。"),
+    dict(rank=21, slug="just-keep-buying", q="JUST KEEP BUYING", author="マジューリ",
+         themes=["index", "beginner"], tags=["データ重視", "積立"],
+         who="“続けて買い続ける”の根拠をデータで知りたい人",
+         desc="データ分析ブロガーが、貯蓄・投資の最適解をデータで検証。",
+         points=["“いつ買うか”より“買い続ける”が効く理由がわかる", "感覚でなくデータで納得できる"],
+         review="人気データ分析ブロガーが、貯蓄と投資にまつわる“よくある疑問”をデータで検証した一冊。タイトルどおり「（タイミングを計らず）ただ買い続ける」ことの強さを示し、感情ではなく数字で投資行動を決める助けになります。"),
+    dict(rank=22, slug="peter-lynch", q="ピーター・リンチの株で勝つ", author="リンチ",
+         themes=["buffett"], tags=["個別株", "成長株"],
+         who="個別株で“身近な会社”から探したい人",
+         desc="伝説のファンドマネジャーが説く、身近な視点からの銘柄発掘。",
+         points=["生活者目線で有望株を探す視点が身につく", "個別株の楽しさと注意点がわかる"],
+         review="圧倒的な成績を残した伝説のファンドマネジャーが、「身近な生活の中に有望株のヒントがある」という独自の視点を語る名著。インデックスとは別に、個別株を自分で選ぶ面白さと、その際の調べ方・注意点を教えてくれます。"),
+    dict(rank=23, slug="marks-20", q="投資で一番大切な20の教え", author="マークス",
+         themes=["buffett"], tags=["リスク", "相場の心得"],
+         who="リスクと向き合う“考え方”を深めたい人",
+         desc="一流投資家が説く、リスクと市場サイクルとの向き合い方。",
+         points=["“リスク＝価格”という視点が身につく", "強気・弱気に流されない軸ができる"],
+         review="名門運用会社の創業者が、長年の投資から得た“最も大切な考え方”をテーマごとに語る一冊。価格とリスクの関係や市場サイクルとの付き合い方など、手法ではなく「考え方」を深めたい中級者に響きます。"),
+    dict(rank=24, slug="die-with-zero", q="DIE WITH ZERO", author="パーキンス",
+         themes=["fire"], tags=["お金と人生", "使い方"],
+         who="貯めるだけでなく“使い方”も考えたい人",
+         desc="資産を“ゼロで死ぬ”発想で、お金と経験の最適配分を考える。",
+         points=["お金を貯める目的を問い直せる", "経験への投資という視点が得られる"],
+         review="「お金は使ってこそ価値になる」という視点から、人生のどのタイミングでお金を使うべきかを問い直す一冊。FIREや資産形成を“貯めること”だけで終わらせず、経験や時間とのバランスを考えるきっかけになります。"),
+    dict(rank=25, slug="honki-fire", q="本気でFIREをめざす人のための資産形成入門", author="穂高唯希",
+         themes=["fire", "dividend"], tags=["FIRE", "高配当"],
+         who="日本でFIREを具体的に目指したい人",
+         desc="30代でセミリタイアした著者による、高配当軸のFIRE実践入門。",
+         points=["支出最適化＋高配当株の具体策がわかる", "日本の個人目線で再現性が高い"],
+         review="支出の最適化と高配当株への投資で、30代でセミリタイアを実現した著者による実践入門。日本の個人がFIREを目指す際の具体的な家計設計や銘柄の考え方が語られ、“憧れ”を“計画”に変えてくれます。"),
+    dict(rank=26, slug="shin-nisa", q="新NISA完全攻略", author="山口貴大",
+         themes=["nisa", "index"], tags=["新NISA", "実践"],
+         who="新NISAを最大限に活かしたい人",
+         desc="新NISAの制度と使い方を、初心者向けに体系的に解説。",
+         points=["新NISAの枠の使い方が整理できる", "銘柄選びの方針までわかる"],
+         review="新NISAの制度をやさしく整理し、つみたて投資枠・成長投資枠をどう使い分けるか、どんな銘柄を選ぶかまで体系的に解説した一冊。制度が新しくなって「結局どう使えばいい？」と迷う人の道案内になります。"),
+    dict(rank=27, slug="auto-mode-haitou", q="オートモードで月18.5万円が入ってくる 高配当株投資", author="長期株式投資",
+         themes=["dividend"], tags=["高配当", "日本株"],
+         who="配当で“自動的に入ってくる”仕組みを作りたい人",
+         desc="高配当・連続増配株を長期保有し、配当を積み上げる手法を解説。",
+         points=["高配当株の選び方・続け方がわかる", "配当でキャッシュフローを作る発想"],
+         review="高配当株・連続増配株を長期で持ち、配当という“自動的に入ってくる収入”を積み上げていく手法を解説した一冊。銘柄の選び方や続けるための考え方が具体的で、値上がり益より配当重視のスタイルに興味がある人の入り口になります。"),
 ]
 
 
@@ -226,6 +298,7 @@ def head(title, desc, path):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css?v={CSS_VER}">
+{ga_head()}
 </head>
 <body>"""
 
@@ -272,6 +345,7 @@ def footer():
     <p class="footer-copy">© 2026 {SITE_NAME}</p>
   </div>
 </footer>
+{ga_click_script()}
 </body>
 </html>"""
 

@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css?v=d4c76050">
+
 </head>
 <body><header class="site-header">
   <div class="header-inner">
@@ -30,7 +31,7 @@
     <label for="navToggle" class="nav-btn" aria-label="メニュー"><span></span><span></span><span></span></label>
     <nav class="gnav"><a href="/">ホーム</a><a href="/guide/">選び方ガイド</a><a href="/#categories">カテゴリ</a></nav>
   </div>
-  <nav class="cat-bar"><div class="cat-bar-inner"><a href="/" class="cat-home">総合</a><a href="/beginner/">初心者向け</a><a href="/nisa/">NISA・つみたて</a><a href="/index/">インデックス投資</a><a href="/buffett/">バフェット流・バリュー投資</a><a href="/fire/">FIRE・経済的自由</a><a href="/realestate/">不動産投資</a><a href="/us/">米国株投資</a></div></nav>
+  <nav class="cat-bar"><div class="cat-bar-inner"><a href="/" class="cat-home">総合</a><a href="/beginner/">初心者向け</a><a href="/nisa/">NISA・つみたて</a><a href="/index/">インデックス投資</a><a href="/buffett/">バフェット流・バリュー投資</a><a href="/fire/">FIRE・経済的自由</a><a href="/realestate/">不動産投資</a><a href="/us/">米国株投資</a><a href="/dividend/">高配当・配当株</a></div></nav>
 </header>
 <main class="container container--narrowtop">
   <nav class="breadcrumb"><a href="/">TOP</a> <i>›</i> <a href="/beginner/">初心者向け</a> <i>›</i> <span>3000円投資生活</span></nav>
@@ -75,5 +76,9 @@
     <p class="footer-copy">© 2026 迷える子羊たちの株ノート</p>
   </div>
 </footer>
+<script>
+document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a.btn-amazon,a.btn-rakuten'):null;
+if(a&&typeof gtag==='function'){gtag('event','affiliate_click',{store:a.classList.contains('btn-amazon')?'amazon':'rakuten',link_url:a.href,page:location.pathname});}},true);
+</script>
 </body>
 </html>

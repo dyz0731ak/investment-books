@@ -145,7 +145,8 @@
     "q": "株式投資の未来",
     "author": "シーゲル",
     "themes": [
-      "us"
+      "us",
+      "dividend"
     ],
     "tags": [
       "長期投資",
@@ -394,7 +395,8 @@
     "q": "バカでも稼げる 米国株高配当投資",
     "author": "バフェット太郎",
     "themes": [
-      "us"
+      "us",
+      "dividend"
     ],
     "tags": [
       "米国株",
@@ -495,5 +497,255 @@
     "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F1445541%2F",
     "title": "バフェットの銘柄選択術",
     "author_disp": "メアリー・バフェット/デビッド・クラーク/井手 正介"
+  },
+  {
+    "rank": 19,
+    "slug": "okane-fuyashikata",
+    "q": "難しいことはわかりませんが、お金の増やし方を教えてください",
+    "author": "山崎元",
+    "themes": [
+      "beginner",
+      "index",
+      "nisa"
+    ],
+    "tags": [
+      "超入門",
+      "対話形式"
+    ],
+    "who": "専門用語が苦手で、結論から知りたい人",
+    "desc": "対話形式で“結局どうすればいいか”をズバッと教えてくれる超入門。",
+    "points": [
+      "難しい用語ゼロで結論にたどり着ける",
+      "1〜2時間でサッと読める"
+    ],
+    "review": "お金や投資にくわしくない聞き手と専門家の対話形式で、「結局、何をどうすればいいの？」にズバッと答えてくれる超入門書。難しい用語を避けつつ、低コストの投資信託を淡々と積み立てる、という結論まで最短距離で導いてくれます。とにかく1冊で迷いを消したい人に。",
+    "r_title": "超改訂版　難しいことはわかりませんが、お金の増やし方を教えてください！",
+    "r_author": "山崎元/大橋弘祐",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/6707/9784866516707_1_8.jpg?_ex=400x400",
+    "price": 1738,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F17604755%2F",
+    "title": "難しいことはわかりませんが、お金の増やし方を教えてください",
+    "author_disp": "山崎元/大橋弘祐"
+  },
+  {
+    "rank": 20,
+    "slug": "jason-okane",
+    "q": "ジェイソン流お金の増やし方",
+    "author": "厚切りジェイソン",
+    "themes": [
+      "beginner",
+      "index",
+      "nisa"
+    ],
+    "tags": [
+      "超入門",
+      "節約＋投資"
+    ],
+    "who": "節約と投資をセットでゆるく始めたい人",
+    "desc": "芸人でもある著者が実践する、節約＋米国インデックス投資のシンプル術。",
+    "points": [
+      "支出を抑えてコツコツ積み立てる流れがわかる",
+      "肩の力が抜けて読める"
+    ],
+    "review": "お笑い芸人でIT企業役員でもある著者が、自身で実践する“支出を抑えて、余ったお金を米国インデックスに淡々と積み立てる”というシンプルな方法を語る一冊。ユーモアがありつつ実用的で、難しく考えず「まず始める」気持ちにさせてくれます。",
+    "r_title": "ジェイソン流お金の増やし方 改訂版",
+    "r_author": "厚切りジェイソン",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/0012/9784835650012_1_2.jpg?_ex=400x400",
+    "price": 1540,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F17970148%2F",
+    "title": "ジェイソン流お金の増やし方",
+    "author_disp": "厚切りジェイソン"
+  },
+  {
+    "rank": 21,
+    "slug": "just-keep-buying",
+    "q": "JUST KEEP BUYING",
+    "author": "マジューリ",
+    "themes": [
+      "index",
+      "beginner"
+    ],
+    "tags": [
+      "データ重視",
+      "積立"
+    ],
+    "who": "“続けて買い続ける”の根拠をデータで知りたい人",
+    "desc": "データ分析ブロガーが、貯蓄・投資の最適解をデータで検証。",
+    "points": [
+      "“いつ買うか”より“買い続ける”が効く理由がわかる",
+      "感覚でなくデータで納得できる"
+    ],
+    "review": "人気データ分析ブロガーが、貯蓄と投資にまつわる“よくある疑問”をデータで検証した一冊。タイトルどおり「（タイミングを計らず）ただ買い続ける」ことの強さを示し、感情ではなく数字で投資行動を決める助けになります。",
+    "r_title": "JUST KEEP BUYING 自動的に富が増え続ける「お金」と「時間」の法則",
+    "r_author": "ニック・マジューリ/児島　修",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/6982/9784478116982_1_10.jpg?_ex=400x400",
+    "price": 1870,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F17490187%2F",
+    "title": "JUST KEEP BUYING",
+    "author_disp": "ニック・マジューリ/児島　修"
+  },
+  {
+    "rank": 22,
+    "slug": "peter-lynch",
+    "q": "ピーター・リンチの株で勝つ",
+    "author": "リンチ",
+    "themes": [
+      "buffett"
+    ],
+    "tags": [
+      "個別株",
+      "成長株"
+    ],
+    "who": "個別株で“身近な会社”から探したい人",
+    "desc": "伝説のファンドマネジャーが説く、身近な視点からの銘柄発掘。",
+    "points": [
+      "生活者目線で有望株を探す視点が身につく",
+      "個別株の楽しさと注意点がわかる"
+    ],
+    "review": "圧倒的な成績を残した伝説のファンドマネジャーが、「身近な生活の中に有望株のヒントがある」という独自の視点を語る名著。インデックスとは別に、個別株を自分で選ぶ面白さと、その際の調べ方・注意点を教えてくれます。",
+    "r_title": "ピーター・リンチの株で勝つ新版",
+    "r_author": "ピーター・リンチ/ジョン・ロスチャイルド",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/0709/9784478630709.jpg?_ex=400x400",
+    "price": 1980,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F1322826%2F",
+    "title": "ピーター・リンチの株で勝つ",
+    "author_disp": "ピーター・リンチ/ジョン・ロスチャイルド"
+  },
+  {
+    "rank": 23,
+    "slug": "marks-20",
+    "q": "投資で一番大切な20の教え",
+    "author": "マークス",
+    "themes": [
+      "buffett"
+    ],
+    "tags": [
+      "リスク",
+      "相場の心得"
+    ],
+    "who": "リスクと向き合う“考え方”を深めたい人",
+    "desc": "一流投資家が説く、リスクと市場サイクルとの向き合い方。",
+    "points": [
+      "“リスク＝価格”という視点が身につく",
+      "強気・弱気に流されない軸ができる"
+    ],
+    "review": "名門運用会社の創業者が、長年の投資から得た“最も大切な考え方”をテーマごとに語る一冊。価格とリスクの関係や市場サイクルとの付き合い方など、手法ではなく「考え方」を深めたい中級者に響きます。",
+    "r_title": "投資で一番大切な20の教え",
+    "r_author": "ハワード・マークス/貫井　佳子",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/5395/9784532355395.jpg?_ex=400x400",
+    "price": 2200,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F12064406%2F",
+    "title": "投資で一番大切な20の教え",
+    "author_disp": "ハワード・マークス/貫井　佳子"
+  },
+  {
+    "rank": 24,
+    "slug": "die-with-zero",
+    "q": "DIE WITH ZERO",
+    "author": "パーキンス",
+    "themes": [
+      "fire"
+    ],
+    "tags": [
+      "お金と人生",
+      "使い方"
+    ],
+    "who": "貯めるだけでなく“使い方”も考えたい人",
+    "desc": "資産を“ゼロで死ぬ”発想で、お金と経験の最適配分を考える。",
+    "points": [
+      "お金を貯める目的を問い直せる",
+      "経験への投資という視点が得られる"
+    ],
+    "review": "「お金は使ってこそ価値になる」という視点から、人生のどのタイミングでお金を使うべきかを問い直す一冊。FIREや資産形成を“貯めること”だけで終わらせず、経験や時間とのバランスを考えるきっかけになります。",
+    "r_title": "DIE WITH ZERO　人生が豊かになりすぎる究極のルール",
+    "r_author": "ビル・パーキンス/児島 修",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/9687/9784478109687.jpg?_ex=400x400",
+    "price": 1980,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F16433838%2F",
+    "title": "DIE WITH ZERO",
+    "author_disp": "ビル・パーキンス/児島 修"
+  },
+  {
+    "rank": 25,
+    "slug": "honki-fire",
+    "q": "本気でFIREをめざす人のための資産形成入門",
+    "author": "穂高唯希",
+    "themes": [
+      "fire",
+      "dividend"
+    ],
+    "tags": [
+      "FIRE",
+      "高配当"
+    ],
+    "who": "日本でFIREを具体的に目指したい人",
+    "desc": "30代でセミリタイアした著者による、高配当軸のFIRE実践入門。",
+    "points": [
+      "支出最適化＋高配当株の具体策がわかる",
+      "日本の個人目線で再現性が高い"
+    ],
+    "review": "支出の最適化と高配当株への投資で、30代でセミリタイアを実現した著者による実践入門。日本の個人がFIREを目指す際の具体的な家計設計や銘柄の考え方が語られ、“憧れ”を“計画”に変えてくれます。",
+    "r_title": "本気でFIREをめざす人のための資産形成入門",
+    "r_author": "穂高　唯希",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/1337/9784788921337.jpg?_ex=400x400",
+    "price": 1540,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F16231387%2F",
+    "title": "本気でFIREをめざす人のための資産形成入門",
+    "author_disp": "穂高　唯希"
+  },
+  {
+    "rank": 26,
+    "slug": "shin-nisa",
+    "q": "新NISA完全攻略",
+    "author": "山口貴大",
+    "themes": [
+      "nisa",
+      "index"
+    ],
+    "tags": [
+      "新NISA",
+      "実践"
+    ],
+    "who": "新NISAを最大限に活かしたい人",
+    "desc": "新NISAの制度と使い方を、初心者向けに体系的に解説。",
+    "points": [
+      "新NISAの枠の使い方が整理できる",
+      "銘柄選びの方針までわかる"
+    ],
+    "review": "新NISAの制度をやさしく整理し、つみたて投資枠・成長投資枠をどう使い分けるか、どんな銘柄を選ぶかまで体系的に解説した一冊。制度が新しくなって「結局どう使えばいい？」と迷う人の道案内になります。",
+    "r_title": "【新NISA完全攻略】月5万円から始める「リアルすぎる」1億円の作り方",
+    "r_author": "山口　貴大（ライオン兄さん）",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/5414/9784046065414_1_12.jpg?_ex=400x400",
+    "price": 1650,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F17640266%2F",
+    "title": "新NISA完全攻略",
+    "author_disp": "山口　貴大（ライオン兄さん）"
+  },
+  {
+    "rank": 27,
+    "slug": "auto-mode-haitou",
+    "q": "オートモードで月18.5万円が入ってくる 高配当株投資",
+    "author": "長期株式投資",
+    "themes": [
+      "dividend"
+    ],
+    "tags": [
+      "高配当",
+      "日本株"
+    ],
+    "who": "配当で“自動的に入ってくる”仕組みを作りたい人",
+    "desc": "高配当・連続増配株を長期保有し、配当を積み上げる手法を解説。",
+    "points": [
+      "高配当株の選び方・続け方がわかる",
+      "配当でキャッシュフローを作る発想"
+    ],
+    "review": "高配当株・連続増配株を長期で持ち、配当という“自動的に入ってくる収入”を積み上げていく手法を解説した一冊。銘柄の選び方や続けるための考え方が具体的で、値上がり益より配当重視のスタイルに興味がある人の入り口になります。",
+    "r_title": "オートモードで月に18.5万円が入ってくる「高配当」株投資 ど素人サラリーマンが元手5万円スタートでできた！",
+    "r_author": "長期株式投資",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/5477/9784046055477_1_18.jpg?_ex=400x400",
+    "price": 1650,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F16988099%2F",
+    "title": "オートモードで月18.5万円が入ってくる 高配当株投資",
+    "author_disp": "長期株式投資"
   }
 ]
