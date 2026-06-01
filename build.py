@@ -314,6 +314,20 @@ def book_card(b, show_rank=True):
       </article>"""
 
 
+def book_grid_card(b):
+    """flier風のカバー中心グリッドカード（クリックで個別ページへ）"""
+    tag = f'<span class="grid-tag">{esc(b["tags"][0])}</span>' if b.get("tags") else ""
+    author = f'<span class="grid-author">{esc(b["author_disp"])}</span>' if b.get("author_disp") else ""
+    price = f'<span class="grid-price">楽天 {b["price"]:,}円〜</span>' if b.get("price") else ""
+    return f"""<a class="grid-card" href="/books/{b['slug']}/">
+        <span class="grid-cover-wrap">{cover_html(b, 'grid-cover')}</span>
+        {tag}
+        <span class="grid-title">{esc(b['title'])}</span>
+        {author}
+        {price}
+      </a>"""
+
+
 def section_title(text, sub=""):
     s = f' <span class="section-sub">{esc(sub)}</span>' if sub else ""
     return f'<h2 class="section-title">{esc(text)}{s}</h2>'
@@ -370,17 +384,18 @@ def page_home(books):
 
 def page_theme(t, books):
     items = sorted([b for b in books if t["slug"] in b["themes"]], key=lambda x: x["rank"])
-    cards = "".join(book_card(b, show_rank=False) for b in items)
+    cards = "".join(book_grid_card(b) for b in items)
     other = "".join(f'<a class="chip" href="/{o["slug"]}/">{esc(o["name"])}</a>' for o in THEMES if o["slug"] != t["slug"])
     body = f"""
 <main class="container container--narrowtop">
   {breadcrumb([("TOP", "/"), (t["name"], None)])}
   <header class="page-head">
-    <p class="hero-eyebrow">目的別ランキング</p>
+    <p class="hero-eyebrow">目的別おすすめ</p>
     <h1 class="page-title">{esc(t["name"])}の<br><em>おすすめ投資本</em></h1>
     <p class="page-lead">{esc(t["lead"])}</p>
+    <p class="page-count">{len(items)}冊を厳選</p>
   </header>
-  <section class="ranking">
+  <section class="book-grid">
     {cards if items else '<p>準備中です。</p>'}
   </section>
   <section class="about-box">
