@@ -290,6 +290,38 @@ def build_books():
 # ───────── HTML部品 ─────────
 def esc(s): return html.escape(str(s or ""))
 def amazon_search(t): return "https://www.amazon.co.jp/s?k=" + requests.utils.quote(t)
+
+
+def _isbn13_to_10(i13):
+    core = i13[3:12]
+    s = sum((10 - idx) * int(c) for idx, c in enumerate(core))
+    chk = (11 - (s % 11)) % 11
+    return core + ("X" if chk == 10 else str(chk))
+
+
+def amazon_product_url(b):
+    """カバーURL中のISBN13からAmazon商品ページ直リンクを生成。取れなければ検索URLにフォールバック。"""
+    m = re.search(r"(97[89]\d{10})", b.get("cover", "") or "")
+    if m:
+        return "https://www.amazon.co.jp/dp/" + _isbn13_to_10(m.group(1))
+    return amazon_search(b["title"])
+
+
+# もしもアフィリエイト経由のAmazonリンクに変換（環境変数で a_id / p_id / pc_id / pl_id を指定）
+MOSHIMO_AID = os.environ.get("MOSHIMO_AMAZON_AID", "")
+MOSHIMO_PID = os.environ.get("MOSHIMO_AMAZON_PID", "")
+MOSHIMO_PCID = os.environ.get("MOSHIMO_AMAZON_PCID", "")
+MOSHIMO_PLID = os.environ.get("MOSHIMO_AMAZON_PLID", "")
+
+
+def amazon_url(b):
+    raw = amazon_product_url(b)
+    if MOSHIMO_AID and MOSHIMO_PID and MOSHIMO_PCID and MOSHIMO_PLID:
+        return (f"https://af.moshimo.com/af/c/click?a_id={MOSHIMO_AID}&p_id={MOSHIMO_PID}"
+                f"&pc_id={MOSHIMO_PCID}&pl_id={MOSHIMO_PLID}&url=" + requests.utils.quote(raw, safe=""))
+    return raw
+
+
 def rakuten_url(b): return b.get("url") or ("https://search.rakuten.co.jp/search/mall/" + requests.utils.quote(b["q"]) + "/")
 
 
@@ -367,7 +399,7 @@ def footer():
 
 def cta(b):
     return f"""<div class="book-cta">
-      <a class="btn btn-amazon" href="{esc(amazon_search(b['title']))}" target="_blank" rel="sponsored nofollow noopener">Amazonで見る</a>
+      <a class="btn btn-amazon" href="{esc(amazon_url(b))}" target="_blank" rel="sponsored nofollow noopener">Amazonで見る</a>
       <a class="btn btn-rakuten" href="{esc(rakuten_url(b))}" target="_blank" rel="sponsored nofollow noopener">楽天ブックスで見る</a>
     </div>"""
 
