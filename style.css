@@ -206,3 +206,96 @@ img{max-width:100%}
   .section-title{font-size:1.28rem}
   .book.rank-1::after{display:none}
 }
+
+/* =========================================================
+   v4 複数ページ用コンポーネント
+   ========================================================= */
+/* カテゴリバー（ヘッダー下） */
+.cat-bar{background:var(--cream-2); border-bottom:1px solid var(--line); overflow-x:auto}
+.cat-bar-inner{max-width:1040px; margin:0 auto; padding:9px 20px; display:flex; gap:6px; white-space:nowrap}
+.cat-bar a{flex:0 0 auto; text-decoration:none; color:var(--ink); font-size:.82rem; font-weight:500;
+  padding:5px 13px; border-radius:999px; border:1px solid transparent; transition:.15s}
+.cat-bar a:hover{background:#fff; border-color:#e7cf94; color:var(--gold-d)}
+.cat-bar .cat-home{font-weight:700; color:var(--gold-d)}
+
+/* 上にヒーローが無いページの余白 */
+.container--narrowtop{padding-top:6px}
+
+/* breadcrumb 区切り */
+.breadcrumb i{margin:0 6px; font-style:normal; color:var(--ink-soft)}
+.breadcrumb span{margin:0; color:var(--ink)}
+
+/* ページ見出し（カテゴリ/ガイド） */
+.page-head{text-align:center; padding:30px 0 8px}
+.page-title{font-family:var(--serif); font-weight:900; font-size:1.85rem; line-height:1.5; margin:8px 0 0; letter-spacing:.02em}
+.page-title em{font-style:normal; color:var(--gold-d); background:linear-gradient(transparent 60%, #ffe6a8 60%)}
+.page-lead{max-width:600px; margin:16px auto 0; font-size:.95rem; color:#5b554c}
+
+/* カテゴリカード（トップ） */
+.cat-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:10px}
+.cat-card{display:flex; flex-direction:column; gap:4px; text-decoration:none; background:var(--paper);
+  border:1px solid var(--line); border-left:4px solid var(--gold); border-radius:4px 14px 14px 4px;
+  padding:18px 20px; box-shadow:var(--shadow-card); transition:transform .18s, box-shadow .18s}
+.cat-card:hover{transform:translateY(-3px); box-shadow:var(--shadow-hover)}
+.cat-card-name{font-family:var(--serif); font-weight:700; font-size:1.08rem; color:var(--ink)}
+.cat-card-lead{font-size:.82rem; color:#6a5f4a; line-height:1.6}
+.cat-card-go{font-size:.8rem; font-weight:700; color:var(--gold-d); margin-top:4px}
+
+/* カード内「レビューを読む」 */
+.book-more{margin:10px 0 0; font-size:.83rem}
+.book-more a{color:var(--gold-d); text-decoration:none; font-weight:700}
+.book-more a:hover{text-decoration:underline}
+.book-title a{color:inherit; text-decoration:none}
+.book-title a:hover{color:var(--gold-d)}
+
+/* チップ（テーマリンク） */
+.chip-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+.chip{display:inline-block; text-decoration:none; font-size:.82rem; font-weight:700; color:var(--gold-d);
+  background:var(--cream); border:1px solid #efe2c4; border-radius:999px; padding:5px 14px}
+.chip:hover{background:#fff}
+
+/* 個別本ページ */
+.book-detail{background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:30px 28px; margin:8px 0 18px; box-shadow:var(--shadow-card)}
+.bd-head{display:grid; grid-template-columns:170px 1fr; gap:28px; align-items:start; padding-bottom:24px; border-bottom:1px solid var(--line)}
+.bd-coverwrap{align-self:start}
+.bd-cover{display:block; width:170px; height:auto; border-radius:4px; box-shadow:5px 7px 18px rgba(91,74,35,.3), 0 0 0 1px rgba(0,0,0,.05)}
+.bd-cover.book-cover--ph{width:170px; height:240px}
+.bd-title{font-family:var(--serif); font-weight:900; font-size:1.55rem; line-height:1.5; margin:.2em 0 .15em; color:var(--ink)}
+.bd-author{font-size:.86rem; color:var(--ink-soft); margin:0 0 .6em}
+.bd-who{font-size:.88rem; color:#5b554c; background:var(--cream); border-radius:10px; padding:10px 14px; margin:12px 0}
+.bd-who span{display:block; font-size:.72rem; font-weight:700; color:var(--gold-d); margin-bottom:2px}
+.bd-review{padding-top:8px}
+.bd-review p{font-size:.97rem; line-height:1.95}
+.bd-subh{font-family:var(--serif); font-weight:700; font-size:1.1rem; margin:22px 0 8px}
+.bd-points li{font-size:.92rem}
+.bd-theme-links{font-size:.84rem; color:var(--ink-soft); margin:18px 0; display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+
+/* あわせて読みたい（ミニカード） */
+.mini-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+.mini-card{display:flex; flex-direction:column; align-items:center; gap:8px; text-decoration:none; text-align:center}
+.mini-cover{width:100%; max-width:110px; height:auto; border-radius:3px; box-shadow:3px 4px 10px rgba(91,74,35,.25)}
+.mini-cover.book-cover--ph{height:150px; display:grid; place-items:center}
+.mini-title{font-size:.78rem; color:var(--ink); line-height:1.5}
+.mini-card:hover .mini-title{color:var(--gold-d)}
+
+/* ガイド */
+.guide-steps{counter-reset:none; padding-left:0; list-style:none; margin:0 0 10px}
+.guide-steps li{background:var(--paper); border:1px solid var(--line); border-left:4px solid var(--gold);
+  border-radius:4px 10px 10px 4px; padding:14px 18px; margin:10px 0; font-size:.92rem; line-height:1.8}
+.guide-steps strong, .guide-notes strong{color:var(--gold-d)}
+.guide-notes{padding-left:0; list-style:none}
+.guide-notes li{position:relative; padding:8px 0 8px 24px; font-size:.92rem; border-bottom:1px dashed var(--line)}
+.guide-notes li::before{content:"⚠"; position:absolute; left:0; color:var(--gold-d)}
+.guide-first{padding-left:1.2em; font-size:.92rem; line-height:1.9}
+.guide-first a{color:var(--gold-d); text-decoration:none; font-weight:700}
+.guide-cta-note{font-size:.85rem; color:var(--ink-soft); margin-top:16px}
+
+@media(max-width:680px){
+  .cat-grid{grid-template-columns:1fr}
+  .page-title{font-size:1.4rem}
+  .bd-head{grid-template-columns:110px 1fr; gap:16px}
+  .bd-cover{width:110px} .bd-cover.book-cover--ph{width:110px; height:155px}
+  .bd-title{font-size:1.25rem}
+  .book-detail{padding:22px 16px}
+  .mini-grid{grid-template-columns:repeat(2,1fr)}
+}

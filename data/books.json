@@ -1,146 +1,499 @@
 [
   {
     "rank": 1,
+    "slug": "random-walker",
     "q": "ウォール街のランダム・ウォーカー",
-    "author": "バートン・マルキール/井手 正介",
+    "author": "マルキール",
+    "themes": [
+      "index",
+      "beginner"
+    ],
     "tags": [
       "不朽の定番",
       "インデックス投資"
     ],
-    "desc": "「市場の値動きは予測できない。だからこそ低コストのインデックスファンドを長く持ち続けるのが最善」——半世紀読み継がれる、インデックス投資の世界的バイブル。まず1冊だけ選ぶなら、迷わずこれ。",
+    "who": "まず1冊だけ選びたい投資初心者",
+    "desc": "半世紀読み継がれる、インデックス投資の世界的バイブル。",
     "points": [
       "個別株やタイミング投資から卒業できる",
       "“ほったらかし”で良い理由が腑に落ちる"
     ],
-    "title": "ウォール街のランダム・ウォーカー＜原著第13版＞",
-    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/5877/9784296115877_1_5.jpg?_ex=300x300",
+    "review": "「市場の値動きは誰にも予測できない。だからこそ低コストのインデックスファンドを長く持ち続けるのが最善」——本書が一貫して説くのはこのシンプルな結論です。専門用語は出てきますが、なぜ多くの個人投資家が“市場全体を買う”という選択にたどり着くのか、その理由を歴史とデータで腹落ちさせてくれます。最初の1冊として、遠回りせず本質に届く名著です。",
+    "r_title": "ウォール街のランダム・ウォーカー＜原著第13版＞",
+    "r_author": "バートン・マルキール/井手 正介",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/5877/9784296115877_1_5.jpg?_ex=400x400",
     "price": 2970,
-    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F17455659%2F"
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F17455659%2F",
+    "title": "ウォール街のランダム・ウォーカー",
+    "author_disp": "バートン・マルキール/井手 正介"
   },
   {
     "rank": 2,
+    "slug": "losers-game",
     "q": "敗者のゲーム",
-    "author": "チャールズ・エリス/鹿毛 雄二/鹿毛 房子",
+    "author": "エリス",
+    "themes": [
+      "index",
+      "beginner"
+    ],
     "tags": [
       "初心者必読",
       "インデックス投資"
     ],
-    "desc": "プロでも市場平均に勝ち続けるのは至難の業。だからこそ個人は「勝とうとしない＝市場全体を買う」のが合理的——その理由をテニスの比喩でやさしく解き明かす一冊。薄くて読みやすい。",
+    "who": "“なぜインデックスなのか”を短時間で知りたい人",
+    "desc": "プロでも市場平均に勝ち続けるのは至難——その現実をやさしく解説。",
     "points": [
       "“なぜインデックスなのか”が短時間でわかる",
-      "投資の世界の現実を最初に知れる"
+      "薄くて読みやすい"
     ],
-    "title": "敗者のゲーム［原著第8版］",
-    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/9119/9784532359119_1_3.jpg?_ex=300x300",
+    "review": "アマチュアのテニスは「打ち勝つ」より「ミスを減らす」ゲーム——この比喩で、個人投資家は“勝とうとしない＝市場全体を持つ”のが合理的だと説きます。プロでも市場平均に勝ち続けるのは難しいという現実を、嫌味なくすっと理解させてくれる一冊。薄めで読みやすいので、投資を始める前の“心構え”づくりに最適です。",
+    "r_title": "敗者のゲーム［原著第8版］",
+    "r_author": "チャールズ・エリス/鹿毛 雄二/鹿毛 房子",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/9119/9784532359119_1_3.jpg?_ex=400x400",
     "price": 2200,
-    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F16973485%2F"
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F16973485%2F",
+    "title": "敗者のゲーム",
+    "author_disp": "チャールズ・エリス/鹿毛 雄二/鹿毛 房子"
   },
   {
     "rank": 3,
+    "slug": "index-winner",
     "q": "インデックス投資は勝者のゲーム",
-    "author": "ジョン・C・ボーグル/長尾慎太郎",
+    "author": "ボーグル",
+    "themes": [
+      "index"
+    ],
     "tags": [
       "低コスト",
       "インデックス投資"
     ],
-    "desc": "世界最大級の運用会社バンガードを創り、低コスト・インデックスファンドを世に広めた本人が語る、個人投資家が勝つための王道。手数料が長期リターンをどれだけ蝕むかが腹落ちする。",
+    "who": "低コスト投資の原点を知りたい人",
+    "desc": "低コスト・インデックスファンドを世に広めた本人が語る王道。",
     "points": [
       "“コストの低さ”が最強の武器だと納得できる",
       "長期・分散・低コストの原点を学べる"
     ],
-    "title": "インデックス投資は勝者のゲーム",
-    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/2328/9784775972328.jpg?_ex=300x300",
+    "review": "世界最大級の運用会社バンガードを創り、低コスト・インデックスファンドを世に広めたジョン・ボーグル本人による一冊。手数料という“見えにくいコスト”が、長期のリターンをどれほど蝕むのかを繰り返し示します。読み終えると「コストの低さこそ個人投資家最大の武器」だと確信できます。",
+    "r_title": "インデックス投資は勝者のゲーム",
+    "r_author": "ジョン・C・ボーグル/長尾慎太郎",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/2328/9784775972328.jpg?_ex=400x400",
     "price": 1980,
-    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F15489998%2F"
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F15489998%2F",
+    "title": "インデックス投資は勝者のゲーム",
+    "author_disp": "ジョン・C・ボーグル/長尾慎太郎"
   },
   {
     "rank": 4,
+    "slug": "okane-no-daigaku",
     "q": "お金の大学",
-    "author": "両＠リベ大学長",
+    "author": "",
+    "themes": [
+      "beginner",
+      "nisa"
+    ],
     "tags": [
       "超入門",
       "家計・節約"
     ],
-    "desc": "「貯める・稼ぐ・増やす・守る・使う」——お金の5つの力を図解たっぷりで体系的に。投資の前に整えるべき家計の基礎から学べるので、何も知らない状態の最初の一冊に最適。",
+    "who": "投資の前に家計から整えたい人",
+    "desc": "貯める・稼ぐ・増やす・守る・使う、お金の5つの力を図解で。",
     "points": [
       "投資より前に“固定費の見直し”から始められる",
       "イラスト中心で挫折しにくい"
     ],
-    "title": "改訂版　本当の自由を手に入れる　お金の大学",
-    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/3780/9784023323780_1_5.jpg?_ex=300x300",
+    "review": "「貯める・稼ぐ・増やす・守る・使う」というお金の5つの力を、図解たっぷりで体系的にまとめた超入門書。投資の話だけでなく、固定費の見直しなど“土台づくり”から始められるのが強み。何も知らない状態で最初に手に取る一冊として、挫折しにくくおすすめです。",
+    "r_title": "改訂版　本当の自由を手に入れる　お金の大学",
+    "r_author": "両＠リベ大学長",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/3780/9784023323780_1_5.jpg?_ex=400x400",
     "price": 1650,
-    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F18041936%2F"
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F18041936%2F",
+    "title": "お金の大学",
+    "author_disp": "両＠リベ大学長"
   },
   {
     "rank": 5,
+    "slug": "hottarakashi",
     "q": "ほったらかし投資術",
-    "author": "山崎元/水瀬ケンイチ",
+    "author": "山崎元",
+    "themes": [
+      "nisa",
+      "index",
+      "beginner"
+    ],
     "tags": [
       "実践向け",
       "NISA・つみたて"
     ],
-    "desc": "「結局、日本の個人は何をどう買えばいいの?」に、口座・銘柄レベルで具体的に答えてくれる実践書。新NISA時代の今こそ、最初に手を動かすときの道しるべになる。",
+    "who": "新NISAで“何をどう買うか”の答えが欲しい人",
+    "desc": "日本の個人が何をどう買えばいいかに、具体的に答える実践書。",
     "points": [
       "口座開設〜銘柄選びまで具体的に進められる",
       "新NISAの活用イメージがつかめる"
     ],
-    "title": "全面改訂　第3版　ほったらかし投資術",
-    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/1670/9784022951670_1_7.jpg?_ex=300x300",
+    "review": "「結局、日本の個人投資家は何をどう買えばいいの？」という問いに、口座・銘柄レベルまで具体的に答えてくれる実践書です。理論より“今日から手を動かす”ことに重きが置かれているので、新NISA時代に最初の一歩を踏み出すときの道しるべになります。",
+    "r_title": "全面改訂　第3版　ほったらかし投資術",
+    "r_author": "山崎元/水瀬ケンイチ",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/1670/9784022951670_1_7.jpg?_ex=400x400",
     "price": 869,
-    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F17040271%2F"
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F17040271%2F",
+    "title": "ほったらかし投資術",
+    "author_disp": "山崎元/水瀬ケンイチ"
   },
   {
     "rank": 6,
+    "slug": "mirai",
     "q": "株式投資の未来",
-    "author": "ジェレミー・J．シーゲル/瑞穂のりこ",
+    "author": "シーゲル",
+    "themes": [
+      "us"
+    ],
     "tags": [
       "長期投資",
       "配当"
     ],
-    "desc": "過去データをもとに「派手な成長株より、配当を着実に再投資する優良株のほうが報われた」ことを示した名著。長期・配当再投資の力をデータで腹落ちさせてくれる。",
+    "who": "長期・配当再投資の力をデータで知りたい人",
+    "desc": "派手な成長株より、配当を再投資する優良株が報われた——を実証。",
     "points": [
       "配当再投資の威力をデータで理解できる",
       "短期の値動きに振り回されなくなる"
     ],
-    "title": "株式投資の未来",
-    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/8222/82224457.jpg?_ex=300x300",
+    "review": "過去の長期データをもとに「派手な成長株より、地味でも配当を着実に再投資する優良株のほうが報われてきた」ことを示した名著。長期投資と配当再投資の力を“感覚”ではなくデータで腹落ちさせてくれるので、短期の値動きに振り回されない軸ができます。",
+    "r_title": "株式投資の未来",
+    "r_author": "ジェレミー・J．シーゲル/瑞穂のりこ",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/8222/82224457.jpg?_ex=400x400",
     "price": 2420,
-    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F3689555%2F"
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F3689555%2F",
+    "title": "株式投資の未来",
+    "author_disp": "ジェレミー・J．シーゲル/瑞穂のりこ"
   },
   {
     "rank": 7,
+    "slug": "kenmei",
     "q": "賢明なる投資家",
-    "author": "ベンジャミン・グレアム/増沢和美",
+    "author": "グレアム",
+    "themes": [
+      "buffett"
+    ],
     "tags": [
       "古典",
       "バリュー投資"
     ],
-    "desc": "ウォーレン・バフェットの師が記した、バリュー投資の原典。「価格」と「価値」を分けて考える姿勢など、相場の本質を学びたい人の到達点。やや骨太なので慣れてきた頃に。",
+    "who": "相場の本質・バリュー投資の原典に触れたい人",
+    "desc": "バフェットの師が記した、バリュー投資の原典。",
     "points": [
       "“安全域”の考え方が身につく",
       "暴落時にうろたえない軸ができる"
     ],
-    "title": "賢明なる投資家",
-    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/9391/93910329.jpg?_ex=300x300",
+    "review": "ウォーレン・バフェットの師ベンジャミン・グレアムが記した、バリュー投資の原典。「価格」と「価値」を分けて考える姿勢や“安全域”の発想など、相場の本質を学びたい人の到達点です。やや骨太なので、投資に少し慣れてきた頃にじっくり読むのがおすすめ。",
+    "r_title": "賢明なる投資家",
+    "r_author": "ベンジャミン・グレアム/増沢和美",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/9391/93910329.jpg?_ex=400x400",
     "price": 4180,
-    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F1320854%2F"
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F1320854%2F",
+    "title": "賢明なる投資家",
+    "author_disp": "ベンジャミン・グレアム/増沢和美"
   },
   {
     "rank": 8,
+    "slug": "kanemochi-tousan",
     "q": "金持ち父さん貧乏父さん",
-    "author": "ロバート・キヨサキ/白根 美保子",
+    "author": "キヨサキ",
+    "themes": [
+      "beginner",
+      "fire"
+    ],
     "tags": [
       "マインド",
       "入門"
     ],
-    "desc": "「資産と負債の違い」「お金に働いてもらう」というお金との向き合い方を変えてくれた世界的ベストセラー。具体的な投資手法より、最初のマインドセットを作る一冊。",
+    "who": "お金との向き合い方をまず変えたい人",
+    "desc": "資産と負債の違い、お金に働いてもらう——考え方を変える一冊。",
     "points": [
       "お金の“考え方”が根本から変わる",
       "投資を始める動機づけになる"
     ],
-    "title": "改訂版　金持ち父さん　貧乏父さん:アメリカの金持ちが教えてくれるお金の哲学",
-    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/4246/9784480864246_1_278.jpg?_ex=300x300",
+    "review": "「資産と負債の違い」「お金に働いてもらう」という、お金との向き合い方そのものを問い直す世界的ベストセラー。具体的な投資手法というより、最初のマインドセットを作るための一冊。読むと“なぜ投資するのか”の動機がはっきりします。",
+    "r_title": "改訂版　金持ち父さん　貧乏父さん:アメリカの金持ちが教えてくれるお金の哲学",
+    "r_author": "ロバート・キヨサキ/白根 美保子",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/4246/9784480864246_1_278.jpg?_ex=400x400",
     "price": 1870,
-    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F12488205%2F"
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F12488205%2F",
+    "title": "金持ち父さん貧乏父さん",
+    "author_disp": "ロバート・キヨサキ/白根 美保子"
+  },
+  {
+    "rank": 9,
+    "slug": "okane-nekasete",
+    "q": "お金は寝かせて増やしなさい",
+    "author": "水瀬ケンイチ",
+    "themes": [
+      "index",
+      "nisa",
+      "beginner"
+    ],
+    "tags": [
+      "実践",
+      "インデックス投資"
+    ],
+    "who": "インデックス積立を“続ける”コツを知りたい人",
+    "desc": "個人インデックス投資家による、続けるための実践と心構え。",
+    "points": [
+      "暴落でも積立を続けられる考え方が身につく",
+      "日本の個人目線で具体的"
+    ],
+    "review": "長年インデックス投資を実践してきた個人投資家による、“理論”より“続け方”に寄った実践書。暴落時にどう心を保つか、淡々と積み立てるための仕組みづくりなど、続けるためのリアルなコツが詰まっています。インデックス投資を始めた人の二冊目に最適。",
+    "r_title": "マンガ　お金は寝かせて増やしなさい",
+    "r_author": "水瀬　ケンイチ",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/1605/9784866801605_1_3.jpg?_ex=400x400",
+    "price": 1540,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F16934980%2F",
+    "title": "お金は寝かせて増やしなさい",
+    "author_disp": "水瀬　ケンイチ"
+  },
+  {
+    "rank": 10,
+    "slug": "3000en",
+    "q": "3000円投資生活",
+    "author": "横山光昭",
+    "themes": [
+      "beginner",
+      "nisa"
+    ],
+    "tags": [
+      "超入門",
+      "少額"
+    ],
+    "who": "少額から無理なく始めたい人",
+    "desc": "月3000円から始める、はじめての投資のハードルを下げる入門。",
+    "points": [
+      "少額だから心理的ハードルが低い",
+      "家計の見直しとセットで学べる"
+    ],
+    "review": "「いきなり大きな額は怖い」という人に向けて、月3000円という少額から始める発想を示した入門書。投資のハードルをとことん下げてくれるので、“まず口座を開いて少しだけ買ってみる”の最初の一歩を後押ししてくれます。",
+    "r_title": "一生お金に困らない！13歳からの3000円投資生活",
+    "r_author": "横山 光昭",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/2164/9784776212164_1_2.jpg?_ex=400x400",
+    "price": 1485,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F17162560%2F",
+    "title": "3000円投資生活",
+    "author_disp": "横山 光昭"
+  },
+  {
+    "rank": 11,
+    "slug": "psychology-money",
+    "q": "サイコロジー・オブ・マネー",
+    "author": "ハウセル",
+    "themes": [
+      "beginner",
+      "fire"
+    ],
+    "tags": [
+      "マインド",
+      "行動"
+    ],
+    "who": "“続けられる人”の考え方を身につけたい人",
+    "desc": "知識より“ふるまい”。お金とうまく付き合う普遍的な原則。",
+    "points": [
+      "市場より自分の感情をコントロールする大切さがわかる",
+      "短い話の集まりで読みやすい"
+    ],
+    "review": "お金で成功するかどうかは、頭の良さより“ふるまい（行動）”で決まる——そんな普遍的な原則を、短いエピソードの積み重ねで伝えてくれる一冊。手法ではなく、長く投資を続けるための“心の持ち方”を整えたい人に響きます。",
+    "r_title": "サイコロジー・オブ・マネー",
+    "r_author": "モーガン・ハウセル/児島　修",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/4131/9784478114131_1_2.jpg?_ex=400x400",
+    "price": 1870,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F16915229%2F",
+    "title": "サイコロジー・オブ・マネー",
+    "author_disp": "モーガン・ハウセル/児島　修"
+  },
+  {
+    "rank": 12,
+    "slug": "fire-saikyo",
+    "q": "FIRE 最強の早期リタイア術",
+    "author": "シェン",
+    "themes": [
+      "fire"
+    ],
+    "tags": [
+      "FIRE",
+      "戦略"
+    ],
+    "who": "経済的自由（FIRE）を本気で目指す人",
+    "desc": "支出最適化＋インデックス投資で早期リタイアを目指す実践書。",
+    "points": [
+      "FIREの数字（必要資産・取り崩し）が具体的",
+      "再現性のある考え方"
+    ],
+    "review": "徹底した支出の最適化と、インデックス中心の資産運用で早期リタイア（FIRE）を実現した著者による実践書。必要資産の考え方や取り崩しの戦略まで具体的で、“なんとなく憧れ”を“数字で計画する”レベルに引き上げてくれます。",
+    "r_title": "FIRE 最強の早期リタイア術",
+    "r_author": "クリスティー・シェン/ブライス・リャン/岩本 正明",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/8574/9784478108574.jpg?_ex=400x400",
+    "price": 1760,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F16245441%2F",
+    "title": "FIRE 最強の早期リタイア術",
+    "author_disp": "クリスティー・シェン/ブライス・リャン/岩本 正明"
+  },
+  {
+    "rank": 13,
+    "slug": "buffett-letters",
+    "q": "バフェットからの手紙",
+    "author": "カニンガム",
+    "themes": [
+      "buffett"
+    ],
+    "tags": [
+      "バリュー投資",
+      "経営"
+    ],
+    "who": "バフェットの思考を直接たどりたい人",
+    "desc": "株主への手紙から、バフェットの投資哲学を体系的に。",
+    "points": [
+      "長期保有・優良企業選びの考え方が学べる",
+      "投資だけでなく経営の視点も"
+    ],
+    "review": "バフェットが株主に宛てた手紙を、テーマごとに整理した一冊。優良な企業を見極めて長く持つという哲学が、本人の言葉でたどれます。個別株・バリュー投資に興味が出てきた人が、王道の考え方に触れるのに向いています。",
+    "r_title": "バフェットからの手紙第5版",
+    "r_author": "ローレンス・A．カニンガム/増沢浩一",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/2786/9784775972786.jpg?_ex=400x400",
+    "price": 2420,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F16618325%2F",
+    "title": "バフェットからの手紙",
+    "author_disp": "ローレンス・A．カニンガム/増沢浩一"
+  },
+  {
+    "rank": 14,
+    "slug": "tapazou-beikoku",
+    "q": "お金が増える 米国株超楽ちん投資術",
+    "author": "たぱぞう",
+    "themes": [
+      "us",
+      "nisa"
+    ],
+    "tags": [
+      "米国株",
+      "実践"
+    ],
+    "who": "米国株・米国ETFを具体的に始めたい人",
+    "desc": "人気ブロガーによる、米国株・ETF投資の実践入門。",
+    "points": [
+      "米国ETFの選び方が具体的",
+      "新NISAとの相性も学べる"
+    ],
+    "review": "米国株投資で知られる人気ブロガーによる実践入門。なぜ米国株なのか、どのETFをどう選ぶかが具体的で、これから米国株・米国ETFを始めたい人の“最初の地図”になります。新NISAでの活用ともつながる内容です。",
+    "r_title": "お金が増える 米国株超楽ちん投資術",
+    "r_author": "たぱぞう",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/4150/9784046044150.jpg?_ex=400x400",
+    "price": 1540,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F16076480%2F",
+    "title": "お金が増える 米国株超楽ちん投資術",
+    "author_disp": "たぱぞう"
+  },
+  {
+    "rank": 15,
+    "slug": "beikoku-haitou",
+    "q": "バカでも稼げる 米国株高配当投資",
+    "author": "バフェット太郎",
+    "themes": [
+      "us"
+    ],
+    "tags": [
+      "米国株",
+      "高配当"
+    ],
+    "who": "米国株の高配当・連続増配に興味がある人",
+    "desc": "米国株の高配当・連続増配株への投資をやさしく解説。",
+    "points": [
+      "高配当・連続増配の魅力がわかる",
+      "ルール化された投資法"
+    ],
+    "review": "米国株の高配当株・連続増配株への投資を、軽妙な語り口でやさしく解説した一冊。配当を軸にしたルールベースの投資法が示されており、「成長株より配当でコツコツ」というスタイルに興味がある人の入り口になります。",
+    "r_title": "バカでも稼げる「米国株」高配当投資",
+    "r_author": "バフェット太郎",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/1191/9784827211191.jpg?_ex=400x400",
+    "price": 1650,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F15406036%2F",
+    "title": "バカでも稼げる 米国株高配当投資",
+    "author_disp": "バフェット太郎"
+  },
+  {
+    "rank": 16,
+    "slug": "apato-ittou",
+    "q": "まずはアパート一棟、買いなさい",
+    "author": "石原博光",
+    "themes": [
+      "realestate"
+    ],
+    "tags": [
+      "不動産",
+      "実践"
+    ],
+    "who": "不動産投資の現実的な始め方を知りたい人",
+    "desc": "実体験ベースで語る、不動産投資のリアルな始め方。",
+    "points": [
+      "物件選び・融資・運営の流れがつかめる",
+      "失敗も含めた実体験"
+    ],
+    "review": "自身の実体験をもとに、不動産投資の始め方をリアルに語る一冊。物件の選び方や融資、運営の流れなど、株式とは異なる“事業としての投資”の感覚がつかめます。不動産という資産クラスに興味が出てきた人の最初の一冊に。",
+    "r_title": "［最新版］まずはアパート一棟、買いなさい！",
+    "r_author": "石原博光",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/1477/9784815611477_1_4.jpg?_ex=400x400",
+    "price": 1760,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F16800741%2F",
+    "title": "まずはアパート一棟、買いなさい",
+    "author_disp": "石原博光"
+  },
+  {
+    "rank": 17,
+    "slug": "fudosan-kyokasho",
+    "q": "世界一やさしい 不動産投資の教科書",
+    "author": "浅井佐知子",
+    "themes": [
+      "realestate"
+    ],
+    "tags": [
+      "不動産",
+      "超入門"
+    ],
+    "who": "不動産投資の用語・全体像から学びたい人",
+    "desc": "図解中心で、不動産投資の基礎をゼロから解説。",
+    "points": [
+      "専門用語をやさしく整理できる",
+      "全体像を最初につかめる"
+    ],
+    "review": "不動産投資の基礎を、図解中心でゼロからやさしく解説した入門書。専門用語が多くて挫折しがちな分野を、全体像から整理してくれます。「アパート一棟」のような実践書の前に、土台を作るのにちょうど良い一冊です。",
+    "r_title": "世界一やさしい不動産投資の教科書1年生",
+    "r_author": "浅井佐知子",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/0313/9784800720313.jpg?_ex=400x400",
+    "price": 1738,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F13465583%2F",
+    "title": "世界一やさしい 不動産投資の教科書",
+    "author_disp": "浅井佐知子"
+  },
+  {
+    "rank": 18,
+    "slug": "mary-buffett",
+    "q": "バフェットの銘柄選択術",
+    "author": "バフェット",
+    "themes": [
+      "buffett"
+    ],
+    "tags": [
+      "バリュー投資",
+      "銘柄選び"
+    ],
+    "who": "バフェット流の銘柄の見方を知りたい人",
+    "desc": "バフェットの“買うべき企業”の見極め方を具体的に。",
+    "points": [
+      "“長期で強い企業”の条件がわかる",
+      "数字の見方が具体的"
+    ],
+    "review": "バフェットがどんな企業を“買うべき”と考えるのか、その見極め方を具体的に解説した一冊。長期で強さを保つ企業の条件や数字の見方が整理されており、個別株でバリュー投資に挑戦したい人の参考になります。",
+    "r_title": "億万長者をめざすバフェットの銘柄選択術",
+    "r_author": "メアリー・バフェット/デビッド・クラーク/井手 正介",
+    "cover": "https://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/9772/9784532149772_1_3.jpg?_ex=400x400",
+    "price": 1870,
+    "url": "https://hb.afl.rakuten.co.jp/hgc/g00q072e.lj6dpc25.g00q072e.lj6dq47d/?pc=https%3A%2F%2Fbooks.rakuten.co.jp%2Frb%2F1445541%2F",
+    "title": "バフェットの銘柄選択術",
+    "author_disp": "メアリー・バフェット/デビッド・クラーク/井手 正介"
   }
 ]
