@@ -22,6 +22,7 @@ SITE = "https://stock-overflow24.com"
 SITE_NAME = "迷える子羊たちの株ノート"
 SITE_TAGLINE = "迷える子羊たちへ。投資の“はじめの一冊”を。"
 UPDATED = "2026.06.01"
+CSS_VER = "1"  # style.css のキャッシュバスター（main内でハッシュに更新）
 
 # ── 目的別テーマ ──
 THEMES = [
@@ -224,7 +225,7 @@ def head(title, desc, path):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/style.css?v={CSS_VER}">
 </head>
 <body>"""
 
@@ -486,6 +487,12 @@ HERE = os.path.dirname(__file__)
 
 
 def main():
+    global CSS_VER
+    import hashlib
+    try:
+        CSS_VER = hashlib.md5(open(os.path.join(HERE, "style.css"), "rb").read()).hexdigest()[:8]
+    except Exception:
+        CSS_VER = UPDATED.replace(".", "")
     books = build_books()
     os.makedirs(os.path.join(HERE, "data"), exist_ok=True)
     with open(os.path.join(HERE, "data", "books.json"), "w", encoding="utf-8") as f:
