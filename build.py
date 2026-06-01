@@ -355,7 +355,7 @@ def footer():
     <p class="footer-brand"><img class="footer-mark" src="/assets/sheep-icon.png" alt="" width="28" height="35">{SITE_NAME}</p>
     <nav class="footer-nav"><a href="/">ホーム</a><a href="/guide/">選び方ガイド</a>{cats}</nav>
     <nav class="footer-nav"><a href="https://dashboard.stock-overflow24.com/">投資の砦</a><a href="https://yougo.stock-overflow24.com/">用語辞典</a><a href="#">お問い合わせ</a><a href="#">プライバシーポリシー</a></nav>
-    <p class="footer-note">※当サイトはアフィリエイトプログラム（楽天アフィリエイト・Amazonアソシエイト等）を利用しています。リンク経由のご購入で運営者に紹介料が支払われる場合があります。</p>
+    <p class="footer-note">※当サイトは、<strong>Amazonのアソシエイトとして適格販売により収入を得ています</strong>。また楽天アフィリエイト等のアフィリエイトプログラムを利用しており、リンク経由でのご購入により運営者に紹介料が支払われる場合があります。</p>
     <p class="footer-note">※掲載内容は書籍の紹介であり、特定の投資・銘柄を推奨するものではありません。投資は自己責任で行ってください。</p>
     <p class="footer-copy">© 2026 {SITE_NAME}</p>
   </div>
