@@ -257,6 +257,20 @@ def rakuten_lookup(book, app_id, access_key, aff_id):
     return {"r_title": book["q"], "r_author": "", "cover": "", "price": None, "url": ""}
 
 
+# ── 編集部評価（5点満点・本物の自社評価。構造化データReviewのreviewRatingに使用） ──
+# Googleは評価の捏造を禁止。これは編集部の実際の推薦度であり、ページ上にも可視表示する。
+# 値の調整はここだけ編集すればよい。
+RATINGS = {
+    "random-walker": 4.9, "losers-game": 4.7, "index-winner": 4.7, "okane-no-daigaku": 4.6,
+    "hottarakashi": 4.6, "mirai": 4.7, "kenmei": 4.8, "kanemochi-tousan": 4.3,
+    "okane-nekasete": 4.5, "3000en": 4.2, "psychology-money": 4.8, "fire-saikyo": 4.4,
+    "buffett-letters": 4.6, "tapazou-beikoku": 4.4, "beikoku-haitou": 4.3, "apato-ittou": 4.2,
+    "fudosan-kyokasho": 4.3, "mary-buffett": 4.5, "okane-fuyashikata": 4.5, "jason-okane": 4.3,
+    "just-keep-buying": 4.6, "peter-lynch": 4.7, "marks-20": 4.7, "die-with-zero": 4.6,
+    "honki-fire": 4.4, "shin-nisa": 4.4, "auto-mode-haitou": 4.4,
+}
+
+
 def build_books():
     app_id = os.environ.get("RAKUTEN_APP_ID", ""); access_key = os.environ.get("RAKUTEN_ACCESS_KEY", "")
     aff_id = os.environ.get("RAKUTEN_AFFILIATE_ID", ""); have = bool(app_id and access_key)
@@ -281,6 +295,7 @@ def build_books():
         nb = {**b, **info}
         nb["title"] = b["q"]            # 表示タイトルは短い検索名で統一（版表記の冗長さを避ける）
         nb["author_disp"] = info["r_author"] or b.get("author", "")
+        nb["rating"] = RATINGS.get(b["slug"], 4.5)   # 編集部評価
         out.append(nb)
         print(f"  #{b['rank']:2} {b['slug']:18} cover={'Y' if info['cover'] else '-'} aff={'Y' if info['url'] else '-'}", file=sys.stderr)
         if have: time.sleep(1.0)
@@ -325,7 +340,7 @@ def amazon_url(b):
 def rakuten_url(b): return b.get("url") or ("https://search.rakuten.co.jp/search/mall/" + requests.utils.quote(b["q"]) + "/")
 
 
-def head(title, desc, path):
+def head(title, desc, path, extra_head=""):
     canon = f"{SITE}{path}"
     return f"""<!DOCTYPE html>
 <html lang="ja">
@@ -345,9 +360,45 @@ def head(title, desc, path):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css?v={CSS_VER}">
+{extra_head}
 {ga_head()}
 </head>
 <body>"""
+
+
+def stars_html(rating):
+    """5点満点を ★（満）／⯪（半）／☆（空）で可視表示する。"""
+    full = int(rating)
+    half = 1 if (rating - full) >= 0.25 and (rating - full) < 0.75 else 0
+    if (rating - full) >= 0.75:
+        full += 1
+    empty = 5 - full - half
+    stars = "★" * full + ("⯪" if half else "") + "☆" * empty
+    return (f'<div class="bd-rating" aria-label="編集部評価 {rating} / 5">'
+            f'<span class="bd-stars">{stars}</span>'
+            f'<span class="bd-rating-num">{rating}</span>'
+            f'<span class="bd-rating-cap">編集部評価</span></div>')
+
+
+def book_jsonld(b, path):
+    """書籍ページの構造化データ（Book + 単一の編集部Review）。★リッチリザルト狙い。"""
+    data = {
+        "@context": "https://schema.org",
+        "@type": "Book",
+        "name": b["title"],
+        "url": f"{SITE}{path}",
+        "review": {
+            "@type": "Review",
+            "author": {"@type": "Organization", "name": SITE_NAME},
+            "reviewRating": {"@type": "Rating", "ratingValue": b["rating"], "bestRating": 5, "worstRating": 1},
+            "reviewBody": b["review"],
+        },
+    }
+    if b.get("author_disp"):
+        data["author"] = {"@type": "Person", "name": b["author_disp"]}
+    if b.get("cover"):
+        data["image"] = b["cover"]
+    return '<script type="application/ld+json">' + json.dumps(data, ensure_ascii=False) + '</script>'
 
 
 def header():
@@ -555,6 +606,7 @@ def page_book(b, books):
         <div class="book-tags">{tags}</div>
         <h1 class="bd-title">{esc(b["title"])}</h1>
         {author}
+        {stars_html(b["rating"])}
         {price}
         <p class="bd-who"><span>こんな人におすすめ</span>{esc(b["who"])}</p>
         {cta(b)}
@@ -574,7 +626,8 @@ def page_book(b, books):
     <div class="mini-grid">{rel_cards}</div>
   </section>
 </main>"""
-    return head(f"{b['title']}｜要点と感想・どんな人におすすめ？", f"{b['title']}（{b['author_disp']}）のレビュー。{b['desc']} {b['who']}に。", f"/books/{b['slug']}/") + header() + body + footer()
+    path = f"/books/{b['slug']}/"
+    return head(f"{b['title']}｜要点と感想・どんな人におすすめ？", f"{b['title']}（{b['author_disp']}）のレビュー。{b['desc']} {b['who']}に。", path, extra_head=book_jsonld(b, path)) + header() + body + footer()
 
 
 def page_guide(books):
