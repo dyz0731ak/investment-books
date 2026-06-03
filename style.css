@@ -319,8 +319,11 @@ img{max-width:100%}
   .mini-grid{grid-template-columns:repeat(2,1fr)}
 }
 
-/* ── 編集部評価（星） ── */
+/* ── 編集部評価（星・CSS部分塗り。★のみ使用しフォント依存なし） ── */
 .bd-rating{display:flex;align-items:center;gap:8px;margin:6px 0 10px}
-.bd-stars{color:#f5a623;font-size:18px;letter-spacing:1px;line-height:1}
+.bd-stars{position:relative;display:inline-block;font-size:18px;line-height:1;white-space:nowrap}
+.bd-stars::before{content:"★★★★★";letter-spacing:2px;color:#d8dde3}
+.bd-stars-fill{position:absolute;top:0;left:0;height:100%;overflow:hidden;white-space:nowrap}
+.bd-stars-fill::before{content:"★★★★★";letter-spacing:2px;color:#f5a623}
 .bd-rating-num{font-weight:700;font-size:15px;color:#1c2531}
 .bd-rating-cap{font-size:11px;color:#7b8794;background:#f1f4f8;padding:2px 8px;border-radius:20px}

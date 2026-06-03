@@ -367,15 +367,10 @@ def head(title, desc, path, extra_head=""):
 
 
 def stars_html(rating):
-    """5点満点を ★（満）／⯪（半）／☆（空）で可視表示する。"""
-    full = int(rating)
-    half = 1 if (rating - full) >= 0.25 and (rating - full) < 0.75 else 0
-    if (rating - full) >= 0.75:
-        full += 1
-    empty = 5 - full - half
-    stars = "★" * full + ("⯪" if half else "") + "☆" * empty
+    """5点満点の星評価。★のみ使用し、小数分はCSSで部分塗り（フォント依存なし）。"""
+    pct = round(max(0, min(5, rating)) / 5 * 100, 1)
     return (f'<div class="bd-rating" aria-label="編集部評価 {rating} / 5">'
-            f'<span class="bd-stars">{stars}</span>'
+            f'<span class="bd-stars"><span class="bd-stars-fill" style="width:{pct}%"></span></span>'
             f'<span class="bd-rating-num">{rating}</span>'
             f'<span class="bd-rating-cap">編集部評価</span></div>')
 
