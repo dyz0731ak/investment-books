@@ -464,9 +464,9 @@ def footer():
 
 def cta(b):
     return f"""<div class="book-cta">
-      <a class="btn btn-amazon" href="{esc(amazon_url(b))}" target="_blank" rel="sponsored nofollow noopener">Amazonで見る</a>
-      <a class="btn btn-rakuten" href="{esc(rakuten_url(b))}" target="_blank" rel="sponsored nofollow noopener">楽天ブックスで見る</a>
-      <a class="btn btn-yahoo" href="{esc(yahoo_url(b))}" target="_blank" rel="sponsored nofollow noopener">Yahoo!ショッピングで見る</a>
+      <a class="btn btn-amazon" href="{esc(amazon_url(b))}" target="_blank" rel="sponsored nofollow noopener">Amazon</a>
+      <a class="btn btn-rakuten" href="{esc(rakuten_url(b))}" target="_blank" rel="sponsored nofollow noopener">楽天ブックス</a>
+      <a class="btn btn-yahoo" href="{esc(yahoo_url(b))}" target="_blank" rel="sponsored nofollow noopener">Yahoo!ショッピング</a>
     </div>"""
 
 
@@ -633,7 +633,6 @@ def page_book(b, books):
       <h3 class="bd-subh">この本で得られること</h3>
       <ul class="book-points bd-points">{points}</ul>
       <div class="bd-theme-links">関連テーマ：{theme_links}</div>
-      {cta(b)}
     </section>
   </article>
   <section class="about-box">
