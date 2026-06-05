@@ -22,6 +22,7 @@ SITE = "https://stock-overflow24.com"
 SITE_NAME = "迷える子羊たちの株ノート"
 SITE_TAGLINE = "迷える子羊たちへ。投資の“はじめの一冊”を。"
 UPDATED = "2026.06.01"
+CONTACT_EMAIL = "info@stock-overflow24.com"  # お問い合わせ表示用（ConoHa WING側でメールボックス作成が必要）
 CSS_VER = "1"  # style.css のキャッシュバスター（main内でハッシュに更新）
 GA_ID = os.environ.get("GA4_ID", "")  # GA4測定ID（環境変数。未設定なら計測タグは出力されない）
 
@@ -432,7 +433,7 @@ def footer():
   <div class="footer-inner">
     <p class="footer-brand"><img class="footer-mark" src="/assets/sheep-icon.png" alt="" width="28" height="35">{SITE_NAME}</p>
     <nav class="footer-nav"><a href="/">ホーム</a><a href="/guide/">選び方ガイド</a>{cats}</nav>
-    <nav class="footer-nav"><a href="https://dashboard.stock-overflow24.com/">投資の砦</a><a href="https://yougo.stock-overflow24.com/">用語辞典</a><a href="#">お問い合わせ</a><a href="#">プライバシーポリシー</a></nav>
+    <nav class="footer-nav"><a href="https://dashboard.stock-overflow24.com/">投資の砦</a><a href="https://yougo.stock-overflow24.com/">用語辞典</a><a href="/about/">運営者情報</a><a href="/contact/">お問い合わせ</a><a href="/privacy/">プライバシーポリシー</a></nav>
     <p class="footer-note">※当サイトは、<strong>Amazonのアソシエイトとして適格販売により収入を得ています</strong>。また楽天アフィリエイト等のアフィリエイトプログラムを利用しており、リンク経由でのご購入により運営者に紹介料が支払われる場合があります。</p>
     <p class="footer-note">※掲載内容は書籍の紹介であり、特定の投資・銘柄を推奨するものではありません。投資は自己責任で行ってください。</p>
     <p class="footer-copy">© 2026 {SITE_NAME}</p>
@@ -659,6 +660,103 @@ def page_guide(books):
     return head("投資本の選び方・読む順ガイド", "投資の本をどれから読めばいい？ レベル別の読む順番と、本を選ぶときの注意点を初心者向けにやさしく解説します。", "/guide/") + header() + body + footer()
 
 
+def page_about():
+    body = f"""
+<main class="container container--narrowtop">
+  {breadcrumb([("TOP", "/"), ("運営者情報", None)])}
+  <header class="page-head">
+    <p class="hero-eyebrow">このサイトについて</p>
+    <h1 class="page-title">運営者情報</h1>
+    <p class="page-lead">「{esc(SITE_NAME)}」は、投資のはじめの一冊を探す人のために、定番の投資本を編集部の視点でレビュー・ランキングするサイトです。</p>
+  </header>
+  <article class="guide">
+    {section_title("サイトの目的")}
+    <p>投資を始めたいけれど「何から読めばいいか分からない」という人に向けて、世代を超えて読み継がれてきた投資の名著を、目的別（初心者／NISA／インデックス／バリュー投資／FIRE／不動産／米国株／高配当）に整理して紹介しています。各書籍のレビュー・要点・ランキング・★評価は、出版社の紹介文を転載せず、編集部が実際に内容を踏まえて作成したオリジナルです。</p>
+    {section_title("運営者")}
+    <ul class="guide-notes">
+      <li><strong>サイト名</strong>：{esc(SITE_NAME)}（stock-overflow24.com）</li>
+      <li><strong>運営</strong>：STOCK OVERFLOW 編集部</li>
+      <li><strong>運営開始</strong>：2026年</li>
+      <li><strong>連絡先</strong>：<a href="mailto:{esc(CONTACT_EMAIL)}">{esc(CONTACT_EMAIL)}</a>（詳しくは<a href="/contact/">お問い合わせ</a>ページ）</li>
+    </ul>
+    {section_title("編集方針", "信頼できる情報のために")}
+    <ul class="guide-notes">
+      <li><strong>オリジナルの内容</strong>：レビュー・要点・おすすめ理由はすべて編集部が独自に執筆しています。</li>
+      <li><strong>中立性</strong>：報酬の有無で評価をゆがめず、メリットだけでなく注意点も正直に記載します。</li>
+      <li><strong>更新</strong>：書籍情報や価格は変動するため、定期的に内容を見直しています。</li>
+    </ul>
+    {section_title("姉妹サイト")}
+    <ul class="guide-first">
+      <li><a href="https://dashboard.stock-overflow24.com/">投資の砦</a> — 日本株・米国株の急騰銘柄や決算速報がひと目で分かるダッシュボード。</li>
+      <li><a href="https://yougo.stock-overflow24.com/">やさしい投資用語辞典</a> — PER・PBR・ROEなど、投資の専門用語をやさしく解説。</li>
+    </ul>
+    <p class="guide-cta-note">広告掲載・アフィリエイトの方針については<a href="/privacy/">プライバシーポリシー</a>をご覧ください。</p>
+  </article>
+</main>"""
+    return head("運営者情報", f"{SITE_NAME}（stock-overflow24.com）の運営者情報・編集方針について。投資の名著を編集部の視点でレビュー・ランキングしています。", "/about/") + header() + body + footer()
+
+
+def page_contact():
+    body = f"""
+<main class="container container--narrowtop">
+  {breadcrumb([("TOP", "/"), ("お問い合わせ", None)])}
+  <header class="page-head">
+    <p class="hero-eyebrow">ご連絡はこちら</p>
+    <h1 class="page-title">お問い合わせ</h1>
+    <p class="page-lead">サイトの内容に関するご指摘、掲載・取材・広告のご相談などは、下記メールアドレスまでお気軽にご連絡ください。</p>
+  </header>
+  <article class="guide">
+    {section_title("連絡先")}
+    <p class="contact-mail"><a href="mailto:{esc(CONTACT_EMAIL)}">{esc(CONTACT_EMAIL)}</a></p>
+    {section_title("お問い合わせ前のお願い")}
+    <ul class="guide-notes">
+      <li><strong>返信について</strong>：内容を確認のうえ、通常2〜3営業日以内にご返信します。お急ぎの場合もメールにてお願いいたします。</li>
+      <li><strong>個別の投資助言はできません</strong>：当サイトは書籍の紹介を行うものであり、特定の銘柄・商品の売買を推奨するものではありません。投資判断はご自身の責任でお願いします。</li>
+      <li><strong>お預かりした情報</strong>：いただいたメールアドレス・お名前は返信の目的にのみ使用します。詳しくは<a href="/privacy/">プライバシーポリシー</a>をご覧ください。</li>
+    </ul>
+    <p class="guide-cta-note">運営者・サイトの方針については<a href="/about/">運営者情報</a>をご覧ください。</p>
+  </article>
+</main>"""
+    return head("お問い合わせ", f"{SITE_NAME}へのお問い合わせはこちら。サイト内容のご指摘・掲載や広告のご相談はメールでお受けしています。", "/contact/") + header() + body + footer()
+
+
+def page_privacy():
+    body = f"""
+<main class="container container--narrowtop">
+  {breadcrumb([("TOP", "/"), ("プライバシーポリシー", None)])}
+  <header class="page-head">
+    <p class="hero-eyebrow">個人情報の取り扱い</p>
+    <h1 class="page-title">プライバシーポリシー</h1>
+    <p class="page-lead">{esc(SITE_NAME)}（以下「当サイト」）における、個人情報の取り扱い・広告・免責事項について定めます。</p>
+  </header>
+  <article class="guide">
+    {section_title("個人情報の利用目的")}
+    <p>当サイトでは、お問い合わせの際にお名前・メールアドレス等の個人情報をご登録いただく場合があります。これらの情報は、ご質問への回答や必要な情報をご連絡する目的でのみ利用し、ご本人の同意なく第三者に開示・提供することはありません（法令に基づく場合を除く）。</p>
+    {section_title("アクセス解析ツールについて")}
+    <p>当サイトでは、サイトの利用状況を把握するためにGoogleが提供する「Googleアナリティクス（GA4）」を利用しています。このツールはCookieを使用してトラフィックデータを収集しますが、個人を特定する情報は含まれません。Cookieはブラウザの設定で無効にできます。データ収集の仕組みについては<a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener nofollow">Googleのポリシーと規約</a>をご確認ください。</p>
+    {section_title("アフィリエイトプログラムについて")}
+    <ul class="guide-notes">
+      <li>当サイトは、<strong>Amazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定された、Amazonアソシエイト・プログラムの参加者です。</strong>適格販売により収入を得ています。</li>
+      <li>当サイトは、楽天アフィリエイトをはじめとする各種アフィリエイトプログラム（ASP：もしもアフィリエイト等）にも参加しており、リンク経由でのご購入・お申し込みにより運営者に紹介料が支払われる場合があります。</li>
+      <li>第三者配信の広告サービスを利用する場合、広告事業者がCookie等を用いて利用者の興味に応じた広告を表示することがあります。</li>
+    </ul>
+    {section_title("免責事項")}
+    <ul class="guide-notes">
+      <li>当サイトの掲載内容は書籍の紹介・情報提供を目的としたものであり、特定の投資・銘柄・金融商品の売買を推奨・勧誘するものではありません。投資はご自身の判断と責任において行ってください。</li>
+      <li>掲載情報（価格・在庫・書籍情報等）の正確性には努めていますが、その完全性・最新性を保証するものではありません。リンク先の外部サイトで提供される情報・サービスについては、当サイトは責任を負いかねます。</li>
+    </ul>
+    {section_title("著作権について")}
+    <p>当サイトに掲載されている文章・レビュー等のコンテンツの著作権は、当サイトまたは正当な権利者に帰属します。無断での転載・複製はご遠慮ください。書影・書籍情報は各出版社・提供元に帰属します。</p>
+    {section_title("プライバシーポリシーの変更")}
+    <p>当サイトは、法令の変更や運営方針の見直しに応じて、本ポリシーの内容を予告なく変更することがあります。変更後の内容は、当ページに掲載した時点で効力を生じるものとします。</p>
+    {section_title("お問い合わせ")}
+    <p>本ポリシーに関するお問い合わせは、<a href="mailto:{esc(CONTACT_EMAIL)}">{esc(CONTACT_EMAIL)}</a>（<a href="/contact/">お問い合わせ</a>ページ）までご連絡ください。</p>
+    <p class="guide-cta-note">制定日：2026年6月5日</p>
+  </article>
+</main>"""
+    return head("プライバシーポリシー", f"{SITE_NAME}のプライバシーポリシー。個人情報の取り扱い、Googleアナリティクス、Amazonアソシエイト・楽天等のアフィリエイト、免責事項について。", "/privacy/") + header() + body + footer()
+
+
 # ───────── 出力 ─────────
 def write(path, html_str):
     full = os.path.join(HERE, path)
@@ -684,13 +782,16 @@ def main():
 
     write("index.html", page_home(books))
     write("guide/index.html", page_guide(books))
+    write("about/index.html", page_about())
+    write("contact/index.html", page_contact())
+    write("privacy/index.html", page_privacy())
     for t in THEMES:
         write(f"{t['slug']}/index.html", page_theme(t, books))
     for b in books:
         write(f"books/{b['slug']}/index.html", page_book(b, books))
 
     # sitemap.xml（全ページ）
-    urls = ["/", "/guide/"] + [f"/{t['slug']}/" for t in THEMES] + [f"/books/{b['slug']}/" for b in books]
+    urls = ["/", "/guide/", "/about/", "/contact/", "/privacy/"] + [f"/{t['slug']}/" for t in THEMES] + [f"/books/{b['slug']}/" for b in books]
     lastmod = UPDATED.replace(".", "-")
     sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for u in urls:
@@ -699,8 +800,8 @@ def main():
     sm.append("</urlset>\n")
     write("sitemap.xml", "\n".join(sm))
 
-    n_pages = 2 + len(THEMES) + len(books)
-    print(f"[build] {len(books)}冊 / {n_pages}ページ生成（トップ・ガイド・カテゴリ{len(THEMES)}・個別{len(books)}）", file=sys.stderr)
+    n_pages = 5 + len(THEMES) + len(books)
+    print(f"[build] {len(books)}冊 / {n_pages}ページ生成（トップ・ガイド・運営者・問合せ・規約・カテゴリ{len(THEMES)}・個別{len(books)}）", file=sys.stderr)
 
 
 if __name__ == "__main__":
