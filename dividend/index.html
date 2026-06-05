@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/style.css?v=b39f1668">
+<link rel="stylesheet" href="/style.css?v=83473384">
 
 
 </head>
@@ -84,8 +84,8 @@
   </div>
 </footer>
 <script>
-document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a.btn-amazon,a.btn-rakuten'):null;
-if(a&&typeof gtag==='function'){gtag('event','affiliate_click',{store:a.classList.contains('btn-amazon')?'amazon':'rakuten',link_url:a.href,page:location.pathname});}},true);
+document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a.btn-amazon,a.btn-rakuten,a.btn-yahoo'):null;
+if(a&&typeof gtag==='function'){var s=a.classList.contains('btn-amazon')?'amazon':(a.classList.contains('btn-rakuten')?'rakuten':'yahoo');gtag('event','affiliate_click',{store:s,link_url:a.href,page:location.pathname});}},true);
 </script>
 </body>
 </html>

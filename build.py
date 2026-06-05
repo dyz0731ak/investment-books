@@ -14,6 +14,7 @@
 """
 from __future__ import annotations
 import os, sys, json, html, re, time, shutil
+import urllib.parse
 import requests
 
 API = "https://openapi.rakuten.co.jp/services/api/BooksBook/Search/20170404"
@@ -37,8 +38,8 @@ def ga_head():
 def ga_click_script():
     # アフィリンク(楽天/Amazon)のクリックをGA4イベントとして計測（gtag未読込なら何もしない）
     return """<script>
-document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a.btn-amazon,a.btn-rakuten'):null;
-if(a&&typeof gtag==='function'){gtag('event','affiliate_click',{store:a.classList.contains('btn-amazon')?'amazon':'rakuten',link_url:a.href,page:location.pathname});}},true);
+document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a.btn-amazon,a.btn-rakuten,a.btn-yahoo'):null;
+if(a&&typeof gtag==='function'){var s=a.classList.contains('btn-amazon')?'amazon':(a.classList.contains('btn-rakuten')?'rakuten':'yahoo');gtag('event','affiliate_click',{store:s,link_url:a.href,page:location.pathname});}},true);
 </script>"""
 
 # ── 目的別テーマ ──
@@ -338,7 +339,24 @@ def amazon_url(b):
     return raw
 
 
-def rakuten_url(b): return b.get("url") or ("https://search.rakuten.co.jp/search/mall/" + requests.utils.quote(b["q"]) + "/")
+# もしもアフィリエイト経由の楽天市場リンク（提携済み・HTMLに出る公開アフィリID）
+RAKUTEN_MOSHIMO = "https://af.moshimo.com/af/c/click?a_id=4575690&p_id=54&pc_id=54&pl_id=616&url="
+def _rakuten_dest(b):
+    """素の楽天商品URLを返す。楽天直アフィリリンク(hb.afl)なら pc= から商品URLを復元、無ければタイトル検索。"""
+    u = b.get("url") or ""
+    m = re.search(r"[?&]pc=([^&]+)", u)
+    if m:
+        return urllib.parse.unquote(m.group(1))
+    if u.startswith("http") and "hb.afl.rakuten" not in u:
+        return u
+    return "https://search.rakuten.co.jp/search/mall/" + requests.utils.quote(b["q"]) + "/"
+def rakuten_url(b): return RAKUTEN_MOSHIMO + requests.utils.quote(_rakuten_dest(b), safe="")
+
+
+# もしもアフィリエイト経由のYahoo!ショッピングリンク（提携済み・HTMLに出る公開アフィリID）
+YAHOO_MOSHIMO = "https://af.moshimo.com/af/c/click?a_id=5620985&p_id=1225&pc_id=1925&pl_id=18502&url="
+def yahoo_search(t): return "https://shopping.yahoo.co.jp/search?p=" + requests.utils.quote(t)
+def yahoo_url(b): return YAHOO_MOSHIMO + requests.utils.quote(yahoo_search(b["q"]), safe="")
 
 
 def head(title, desc, path, extra_head=""):
@@ -448,6 +466,7 @@ def cta(b):
     return f"""<div class="book-cta">
       <a class="btn btn-amazon" href="{esc(amazon_url(b))}" target="_blank" rel="sponsored nofollow noopener">Amazonで見る</a>
       <a class="btn btn-rakuten" href="{esc(rakuten_url(b))}" target="_blank" rel="sponsored nofollow noopener">楽天ブックスで見る</a>
+      <a class="btn btn-yahoo" href="{esc(yahoo_url(b))}" target="_blank" rel="sponsored nofollow noopener">Yahoo!ショッピングで見る</a>
     </div>"""
 
 

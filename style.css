@@ -149,6 +149,8 @@ img{max-width:100%}
 .btn-amazon:hover{filter:brightness(1.04); box-shadow:0 9px 18px rgba(255,153,0,.45)}
 .btn-rakuten{color:#fff; background:linear-gradient(180deg,#e84a4a,var(--rakuten)); box-shadow:0 4px 12px rgba(191,0,0,.32)}
 .btn-rakuten:hover{filter:brightness(1.05); box-shadow:0 9px 18px rgba(191,0,0,.42)}
+.btn-yahoo{color:#fff; background:linear-gradient(180deg,#ff5e7a,#ff0033); box-shadow:0 4px 12px rgba(255,0,51,.30)}
+.btn-yahoo:hover{filter:brightness(1.05); box-shadow:0 9px 18px rgba(255,0,51,.40)}
 
 /* ===== 比較表 ===== */
 .compare-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow-card)}
