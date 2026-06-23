@@ -553,6 +553,19 @@ def book_grid_card(b):
       </a>"""
 
 
+def hero_cover_stack(books):
+    items = []
+    for i, b in enumerate(sorted(books, key=lambda x: x["rank"])[:5], 1):
+        if b.get("cover"):
+            media = f'<img src="{esc(b["cover"])}" alt="{esc(b["title"])}の表紙" loading="eager">'
+        else:
+            media = f'<span>{esc(b["title"])}</span>'
+        items.append(
+            f'<a class="hero-book hero-book-{i}" href="/books/{b["slug"]}/" aria-label="{esc(b["title"])}のレビューを読む">{media}</a>'
+        )
+    return "".join(items)
+
+
 def section_title(text, sub=""):
     s = f' <span class="section-sub">{esc(sub)}</span>' if sub else ""
     return f'<h2 class="section-title">{esc(text)}{s}</h2>'
@@ -562,6 +575,7 @@ def section_title(text, sub=""):
 def page_home(books):
     top = [b for b in books if b["rank"] <= 8]
     cards = "".join(book_card(b) for b in sorted(top, key=lambda x: x["rank"]))
+    hero_books = hero_cover_stack(books)
     cat_cards = "".join(
         f'<a class="cat-card" href="/{t["slug"]}/"><span class="cat-card-name">{esc(t["name"])}</span>'
         f'<span class="cat-card-lead">{esc(t["lead"])}</span><span class="cat-card-go">この本を見る ›</span></a>'
@@ -574,11 +588,17 @@ def page_home(books):
     body = f"""
 <section class="hero">
   <div class="hero-inner">
-    <p class="hero-eyebrow">編集部が選ぶ・投資のバイブル</p>
-    <h1 class="hero-title">投資初心者が最初に読むべき<br><em>『投資の名著』8選</em></h1>
-    <p class="hero-lead">「投資を始めたいけれど、何から学べばいいのかわからない…」——そんな<strong>迷える子羊</strong>のあなたへ。世界中の投資家に長く読み継がれてきた<strong>定番の名著だけ</strong>を、目的別に厳選しました。</p>
-    <div class="hero-rule"></div>
-    <p class="hero-meta">更新日 {UPDATED} ・ {SITE_NAME}編集部</p>
+    <div class="hero-copy">
+      <p class="hero-kicker">INVESTMENT BOOK GUIDE</p>
+      <h1 class="hero-title">投資初心者が最初に読むべき<br><em>投資の名著</em></h1>
+      <p class="hero-lead">「何から学べばいいのかわからない」迷いを、長く読み継がれてきた本でほどく。目的別に、最初の一冊と次の一冊を選べる編集ノートです。</p>
+      <div class="hero-actions"><a class="hero-primary" href="#ranking">ランキングを見る</a><a class="hero-secondary" href="/guide/">読む順ガイド</a></div>
+      <p class="hero-meta">UPDATED {UPDATED} / EDITED BY {SITE_NAME}</p>
+    </div>
+    <div class="hero-visual" aria-label="紹介している投資本の書影">
+      <div class="hero-orbit">READ<br>BEFORE<br>INVEST</div>
+      <div class="hero-shelf">{hero_books}</div>
+    </div>
   </div>
 </section>
 <main class="container">
