@@ -16,6 +16,12 @@ jobs:
         env:
           FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
+      - name: Inject GA4 tag
+        env:
+          GA4_ID: ${{ secrets.GA4_ID }}
+        run: |
+          if [ -n "$GA4_ID" ]; then python3 scripts/inject_ga.py "$GA4_ID"; fi
+
       - name: Deploy to ConoHa WING via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -33,6 +39,7 @@ jobs:
             .claude/**
             *.md
             build.py
+            scripts/**
             requirements.txt
             data/**
             redirect-manabiya/**

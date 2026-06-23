@@ -10,6 +10,16 @@ RewriteCond %{HTTP:X-Forwarded-Proto} ^$
 RewriteCond %{SERVER_PORT} ^80$
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
+# ── 旧WordPress URLをブログ側へ301転送 ──
+# 2026年6月にルートドメインを静的な書籍レビューサイトへ変更したため、
+# 旧ブログのアーカイブ・カテゴリ・タグ・画像URLは blog.stock-overflow24.com へ退避する。
+# 新サイトの /books/ や /guide/ などを壊さないよう、WordPress由来と判断しやすいURLだけを対象にする。
+RewriteRule ^(20[0-9]{2}/.*)$ https://blog.stock-overflow24.com/$1 [R=301,L]
+RewriteRule ^(category|tag|author)/(.+)$ https://blog.stock-overflow24.com/$1/$2 [R=301,L]
+RewriteRule ^wp-content/uploads/(.*)$ https://blog.stock-overflow24.com/wp-content/uploads/$1 [R=301,L]
+RewriteRule ^wp-json/(.*)$ https://blog.stock-overflow24.com/wp-json/$1 [R=301,L]
+RewriteRule ^feed/?$ https://blog.stock-overflow24.com/feed/ [R=301,L]
+
 # ── キャッシュ制御 ──
 # HTML/JSON は毎回再検証（ConoHaはデフォルトでCache-Controlを付けず、
 # デプロイしても旧版がブラウザにキャッシュされ続ける事象を防ぐ）。

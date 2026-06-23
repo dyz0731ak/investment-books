@@ -13,7 +13,7 @@
 認証情報は環境変数: RAKUTEN_APP_ID, RAKUTEN_ACCESS_KEY, RAKUTEN_AFFILIATE_ID
 """
 from __future__ import annotations
-import os, sys, json, html, re, time, shutil
+import os, sys, json, html, re, time, shutil, datetime
 import urllib.parse
 import requests
 
@@ -22,7 +22,10 @@ HEADERS = {"User-Agent": "Mozilla/5.0", "Referer": "https://stock-overflow24.com
 SITE = "https://stock-overflow24.com"
 SITE_NAME = "迷える子羊たちの株ノート"
 SITE_TAGLINE = "迷える子羊たちへ。投資の“はじめの一冊”を。"
-UPDATED = "2026.06.01"
+JST = datetime.timezone(datetime.timedelta(hours=9))
+TODAY = datetime.datetime.now(JST)
+UPDATED = os.environ.get("SITE_UPDATED", TODAY.strftime("%Y.%m.%d"))
+SITEMAP_LASTMOD = os.environ.get("SITE_LASTMOD", TODAY.strftime("%Y-%m-%d"))
 CONTACT_EMAIL = "info@stock-overflow24.com"  # お問い合わせ表示用（ConoHa WING側でメールボックス作成が必要）
 CSS_VER = "1"  # style.css のキャッシュバスター（main内でハッシュに更新）
 GA_ID = os.environ.get("GA4_ID", "")  # GA4測定ID（環境変数。未設定なら計測タグは出力されない）
@@ -338,6 +341,11 @@ MOSHIMO_AID = os.environ.get("MOSHIMO_AMAZON_AID", "")
 MOSHIMO_PID = os.environ.get("MOSHIMO_AMAZON_PID", "")
 MOSHIMO_PCID = os.environ.get("MOSHIMO_AMAZON_PCID", "")
 MOSHIMO_PLID = os.environ.get("MOSHIMO_AMAZON_PLID", "")
+AMAZON_ASSOCIATE_TAG = os.environ.get("AMAZON_ASSOCIATE_TAG", "")
+
+
+def has_amazon_affiliate():
+    return bool((MOSHIMO_AID and MOSHIMO_PID and MOSHIMO_PCID and MOSHIMO_PLID) or AMAZON_ASSOCIATE_TAG)
 
 
 def amazon_url(b):
@@ -345,7 +353,10 @@ def amazon_url(b):
     if MOSHIMO_AID and MOSHIMO_PID and MOSHIMO_PCID and MOSHIMO_PLID:
         return (f"https://af.moshimo.com/af/c/click?a_id={MOSHIMO_AID}&p_id={MOSHIMO_PID}"
                 f"&pc_id={MOSHIMO_PCID}&pl_id={MOSHIMO_PLID}&url=" + requests.utils.quote(raw, safe=""))
-    return raw
+    if AMAZON_ASSOCIATE_TAG:
+        sep = "&" if "?" in raw else "?"
+        return raw + sep + urllib.parse.urlencode({"tag": AMAZON_ASSOCIATE_TAG})
+    return ""
 
 
 # もしもアフィリエイト経由の楽天市場リンク（提携済み・HTMLに出る公開アフィリID）
@@ -455,6 +466,21 @@ def breadcrumb(items):
     return '<nav class="breadcrumb">' + ' <i>›</i> '.join(parts) + '</nav>'
 
 
+def affiliate_disclosure():
+    amazon = ""
+    if has_amazon_affiliate():
+        amazon = "Amazonのアソシエイトとして適格販売により収入を得ています。また"
+    return (f"※当サイトは、{amazon}楽天アフィリエイト・もしもアフィリエイト等の"
+            "アフィリエイトプログラムを利用しており、リンク経由でのご購入により"
+            "運営者に紹介料が支払われる場合があります。")
+
+
+def amazon_privacy_item():
+    if not has_amazon_affiliate():
+        return ""
+    return "<li>当サイトは、Amazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定された、Amazonアソシエイト・プログラムの参加者です。適格販売により収入を得ています。</li>"
+
+
 def footer():
     cats = "".join(f'<a href="/{t["slug"]}/">{esc(t["name"])}</a>' for t in THEMES[:5])
     return f"""<footer class="site-footer">
@@ -462,7 +488,7 @@ def footer():
     <p class="footer-brand"><img class="footer-mark" src="/assets/sheep-icon.png" alt="" width="28" height="35">{SITE_NAME}</p>
     <nav class="footer-nav"><a href="/">ホーム</a><a href="/guide/">選び方ガイド</a>{cats}</nav>
     <nav class="footer-nav"><a href="https://dashboard.stock-overflow24.com/">投資の砦</a><a href="https://yougo.stock-overflow24.com/">用語辞典</a><a href="/about/">運営者情報</a><a href="/contact/">お問い合わせ</a><a href="/privacy/">プライバシーポリシー</a></nav>
-    <p class="footer-note">※当サイトは、<strong>Amazonのアソシエイトとして適格販売により収入を得ています</strong>。また楽天アフィリエイト等のアフィリエイトプログラムを利用しており、リンク経由でのご購入により運営者に紹介料が支払われる場合があります。</p>
+    <p class="footer-note">{esc(affiliate_disclosure())}</p>
     <p class="footer-note">※掲載内容は書籍の紹介であり、特定の投資・銘柄を推奨するものではありません。投資は自己責任で行ってください。</p>
     <p class="footer-copy">© 2026 {SITE_NAME}</p>
   </div>
@@ -473,11 +499,13 @@ def footer():
 
 
 def cta(b):
-    return f"""<div class="book-cta">
-      <a class="btn btn-amazon" href="{esc(amazon_url(b))}" target="_blank" rel="sponsored nofollow noopener">Amazon</a>
-      <a class="btn btn-rakuten" href="{esc(rakuten_url(b))}" target="_blank" rel="sponsored nofollow noopener">楽天ブックス</a>
-      <a class="btn btn-yahoo" href="{esc(yahoo_url(b))}" target="_blank" rel="sponsored nofollow noopener">Yahoo!ショッピング</a>
-    </div>"""
+    buttons = []
+    aurl = amazon_url(b)
+    if aurl:
+        buttons.append(f'<a class="btn btn-amazon" href="{esc(aurl)}" target="_blank" rel="sponsored nofollow noopener">Amazon</a>')
+    buttons.append(f'<a class="btn btn-rakuten" href="{esc(rakuten_url(b))}" target="_blank" rel="sponsored nofollow noopener">楽天ブックス</a>')
+    buttons.append(f'<a class="btn btn-yahoo" href="{esc(yahoo_url(b))}" target="_blank" rel="sponsored nofollow noopener">Yahoo!ショッピング</a>')
+    return '<div class="book-cta">\n      ' + "\n      ".join(buttons) + "\n    </div>"
 
 
 def cover_html(b, cls="book-cover"):
@@ -603,6 +631,35 @@ def page_theme(t, books):
     return head(f"{t['name']}のおすすめ投資本", f"{t['name']}の投資初心者・実践者に向けて、定番のおすすめ本を厳選。{t['lead']}", f"/{t['slug']}/") + header() + body + footer()
 
 
+def book_detail_sections(b, rel):
+    primary = THEME_NAME.get(b["themes"][0], "投資")
+    theme_names = "・".join(THEME_NAME.get(th, th) for th in b["themes"])
+    main_point = b["points"][0] if b.get("points") else b["desc"]
+    second_point = b["points"][1] if len(b.get("points") or []) > 1 else b["who"]
+    if rel:
+        cmp = rel[0]
+        compare = (f"同じ{primary}テーマで迷うなら、まず本書で軸を作り、次に"
+                   f"『{cmp['title']}』を読むと理解がつながりやすくなります。")
+    else:
+        compare = f"{primary}の考え方を、短期の相場材料ではなく長く使える基礎として整理できる点が強みです。"
+    if b["rank"] <= 5:
+        order = "投資をこれから始める人が最初の数冊として読むのに向いています。細かい手法に進む前の土台づくりに使ってください。"
+    elif "buffett" in b["themes"]:
+        order = "インデックス投資や家計管理の入門書を読んだあと、個別株や企業分析に興味が出てきた段階で読むと吸収しやすいです。"
+    elif "fire" in b["themes"]:
+        order = "投資商品の選び方だけでなく、支出・働き方・人生設計まで考えたい段階で読むと効果的です。"
+    else:
+        order = "入門書を1冊読んだあと、自分が深掘りしたいテーマを決めるための2冊目以降に向いています。"
+    return f"""<h3 class="bd-subh">この本で学べること</h3>
+      <p>{esc(b["desc"])} 特に「{esc(main_point)}」「{esc(second_point)}」を押さえることで、{esc(primary)}の判断軸を作りやすくなります。</p>
+      <h3 class="bd-subh">向いている人・注意したい人</h3>
+      <p>{esc(b["who"])}に向いています。一方で、すぐに儲かる銘柄名や短期売買のシグナルだけを探している人には物足りない可能性があります。</p>
+      <h3 class="bd-subh">他の投資本との違い</h3>
+      <p>{esc(compare)} テーマとしては{esc(theme_names)}に近く、流行の投資ノウハウよりも長く使える考え方を得たい人に合います。</p>
+      <h3 class="bd-subh">読む順番の目安</h3>
+      <p>{esc(order)}</p>"""
+
+
 def page_book(b, books):
     # related: same-theme books (excluding self), up to 4
     rel = []
@@ -642,6 +699,7 @@ def page_book(b, books):
       <p>{esc(b["review"])}</p>
       <h3 class="bd-subh">この本で得られること</h3>
       <ul class="book-points bd-points">{points}</ul>
+      {book_detail_sections(b, rel)}
       <div class="bd-theme-links">関連テーマ：{theme_links}</div>
     </section>
   </article>
@@ -658,6 +716,7 @@ def page_guide(books):
     # original guidance content
     beginner_books = sorted([b for b in books if "beginner" in b["themes"]], key=lambda x: x["rank"])[:3]
     blist = "".join(f'<li><a href="/books/{b["slug"]}/">{esc(b["title"])}</a> — {esc(b["who"])}</li>' for b in beginner_books)
+    stores = "Amazon／楽天ブックス／Yahoo!ショッピング" if has_amazon_affiliate() else "楽天ブックス／Yahoo!ショッピング"
     body = f"""
 <main class="container container--narrowtop">
   {breadcrumb([("TOP", "/"), ("投資本の選び方・読む順ガイド", None)])}
@@ -682,7 +741,7 @@ def page_guide(books):
     </ul>
     {section_title("まず最初の1冊なら")}
     <ul class="guide-first">{blist}</ul>
-    <p class="guide-cta-note">気になった本は各ページの「Amazonで見る／楽天ブックスで見る」からチェックできます。</p>
+    <p class="guide-cta-note">気になった本は各ページの「{stores}」からチェックできます。</p>
   </article>
 </main>"""
     return head("投資本の選び方・読む順ガイド", "投資の本をどれから読めばいい？ レベル別の読む順番と、本を選ぶときの注意点を初心者向けにやさしく解説します。", "/guide/") + header() + body + footer()
@@ -749,6 +808,7 @@ def page_contact():
 
 
 def page_privacy():
+    amazon_li = amazon_privacy_item()
     body = f"""
 <main class="container container--narrowtop">
   {breadcrumb([("TOP", "/"), ("プライバシーポリシー", None)])}
@@ -764,7 +824,7 @@ def page_privacy():
     <p>当サイトでは、サイトの利用状況を把握するためにGoogleが提供する「Googleアナリティクス（GA4）」を利用しています。このツールはCookieを使用してトラフィックデータを収集しますが、個人を特定する情報は含まれません。Cookieはブラウザの設定で無効にできます。データ収集の仕組みについては<a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener nofollow">Googleのポリシーと規約</a>をご確認ください。</p>
     {section_title("アフィリエイトプログラムについて")}
     <ul class="guide-notes">
-      <li>当サイトは、<strong>Amazon.co.jpを宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定された、Amazonアソシエイト・プログラムの参加者です。</strong>適格販売により収入を得ています。</li>
+{amazon_li}
       <li>当サイトは、楽天アフィリエイトをはじめとする各種アフィリエイトプログラム（ASP：もしもアフィリエイト等）にも参加しており、リンク経由でのご購入・お申し込みにより運営者に紹介料が支払われる場合があります。</li>
       <li>第三者配信の広告サービスを利用する場合、広告事業者がCookie等を用いて利用者の興味に応じた広告を表示することがあります。</li>
     </ul>
@@ -820,7 +880,7 @@ def main():
 
     # sitemap.xml（全ページ）
     urls = ["/", "/guide/", "/about/", "/contact/", "/privacy/"] + [f"/{t['slug']}/" for t in THEMES] + [f"/books/{b['slug']}/" for b in books]
-    lastmod = UPDATED.replace(".", "-")
+    lastmod = SITEMAP_LASTMOD
     sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for u in urls:
         pr = "1.0" if u == "/" else ("0.8" if u.count("/") == 2 else "0.6")
