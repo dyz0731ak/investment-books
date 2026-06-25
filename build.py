@@ -48,10 +48,11 @@ def ga_head():
 
 
 def ga_click_script():
-    # アフィリンク(楽天/Amazon)のクリックをGA4イベントとして計測（gtag未読込なら何もしない）
+    # アフィリンクのクリックをGA4イベントとして計測（gtag未読込なら何もしない）
     return """<script>
 document.addEventListener('click',function(e){var a=e.target.closest?e.target.closest('a.btn-amazon,a.btn-rakuten,a.btn-yahoo'):null;
-if(a&&typeof gtag==='function'){var s=a.classList.contains('btn-amazon')?'amazon':(a.classList.contains('btn-rakuten')?'rakuten':'yahoo');gtag('event','affiliate_click',{store:s,link_url:a.href,page:location.pathname});}},true);
+if(!a&&e.target.closest){a=e.target.closest('a[data-store]');}
+if(a&&typeof gtag==='function'){var s=a.dataset.store||(a.classList.contains('btn-amazon')?'amazon':(a.classList.contains('btn-rakuten')?'rakuten':'yahoo'));gtag('event','affiliate_click',{store:s,book_slug:a.dataset.book||'',book_title:a.dataset.title||'',cta_position:a.dataset.cta||'',link_url:a.href,page:location.pathname});}},true);
 </script>"""
 
 # ── 目的別テーマ ──
@@ -498,14 +499,43 @@ def footer():
 </html>"""
 
 
-def cta(b):
+def cta(b, context="primary"):
     buttons = []
     aurl = amazon_url(b)
     if aurl:
-        buttons.append(f'<a class="btn btn-amazon" href="{esc(aurl)}" target="_blank" rel="sponsored nofollow noopener">Amazon</a>')
-    buttons.append(f'<a class="btn btn-rakuten" href="{esc(rakuten_url(b))}" target="_blank" rel="sponsored nofollow noopener">楽天ブックス</a>')
-    buttons.append(f'<a class="btn btn-yahoo" href="{esc(yahoo_url(b))}" target="_blank" rel="sponsored nofollow noopener">Yahoo!ショッピング</a>')
-    return '<div class="book-cta">\n      ' + "\n      ".join(buttons) + "\n    </div>"
+        buttons.append(f'<a class="btn btn-amazon" href="{esc(aurl)}" target="_blank" rel="sponsored nofollow noopener" data-store="amazon" data-book="{esc(b["slug"])}" data-title="{esc(b["title"])}" data-cta="{esc(context)}" aria-label="{esc(b["title"])}をAmazonで見る">Amazon</a>')
+    buttons.append(f'<a class="btn btn-rakuten" href="{esc(rakuten_url(b))}" target="_blank" rel="sponsored nofollow noopener" data-store="rakuten" data-book="{esc(b["slug"])}" data-title="{esc(b["title"])}" data-cta="{esc(context)}" aria-label="{esc(b["title"])}を楽天ブックスで見る">楽天ブックス</a>')
+    buttons.append(f'<a class="btn btn-yahoo" href="{esc(yahoo_url(b))}" target="_blank" rel="sponsored nofollow noopener" data-store="yahoo" data-book="{esc(b["slug"])}" data-title="{esc(b["title"])}" data-cta="{esc(context)}" aria-label="{esc(b["title"])}をYahoo!ショッピングで見る">Yahoo!ショッピング</a>')
+    return '<div class="book-cta" data-book="' + esc(b["slug"]) + '" data-cta="' + esc(context) + '">\n      ' + "\n      ".join(buttons) + "\n    </div>"
+
+
+def store_choice_panel(b, context="shop_choice"):
+    """購入先の迷いを減らすための小さな比較導線。価格断定はせず、用途で選ばせる。"""
+    amazon = ""
+    if has_amazon_affiliate():
+        aurl = amazon_url(b)
+        amazon = f"""<a class="shop-card shop-card-amazon" href="{esc(aurl)}" target="_blank" rel="sponsored nofollow noopener" data-store="amazon" data-book="{esc(b["slug"])}" data-title="{esc(b["title"])}" data-cta="{esc(context)}">
+          <span class="shop-card-name">Amazon</span>
+          <span class="shop-card-copy">普段Amazonで本を買う人向け。配送条件はリンク先で確認。</span>
+        </a>"""
+    amazon_line = amazon + "\n        " if amazon else ""
+    return f"""<div class="shop-choice" aria-label="購入先の選び方">
+      <div class="shop-choice-head">
+        <span class="shop-choice-label">購入先の選び方</span>
+        <p>使っているポイントや在庫状況で選んでください。</p>
+      </div>
+      <div class="shop-card-grid">
+        {amazon_line}<a class="shop-card shop-card-rakuten" href="{esc(rakuten_url(b))}" target="_blank" rel="sponsored nofollow noopener" data-store="rakuten" data-book="{esc(b["slug"])}" data-title="{esc(b["title"])}" data-cta="{esc(context)}">
+          <span class="shop-card-name">楽天ブックス</span>
+          <span class="shop-card-copy">商品ページへ直接移動。楽天ポイントを使いたい人に。</span>
+        </a>
+        <a class="shop-card shop-card-yahoo" href="{esc(yahoo_url(b))}" target="_blank" rel="sponsored nofollow noopener" data-store="yahoo" data-book="{esc(b["slug"])}" data-title="{esc(b["title"])}" data-cta="{esc(context)}">
+          <span class="shop-card-name">Yahoo!ショッピング</span>
+          <span class="shop-card-copy">検索結果で価格・在庫を比較。PayPayを使う人に。</span>
+        </a>
+      </div>
+      <p class="shop-choice-note">価格・送料・在庫・ポイント条件は変わるため、最終確認は各ショップで行ってください。</p>
+    </div>"""
 
 
 def cover_html(b, cls="book-cover"):
@@ -533,7 +563,7 @@ def book_card(b, show_rank=True):
           <p class="book-desc">{esc(b['desc'])}</p>
           <ul class="book-points">{points}</ul>
           {price}
-          {cta(b)}
+          {cta(b, "ranking_card")}
           <p class="book-more"><a href="/books/{b['slug']}/">▶ この本のレビューを読む</a></p>
         </div>
       </article>"""
@@ -680,6 +710,41 @@ def book_detail_sections(b, rel):
       <p>{esc(order)}</p>"""
 
 
+def decision_panel(b, rel):
+    primary = THEME_NAME.get(b["themes"][0], "投資")
+    next_book = rel[0]["title"] if rel else "次の定番本"
+    point_items = "".join(f"<li>{esc(p)}</li>" for p in b["points"][:2])
+    if b["rank"] <= 3:
+        lead = "最初の一冊で遠回りしたくない人は、この本からで問題ありません。"
+    elif "nisa" in b["themes"]:
+        lead = "新NISAや積立を始める前に、実際にどう続けるかまで確認したい人向けです。"
+    elif "buffett" in b["themes"]:
+        lead = "企業分析や個別株に進む前に、価格と価値を分けて考える軸を作りたい人向けです。"
+    elif "fire" in b["themes"]:
+        lead = "投資だけでなく、支出・働き方・人生設計まで一度に見直したい人向けです。"
+    else:
+        lead = f"{primary}をもう一段深く理解したい人に向いています。"
+    return f"""<section class="decision-panel">
+      <div class="decision-main">
+        <span class="decision-label">迷ったらこの判断</span>
+        <h2>{esc(b["title"])}を選ぶ理由</h2>
+        <p>{esc(lead)} まず本書で軸を作り、必要なら『{esc(next_book)}』へ進むと理解がつながります。</p>
+      </div>
+      <ul class="decision-list">{point_items}</ul>
+    </section>"""
+
+
+def purchase_box(b):
+    return f"""<section class="purchase-box">
+      <div class="purchase-copy">
+        <span class="purchase-label">読むならここから</span>
+        <h2>{esc(b["title"])}を購入する</h2>
+        <p>レビューを読んで「今の自分に合う」と感じたら、在庫と価格を確認してください。迷う時間を長くするより、1冊読んで投資判断の軸を作るほうが早いです。</p>
+      </div>
+      {cta(b, "review_end")}
+    </section>"""
+
+
 def page_book(b, books):
     # related: same-theme books (excluding self), up to 4
     rel = []
@@ -711,9 +776,10 @@ def page_book(b, books):
         {stars_html(b["rating"])}
         {price}
         <p class="bd-who"><span>こんな人におすすめ</span>{esc(b["who"])}</p>
-        {cta(b)}
+        {cta(b, "book_hero")}
       </div>
     </div>
+    {decision_panel(b, rel)}
     <section class="bd-review">
       {section_title("どんな本？", "編集部レビュー")}
       <p>{esc(b["review"])}</p>
@@ -722,6 +788,8 @@ def page_book(b, books):
       {book_detail_sections(b, rel)}
       <div class="bd-theme-links">関連テーマ：{theme_links}</div>
     </section>
+    {store_choice_panel(b)}
+    {purchase_box(b)}
   </article>
   <section class="about-box">
     {section_title("あわせて読みたい")}
