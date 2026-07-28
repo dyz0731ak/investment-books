@@ -20,6 +20,19 @@ RewriteRule ^wp-content/uploads/(.*)$ https://blog.stock-overflow24.com/wp-conte
 RewriteRule ^wp-json/(.*)$ https://blog.stock-overflow24.com/wp-json/$1 [R=301,L]
 RewriteRule ^feed/?$ https://blog.stock-overflow24.com/feed/ [R=301,L]
 
+# 旧ブログの公開記事。apex移行後も検索結果・外部リンクから到達できるよう、
+# WordPress REST APIで確認した公開slugだけを同一パスへ転送する。
+# 新サイトのカテゴリや /books/ を巻き込まないため、存在する旧slugを明示している。
+RewriteRule ^(securities-account-beginner|2026-04-22-ohikego-review|2026-04-21-ohikego-review|2026-04-17-ohikego-review|investment-trends|chiyoda-6366-resurrection|nippon-cmk-6958|2026-tax-reform-nisa-guide|minamitorishima-rare-earth|japan-election-stock-rally|semiconductor-shortage|2026-geopolitics-investment-strategy|japan-stocks-2026-strategy|venezuela-attack|physical-ai|aibaburu)/?$ https://blog.stock-overflow24.com/$1/ [R=301,L,NE]
+RewriteRule ^(interest-rate-rise|career-consistency|food-life-earnings|2025-sectors|deepseek-analysis|deepseek|investment-mentality|nvidia-amd|life-shift|vug-qqq|crash|buffett-7-lessons|jal-ana|sbi-sumishin|compound-interest|japan-hbm)/?$ https://blog.stock-overflow24.com/$1/ [R=301,L,NE]
+RewriteRule ^(astellas-analysis|loss-aversion|monex-scouter|spyd|rsi|growth|vym|stock-buyback|optical-semiconductor|bafetto|u-s-bonds-tlt-edv|dollar-yen|small-investment|fangplus)/?$ https://blog.stock-overflow24.com/$1/ [R=301,L,NE]
+
+# 旧ブログの一覧・特集ページ。
+RewriteRule ^(all-articles|pickup)/?$ https://blog.stock-overflow24.com/$1/ [R=301,L,NE]
+
+# 旧WordPressで使われていた /home/ は新サイトのトップへ統合。
+RewriteRule ^home/?$ https://stock-overflow24.com/ [R=301,L]
+
 # ── キャッシュ制御 ──
 # HTML/JSON は毎回再検証（ConoHaはデフォルトでCache-Controlを付けず、
 # デプロイしても旧版がブラウザにキャッシュされ続ける事象を防ぐ）。

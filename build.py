@@ -76,6 +76,35 @@ THEMES = [
 ]
 THEME_NAME = {t["slug"]: t["name"] for t in THEMES}
 
+# カテゴリページを単なる書影一覧にしないための、選び方と注意点。
+# 制度・税制・相場環境が変わっても使える原則に限定する。
+THEME_GUIDES = {
+    "beginner": dict(
+        points=["専門用語を図や具体例で説明しているか", "商品選びより先に家計・リスク・長期運用を扱っているか", "利益だけでなく損失の可能性も説明しているか"],
+        caution="最初から個別銘柄や短期売買だけに絞らず、家計管理・分散・長期運用の全体像を学べる本を優先します。"),
+    "nisa": dict(
+        points=["制度の説明だけでなく運用を続ける考え方があるか", "手数料・分散・リスクを扱っているか", "制度変更後も残る原則を学べるか"],
+        caution="NISAの制度・対象商品・税制は改正されることがあります。制度の最新情報は金融庁などの公式情報でも確認してください。"),
+    "index": dict(
+        points=["低コストの重要性を説明しているか", "長期・分散の根拠が示されているか", "暴落時にも続ける考え方を学べるか"],
+        caution="過去の市場データは将来の成果を保証しません。理論だけでなく、自分が続けられる資産配分と値動きの許容範囲も考えます。"),
+    "buffett": dict(
+        points=["価格と企業価値を分けて考えているか", "決算・競争優位・経営を見る視点があるか", "成功例だけでなく判断の限界も扱っているか"],
+        caution="海外企業や過去の会計データを扱う本は、現在の制度・市場環境と異なる場合があります。考え方と具体例を分けて読みます。"),
+    "fire": dict(
+        points=["必要資産を数字で考えられるか", "運用だけでなく支出・収入も扱っているか", "取り崩しや想定外の支出も考慮しているか"],
+        caution="必要資産や実現年数は、家族構成・住居・収入・相場によって大きく変わります。他人の成功例をそのまま再現できるとは限りません。"),
+    "realestate": dict(
+        points=["物件選びだけでなく融資・空室・修繕を扱っているか", "収益計算の前提が明確か", "失敗例や出口戦略も説明しているか"],
+        caution="金利・税制・地域の需給で結果が変わります。書籍の事例は、現在の融資条件や物件価格でも成立するかを確認してください。"),
+    "us": dict(
+        points=["米国株を選ぶ根拠が説明されているか", "為替・税金・地域集中のリスクを扱っているか", "個別株と指数を区別しているか"],
+        caution="円換算の成果は株価だけでなく為替にも左右されます。税制や配当課税の説明は、最新の公式情報でも確認してください。"),
+    "dividend": dict(
+        points=["利回りだけでなく配当の持続性を見ているか", "減配・業績悪化のリスクを扱っているか", "税引後の受取額や分散も考えているか"],
+        caution="高い配当利回りだけで安全性は判断できません。利益・キャッシュフロー・配当方針を合わせて確認する必要があります。"),
+}
+
 # ── 書籍データ（紹介文・要点・レビューはオリジナル） ──
 BOOKS = [
     dict(rank=1, slug="random-walker", q="ウォール街のランダム・ウォーカー", author="マルキール",
@@ -393,6 +422,7 @@ def head(title, desc, path, extra_head=""):
 <meta property="og:description" content="{esc(desc)}">
 <meta property="og:type" content="article">
 <meta property="og:image" content="{SITE}/assets/sheep-icon.png">
+<meta property="article:modified_time" content="{TODAY.isoformat()}">
 <link rel="canonical" href="{canon}">
 <link rel="icon" type="image/png" href="/assets/sheep-icon.png">
 <link rel="apple-touch-icon" href="/assets/sheep-icon.png">
@@ -423,9 +453,11 @@ def book_jsonld(b, path):
         "@type": "Book",
         "name": b["title"],
         "url": f"{SITE}{path}",
+        "dateModified": TODAY.date().isoformat(),
         "review": {
             "@type": "Review",
             "author": {"@type": "Organization", "name": SITE_NAME},
+            "dateModified": TODAY.date().isoformat(),
             "reviewRating": {"@type": "Rating", "ratingValue": b["rating"], "bestRating": 5, "worstRating": 1},
             "reviewBody": b["review"],
         },
@@ -661,6 +693,8 @@ def page_theme(t, books):
     items = sorted([b for b in books if t["slug"] in b["themes"]], key=lambda x: x["rank"])
     cards = "".join(book_grid_card(b) for b in items)
     other = "".join(f'<a class="chip" href="/{o["slug"]}/">{esc(o["name"])}</a>' for o in THEMES if o["slug"] != t["slug"])
+    guide = THEME_GUIDES[t["slug"]]
+    guide_points = "".join(f"<li>{esc(p)}</li>" for p in guide["points"])
     body = f"""
 <main class="container container--narrowtop">
   {breadcrumb([("TOP", "/"), (t["name"], None)])}
@@ -670,6 +704,18 @@ def page_theme(t, books):
     <p class="page-lead">{esc(t["lead"])}</p>
     <p class="page-count">{len(items)}冊を厳選</p>
   </header>
+  <section class="theme-guide" aria-labelledby="theme-guide-title">
+    <div>
+      <p class="theme-guide-label">このテーマの選び方</p>
+      <h2 id="theme-guide-title">{esc(t["name"])}の本で確認したい3点</h2>
+      <ul>{guide_points}</ul>
+    </div>
+    <aside>
+      <strong>読む前の注意</strong>
+      <p>{esc(guide["caution"])}</p>
+      <a href="/guide/">投資本の読む順ガイドを見る ›</a>
+    </aside>
+  </section>
   <section class="book-grid">
     {cards if items else '<p>準備中です。</p>'}
   </section>
@@ -700,14 +746,29 @@ def book_detail_sections(b, rel):
         order = "投資商品の選び方だけでなく、支出・働き方・人生設計まで考えたい段階で読むと効果的です。"
     else:
         order = "入門書を1冊読んだあと、自分が深掘りしたいテーマを決めるための2冊目以降に向いています。"
-    return f"""<h3 class="bd-subh">この本で学べること</h3>
+    caution = THEME_GUIDES[b["themes"][0]]["caution"]
+    return f"""<h3 class="bd-subh" id="learn">この本で学べること</h3>
       <p>{esc(b["desc"])} 特に「{esc(main_point)}」「{esc(second_point)}」を押さえることで、{esc(primary)}の判断軸を作りやすくなります。</p>
-      <h3 class="bd-subh">向いている人・注意したい人</h3>
+      <h3 class="bd-subh" id="fit">向いている人・注意したい人</h3>
       <p>{esc(b["who"])}に向いています。一方で、すぐに儲かる銘柄名や短期売買のシグナルだけを探している人には物足りない可能性があります。</p>
-      <h3 class="bd-subh">他の投資本との違い</h3>
+      <h3 class="bd-subh" id="compare">他の投資本との違い</h3>
       <p>{esc(compare)} テーマとしては{esc(theme_names)}に近く、流行の投資ノウハウよりも長く使える考え方を得たい人に合います。</p>
-      <h3 class="bd-subh">読む順番の目安</h3>
-      <p>{esc(order)}</p>"""
+      <h3 class="bd-subh" id="order">読む順番の目安</h3>
+      <p>{esc(order)}</p>
+      <div class="review-caution">
+        <strong>このテーマを読むときの注意</strong>
+        <p>{esc(caution)}</p>
+      </div>"""
+
+
+def review_meta(b):
+    """レビューの責任主体・更新日・評価方法を本文上で見えるようにする。"""
+    return f"""<aside class="review-meta" aria-label="レビュー情報">
+      <div><span>編集・評価</span><strong>STOCK OVERFLOW 編集部</strong></div>
+      <div><span>最終更新</span><strong>{esc(UPDATED)}</strong></div>
+      <div><span>評価の考え方</span><strong>初心者への分かりやすさ・普遍性・実用性・注意点</strong></div>
+      <p>★評価は販売サイトの口コミ平均ではなく、当サイト独自の推薦度です。評価方法は<a href="/about/#review-policy">運営・編集方針</a>で公開しています。</p>
+    </aside>"""
 
 
 def decision_panel(b, rel):
@@ -735,7 +796,7 @@ def decision_panel(b, rel):
 
 
 def purchase_box(b):
-    return f"""<section class="purchase-box">
+    return f"""<section class="purchase-box" id="purchase">
       <div class="purchase-copy">
         <span class="purchase-label">読むならここから</span>
         <h2>{esc(b["title"])}を購入する</h2>
@@ -780,15 +841,23 @@ def page_book(b, books):
       </div>
     </div>
     {decision_panel(b, rel)}
+    <nav class="article-toc" aria-label="この記事の目次">
+      <strong>このページで分かること</strong>
+      <a href="#review">編集部レビュー</a>
+      <a href="#learn">学べること</a>
+      <a href="#fit">向いている人・注意点</a>
+      <a href="#compare">類書との違い</a>
+      <a href="#purchase">購入先</a>
+    </nav>
+    {review_meta(b)}
     <section class="bd-review">
-      {section_title("どんな本？", "編集部レビュー")}
+      <h2 class="section-title" id="review">どんな本？ <span class="section-sub">編集部レビュー</span></h2>
       <p>{esc(b["review"])}</p>
-      <h3 class="bd-subh">この本で得られること</h3>
+      <h3 class="bd-subh">要点を先に確認</h3>
       <ul class="book-points bd-points">{points}</ul>
       {book_detail_sections(b, rel)}
       <div class="bd-theme-links">関連テーマ：{theme_links}</div>
     </section>
-    {store_choice_panel(b)}
     {purchase_box(b)}
   </article>
   <section class="about-box">
@@ -829,6 +898,12 @@ def page_guide(books):
     </ul>
     {section_title("まず最初の1冊なら")}
     <ul class="guide-first">{blist}</ul>
+    {section_title("よくある疑問")}
+    <dl class="guide-faq">
+      <div><dt>最初から何冊も買う必要はありますか？</dt><dd>必要ありません。全体像をつかむ本を1冊読み、次に知りたいテーマが見えてから2冊目を選ぶ方が無駄がありません。</dd></div>
+      <div><dt>古い名著でも読む価値はありますか？</dt><dd>長期・分散・コスト・企業価値などの原則は今も役立ちます。一方、NISA・税制・商品名などは変わるため、公式の最新情報と併用してください。</dd></div>
+      <div><dt>ランキング1位が全員に最適ですか？</dt><dd>いいえ。ランキングは初心者への分かりやすさと普遍性を重視した目安です。目的別カテゴリと「向いている人」も合わせて選んでください。</dd></div>
+    </dl>
     <p class="guide-cta-note">気になった本は各ページの「{stores}」からチェックできます。</p>
   </article>
 </main>"""
@@ -854,12 +929,17 @@ def page_about():
       <li><strong>運営開始</strong>：2026年</li>
       <li><strong>連絡先</strong>：<a href="mailto:{esc(CONTACT_EMAIL)}">{esc(CONTACT_EMAIL)}</a>（詳しくは<a href="/contact/">お問い合わせ</a>ページ）</li>
     </ul>
-    {section_title("編集方針", "信頼できる情報のために")}
+    <section id="review-policy">
+    {section_title("編集・評価方針", "信頼できる情報のために")}
     <ul class="guide-notes">
       <li><strong>オリジナルの内容</strong>：レビュー・要点・おすすめ理由はすべて編集部が独自に執筆しています。</li>
       <li><strong>中立性</strong>：報酬の有無で評価をゆがめず、メリットだけでなく注意点も正直に記載します。</li>
-      <li><strong>更新</strong>：書籍情報や価格は変動するため、定期的に内容を見直しています。</li>
+      <li><strong>4つの評価軸</strong>：初心者への分かりやすさ、長く使える普遍性、行動につなげやすい実用性、リスクや限界の説明を確認します。</li>
+      <li><strong>★評価の意味</strong>：販売サイトの口コミ平均ではなく、上記4軸に基づく当サイト独自の推薦度です。</li>
+      <li><strong>更新</strong>：書籍情報、制度、価格、リンクを定期的に見直し、各レビューに最終更新日を表示します。</li>
+      <li><strong>訂正</strong>：誤りや古い情報が見つかった場合は修正します。ご指摘は<a href="/contact/">お問い合わせ</a>から受け付けています。</li>
     </ul>
+    </section>
     {section_title("姉妹サイト")}
     <ul class="guide-first">
       <li><a href="https://dashboard.stock-overflow24.com/">投資の砦</a> — 日本株・米国株の急騰銘柄や決算速報がひと目で分かるダッシュボード。</li>
