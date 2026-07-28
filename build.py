@@ -105,6 +105,45 @@ THEME_GUIDES = {
         caution="高い配当利回りだけで安全性は判断できません。利益・キャッシュフロー・配当方針を合わせて確認する必要があります。"),
 }
 
+# 検索意図が明確で、読者が「次に読む一冊」を決められる比較・選び方ページ。
+COMPARISON_PAGES = [
+    dict(
+        slug="first-investment-books",
+        title="投資初心者が最初に読むべき3冊を比較",
+        short="初心者の最初の3冊",
+        lead="家計から整えるか、インデックス投資の考え方から学ぶか。定番3冊を目的別に比べ、最初の一冊を決めます。",
+        books=["okane-no-daigaku", "losers-game", "random-walker"],
+    ),
+    dict(
+        slug="random-walker-vs-losers-game",
+        title="『ウォール街のランダム・ウォーカー』と『敗者のゲーム』を比較",
+        short="ランダム・ウォーカー vs 敗者のゲーム",
+        lead="どちらもインデックス投資の名著ですが、厚さ・読みやすさ・得られる納得感は異なります。先に読むべき一冊を整理します。",
+        books=["random-walker", "losers-game"],
+    ),
+    dict(
+        slug="nisa-books",
+        title="新NISAを始める前に読む本5選",
+        short="新NISA前に読む5冊",
+        lead="制度だけでなく、家計・商品選び・長期継続まで学べる5冊を、読む目的と順番で比較します。",
+        books=["okane-no-daigaku", "hottarakashi", "okane-nekasete", "losers-game", "shin-nisa"],
+    ),
+    dict(
+        slug="index-reading-order",
+        title="インデックス投資本のおすすめの読む順番",
+        short="インデックス本の読む順番",
+        lead="入門、理論、実践、継続の4段階に分け、挫折しにくい読む順番をまとめます。",
+        books=["okane-no-daigaku", "losers-game", "random-walker", "index-winner", "okane-nekasete"],
+    ),
+    dict(
+        slug="dividend-books",
+        title="高配当株・配当投資の本を目的別に比較",
+        short="高配当投資本の比較",
+        lead="配当再投資の理論、日本株・米国株の実践、仕組み化。目的の違う本を比べ、今の自分に合う一冊を選びます。",
+        books=["mirai", "beikoku-haitou", "auto-mode-haitou", "tapazou-beikoku"],
+    ),
+]
+
 # ── 書籍データ（紹介文・要点・レビューはオリジナル） ──
 BOOKS = [
     dict(rank=1, slug="random-walker", q="ウォール街のランダム・ウォーカー", author="マルキール",
@@ -482,7 +521,7 @@ def header():
     </a>
     <input type="checkbox" id="navToggle" class="nav-toggle" hidden>
     <label for="navToggle" class="nav-btn" aria-label="メニュー"><span></span><span></span><span></span></label>
-    <nav class="gnav"><a href="/">ホーム</a><a href="/guide/">選び方ガイド</a><a href="/#categories">カテゴリ</a></nav>
+    <nav class="gnav"><a href="/">ホーム</a><a href="/guide/">選び方ガイド</a><a href="/compare/first-investment-books/">本を比較</a><a href="/#categories">カテゴリ</a></nav>
   </div>
   <nav class="cat-bar"><div class="cat-bar-inner"><a href="/" class="cat-home">総合</a>{cats}</div></nav>
 </header>"""
@@ -519,7 +558,7 @@ def footer():
     return f"""<footer class="site-footer">
   <div class="footer-inner">
     <p class="footer-brand"><img class="footer-mark" src="/assets/sheep-icon.png" alt="" width="28" height="35">{SITE_NAME}</p>
-    <nav class="footer-nav"><a href="/">ホーム</a><a href="/guide/">選び方ガイド</a>{cats}</nav>
+    <nav class="footer-nav"><a href="/">ホーム</a><a href="/guide/">選び方ガイド</a><a href="/compare/first-investment-books/">本を比較</a>{cats}</nav>
     <nav class="footer-nav"><a href="https://dashboard.stock-overflow24.com/">投資の砦</a><a href="https://yougo.stock-overflow24.com/">用語辞典</a><a href="/about/">運営者情報</a><a href="/contact/">お問い合わせ</a><a href="/privacy/">プライバシーポリシー</a></nav>
     <p class="footer-note">{esc(affiliate_disclosure())}</p>
     <p class="footer-note">※掲載内容は書籍の紹介であり、特定の投資・銘柄を推奨するものではありません。投資は自己責任で行ってください。</p>
@@ -647,6 +686,11 @@ def page_home(books):
       <a class="related-card" href="https://dashboard.stock-overflow24.com/"><span class="related-body"><span class="related-name">投資の砦</span><span class="related-desc">日本株・米国株の急騰銘柄や決算速報がひと目で分かるダッシュボード。本で学んだら相場をのぞこう。</span><span class="related-go">ダッシュボードを見る ›</span></span></a>
       <a class="related-card" href="https://yougo.stock-overflow24.com/"><span class="related-body"><span class="related-name">やさしい投資用語辞典</span><span class="related-desc">PER・PBR・ROEって何？ 投資の専門用語をやさしく解説。分からない言葉が出たらここで。</span><span class="related-go">用語を調べる ›</span></span></a>
     </div>"""
+    comparisons = "".join(
+        f'<a class="compare-link-card" href="/compare/{p["slug"]}/">'
+        f'<span>選び方・比較</span><strong>{esc(p["short"])}</strong>'
+        f'<small>{esc(p["lead"])}</small><b>比較を見る ›</b></a>'
+        for p in COMPARISON_PAGES)
     body = f"""
 <section class="hero">
   <div class="hero-inner">
@@ -676,6 +720,10 @@ def page_home(books):
   <section id="ranking" class="ranking">
     {section_title("まず読むべき投資の名著", "総合ランキング8選")}
     {cards}
+  </section>
+  <section class="compare-home">
+    {section_title("迷った2冊を比較する", "目的と読む順で選ぶ")}
+    <div class="compare-link-grid">{comparisons}</div>
   </section>
   <section class="about-box">
     {section_title("このサイトについて")}
@@ -725,6 +773,115 @@ def page_theme(t, books):
   </section>
 </main>"""
     return head(f"{t['name']}のおすすめ投資本", f"{t['name']}の投資初心者・実践者に向けて、定番のおすすめ本を厳選。{t['lead']}", f"/{t['slug']}/") + header() + body + footer()
+
+
+def comparison_details(slug):
+    """各ページ固有の結論。ランキングの使い回しではなく、検索意図ごとに判断軸を変える。"""
+    if slug == "first-investment-books":
+        return dict(
+            answer="迷ったら、家計やお金全体が不安なら『お金の大学』、短時間で投資の基本を知るなら『敗者のゲーム』、データまで含めて深く納得したいなら『ウォール街のランダム・ウォーカー』です。",
+            axes=[("お金の大学", "家計・固定費から整える", "やさしい", "投資前の土台づくり"),
+                  ("敗者のゲーム", "市場平均を選ぶ理由を知る", "標準", "短時間で投資の軸を作る"),
+                  ("ウォール街のランダム・ウォーカー", "歴史とデータで深く学ぶ", "やや骨太", "長く使える理論を得る")],
+            steps=["投資に回せる余裕資金を確認する", "長期・分散・低コストの意味を理解する", "制度や商品は公式の最新情報で確認して少額から始める"],
+            caution="最初から3冊すべてを買う必要はありません。今の悩みに合う1冊を読み、次の疑問が出た時点で2冊目へ進む方が無駄がありません。",
+        )
+    if slug == "random-walker-vs-losers-game":
+        return dict(
+            answer="最初に結論だけつかみたい人は『敗者のゲーム』、結論の根拠を歴史・データまで深く理解したい人は『ウォール街のランダム・ウォーカー』が向いています。初心者が2冊読むなら、この順番が軽やかです。",
+            axes=[("敗者のゲーム", "短く要点をつかむ", "標準", "市場に勝とうとしない考え方"),
+                  ("ウォール街のランダム・ウォーカー", "根拠まで深く理解する", "やや骨太", "市場の歴史・理論・運用方法")],
+            steps=["『敗者のゲーム』で市場平均を選ぶ理由をつかむ", "自分に合う考えだと感じたら『ランダム・ウォーカー』で根拠を補強する", "最後に日本の制度と低コスト商品の最新情報を確認する"],
+            caution="両書とも、将来の利益や元本を保証する本ではありません。結論だけを銘柄推奨として受け取らず、値動きに耐えられる資産配分を別途考える必要があります。",
+        )
+    if slug == "nisa-books":
+        return dict(
+            answer="まったくの初心者は『お金の大学』で家計を整え、次に『ほったらかし投資術』で実践像をつかむ順番がおすすめです。すでに積立中なら『お金は寝かせて増やしなさい』で続け方を補強します。",
+            axes=[("お金の大学", "家計と余裕資金", "やさしい", "投資前の準備"),
+                  ("ほったらかし投資術", "商品選びと実践", "やさしい", "最初の運用方針"),
+                  ("お金は寝かせて増やしなさい", "暴落時も続ける方法", "標準", "継続の仕組み"),
+                  ("敗者のゲーム", "インデックスの理論", "標準", "運用方針への納得"),
+                  ("新NISA関連の実践書", "制度と手続き", "やさしい", "最新制度の確認")],
+            steps=["生活防衛資金と毎月の余裕額を決める", "長期・積立・分散とコストの意味を学ぶ", "金融庁・金融機関の公式情報で制度と対象商品を確認する"],
+            caution="NISAは利益を保証する制度ではなく、投資元本を下回る可能性があります。制度・対象商品は書籍の発行後に変わるため、必ず金融庁の最新情報も併用してください。",
+        )
+    if slug == "index-reading-order":
+        return dict(
+            answer="挫折しにくい順番は、①家計の全体像、②短い理論書、③詳しい理論書、④コストの原点、⑤続け方です。全部読む必要はなく、理解できた段階で実践書へ移って構いません。",
+            axes=[("お金の大学", "準備", "やさしい", "家計と余裕資金"),
+                  ("敗者のゲーム", "入門理論", "標準", "市場平均を選ぶ理由"),
+                  ("ウォール街のランダム・ウォーカー", "理論", "やや骨太", "歴史とデータ"),
+                  ("インデックス投資は勝者のゲーム", "原点", "やや骨太", "低コストの重要性"),
+                  ("お金は寝かせて増やしなさい", "実践", "標準", "積立を続ける方法")],
+            steps=["入門書で投資に回せる金額を決める", "理論書を1冊読み、なぜ指数を選ぶのかを説明できるようにする", "実践書で暴落時にも続けるルールを決める"],
+            caution="知識を増やし続けても、損失への耐性は自動では高まりません。読書と同時に、生活に影響しない少額で値動きを経験する方法も検討してください。",
+        )
+    return dict(
+        answer="配当再投資の根拠を学ぶなら『株式投資の未来』、米国配当株の選び方なら『米国株で始める100万円からのセミリタイア投資術』、仕組み化を重視するなら『オートモードで月に18.5万円が入ってくる高配当株投資』が候補です。",
+        axes=[("株式投資の未来", "長期データと理論", "やや骨太", "配当再投資の意味"),
+              ("米国株で始める100万円からのセミリタイア投資術", "米国配当株の実践", "標準", "銘柄を見る視点"),
+              ("オートモードで月に18.5万円が入ってくる高配当株投資", "運用の仕組み化", "やさしい", "ルールを作って続ける"),
+              ("たぱぞう式 米国株投資", "米国株の全体像", "やさしい", "指数と個別株の整理")],
+        steps=["配当の高さではなく、利益・キャッシュフロー・減配歴を見る", "国・業種・銘柄を分散し、税引後の受取額を確認する", "配当と値上がり益を含む総合的な成果で評価する"],
+        caution="高い配当利回りは安全性の証明ではありません。業績悪化による減配や株価下落、米国株では為替と税金の影響もあります。",
+    )
+
+
+def page_comparison(p, books):
+    by_slug = {b["slug"]: b for b in books}
+    selected = [by_slug[s] for s in p["books"] if s in by_slug]
+    d = comparison_details(p["slug"])
+    rows = []
+    for i, (name, purpose, level, role) in enumerate(d["axes"]):
+        # axes は selected と同じ順番で定義。楽天側の版表記で書名が変わっても
+        # 正しい個別レビューへリンクできるよう、slugで選んだ順序を正とする。
+        match = selected[i] if i < len(selected) else None
+        label = f'<a href="/books/{match["slug"]}/">{esc(name)}</a>' if match else esc(name)
+        rows.append(f"<tr><th>{label}</th><td>{esc(purpose)}</td><td>{esc(level)}</td><td>{esc(role)}</td></tr>")
+    step_items = "".join(f"<li><span>{i}</span><p>{esc(x)}</p></li>" for i, x in enumerate(d["steps"], 1))
+    cards = "".join(book_grid_card(b) for b in selected)
+    other = "".join(
+        f'<a class="compare-link-card" href="/compare/{o["slug"]}/"><span>関連比較</span>'
+        f'<strong>{esc(o["short"])}</strong><b>読む ›</b></a>'
+        for o in COMPARISON_PAGES if o["slug"] != p["slug"])
+    official = ""
+    if p["slug"] == "nisa-books":
+        official = """<aside class="official-note"><strong>制度は公式情報も確認</strong>
+        <p>金融庁はNISAを長期・積立・分散投資による安定的な資産形成のための制度として案内しています。2024年からの新制度は恒久化され、非課税保有期間は無期限ですが、投資には元本割れの可能性があります。</p>
+        <a href="https://www.fsa.go.jp/policy/nisa2/know/" target="_blank" rel="noopener">金融庁「NISAを知る」›</a>
+        <a href="https://www.fsa.go.jp/policy/nisa2/invest/" target="_blank" rel="noopener">金融庁「資産形成の基本」›</a></aside>"""
+    path = f"/compare/{p['slug']}/"
+    body = f"""
+<main class="container container--narrowtop">
+  {breadcrumb([("TOP", "/"), ("投資本の選び方", "/guide/"), (p["title"], None)])}
+  <article class="comparison">
+    <header class="page-head comparison-head">
+      <p class="hero-eyebrow">目的別・投資本比較</p>
+      <h1 class="page-title">{esc(p["title"])}</h1>
+      <p class="page-lead">{esc(p["lead"])}</p>
+      <p class="hero-meta">UPDATED {UPDATED} / EDITED BY {SITE_NAME}</p>
+    </header>
+    <section class="comparison-answer">
+      <span>先に結論</span>
+      <p>{esc(d["answer"])}</p>
+    </section>
+    {section_title("違いを比較", "目的・難易度・役割")}
+    <div class="compare-table-wrap"><table class="compare-table">
+      <thead><tr><th>本</th><th>向いている目的</th><th>読みやすさ</th><th>この本の役割</th></tr></thead>
+      <tbody>{''.join(rows)}</tbody>
+    </table></div>
+    {section_title("失敗しにくい選び方・読む順番")}
+    <ol class="compare-steps">{step_items}</ol>
+    <div class="review-caution"><strong>選ぶ前の注意</strong><p>{esc(d["caution"])}</p></div>
+    {official}
+    {section_title("今回比較した本", f"{len(selected)}冊")}
+    <div class="book-grid compare-books">{cards}</div>
+    <p class="comparison-disclosure">{esc(affiliate_disclosure())}</p>
+    {section_title("ほかの比較も見る")}
+    <div class="compare-link-grid">{other}</div>
+  </article>
+</main>"""
+    return head(p["title"], p["lead"] + " 向いている人・読みやすさ・読む順番を編集部が比較します。", path) + header() + body + footer()
 
 
 def book_detail_sections(b, rel):
@@ -874,6 +1031,9 @@ def page_guide(books):
     beginner_books = sorted([b for b in books if "beginner" in b["themes"]], key=lambda x: x["rank"])[:3]
     blist = "".join(f'<li><a href="/books/{b["slug"]}/">{esc(b["title"])}</a> — {esc(b["who"])}</li>' for b in beginner_books)
     stores = "Amazon／楽天ブックス／Yahoo!ショッピング" if has_amazon_affiliate() else "楽天ブックス／Yahoo!ショッピング"
+    comparison_links = "".join(
+        f'<li><a href="/compare/{p["slug"]}/">{esc(p["title"])}</a> — {esc(p["lead"])}</li>'
+        for p in COMPARISON_PAGES)
     body = f"""
 <main class="container container--narrowtop">
   {breadcrumb([("TOP", "/"), ("投資本の選び方・読む順ガイド", None)])}
@@ -898,6 +1058,8 @@ def page_guide(books):
     </ul>
     {section_title("まず最初の1冊なら")}
     <ul class="guide-first">{blist}</ul>
+    {section_title("目的別に本を比較する")}
+    <ul class="guide-first comparison-guide-links">{comparison_links}</ul>
     {section_title("よくある疑問")}
     <dl class="guide-faq">
       <div><dt>最初から何冊も買う必要はありますか？</dt><dd>必要ありません。全体像をつかむ本を1冊読み、次に知りたいテーマが見えてから2冊目を選ぶ方が無駄がありません。</dd></div>
@@ -1045,9 +1207,14 @@ def main():
         write(f"{t['slug']}/index.html", page_theme(t, books))
     for b in books:
         write(f"books/{b['slug']}/index.html", page_book(b, books))
+    for p in COMPARISON_PAGES:
+        write(f"compare/{p['slug']}/index.html", page_comparison(p, books))
 
     # sitemap.xml（全ページ）
-    urls = ["/", "/guide/", "/about/", "/contact/", "/privacy/"] + [f"/{t['slug']}/" for t in THEMES] + [f"/books/{b['slug']}/" for b in books]
+    urls = ([ "/", "/guide/", "/about/", "/contact/", "/privacy/" ]
+            + [f"/{t['slug']}/" for t in THEMES]
+            + [f"/books/{b['slug']}/" for b in books]
+            + [f"/compare/{p['slug']}/" for p in COMPARISON_PAGES])
     lastmod = SITEMAP_LASTMOD
     sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for u in urls:
@@ -1056,8 +1223,8 @@ def main():
     sm.append("</urlset>\n")
     write("sitemap.xml", "\n".join(sm))
 
-    n_pages = 5 + len(THEMES) + len(books)
-    print(f"[build] {len(books)}冊 / {n_pages}ページ生成（トップ・ガイド・運営者・問合せ・規約・カテゴリ{len(THEMES)}・個別{len(books)}）", file=sys.stderr)
+    n_pages = 5 + len(THEMES) + len(books) + len(COMPARISON_PAGES)
+    print(f"[build] {len(books)}冊 / {n_pages}ページ生成（トップ・ガイド・運営者・問合せ・規約・カテゴリ{len(THEMES)}・個別{len(books)}・比較{len(COMPARISON_PAGES)}）", file=sys.stderr)
 
 
 if __name__ == "__main__":
