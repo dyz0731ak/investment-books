@@ -23,8 +23,9 @@ SITE = "https://stock-overflow24.com"
 SITE_NAME = "迷える子羊たちの投資本ガイド"
 SITE_TAGLINE = "初心者が「最初の一冊」を選ぶための書評・比較サイト"
 OPERATOR_NAME = "STOCK OVERFLOW"
-EDITOR_NAME = "STOCK OVERFLOW 編集部"
 OPERATOR_PERSON = "Dすけ"
+EDITOR_NAME = "Dすけ"
+EDITOR_ROLE = "育児中の日本株投資家"
 JST = datetime.timezone(datetime.timedelta(hours=9))
 TODAY = datetime.datetime.now(JST)
 UPDATED = os.environ.get("SITE_UPDATED", TODAY.strftime("%Y.%m.%d"))
@@ -32,6 +33,64 @@ SITEMAP_LASTMOD = os.environ.get("SITE_LASTMOD", TODAY.strftime("%Y-%m-%d"))
 CONTACT_EMAIL = "info@stock-overflow24.com"  # お問い合わせ表示用（ConoHa WING側でメールボックス作成が必要）
 CSS_VER = "1"  # style.css のキャッシュバスター（main内でハッシュに更新）
 GA_ID = os.environ.get("GA4_ID", "")  # GA4測定ID（環境変数。未設定なら計測タグは出力されない）
+
+
+# ── 直近の書店ランキング調査 ──
+# 「読了レビュー」と混同させないため、ランキング情報・出版社情報を確認した
+# 調査レポートとして表示する。順位は日々変動するので必ず集計期間も併記する。
+TREND_REPORT = {
+    "slug": "2026-08",
+    "label": "2026年8月",
+    "updated": "2026年8月12日",
+    "groups": [
+        dict(
+            label="最優先候補",
+            title="子育て中の個人投資家",
+            books=["『ママ投資家が育休中に1億貯めた株式投資』"],
+            signal="トーハン一般書週間2位。楽天でも紙・電子の両方が上位。",
+            reason="育児と投資を両立する運営者の立場から、短期売買の再現性とリスクを具体的に検証できるテーマです。",
+            angle="同じ子育て世代でも、生活時間・資金量・損失許容度によって向き不向きがどう変わるか",
+            href="/about/",
+            link_label="運営者の検証方針を見る",
+        ),
+        dict(
+            label="複数書店で強い",
+            title="配当・増配株",
+            books=["『「増配」株投資』", "『「激・増配株」投資入門』", "『年間240万円の配当金が入ってくる究極の株式投資』"],
+            signal="楽天のデイリー・週間、honto電子週間で関連書がそれぞれ上位。",
+            reason="一冊の売れ行きではなく、配当・増配というテーマ全体への関心が強まっています。",
+            angle="必要資金、銘柄選び、減配リスク、初心者・子育て世代との相性を3冊で比較",
+            href="/compare/dividend-books/",
+            link_label="現在の高配当本比較を見る",
+        ),
+        dict(
+            label="定番と新刊を比較",
+            title="資産形成の戦略",
+            books=["『THE WEALTH LADDER 富の階段』", "『JUST KEEP BUYING』"],
+            signal="楽天デイリーで2冊が並んで上位、週間でも両方が20位以内。",
+            reason="資産形成の戦術を扱う前作と、資産段階ごとの戦略を扱う新作を読み分けたい需要があります。",
+            angle="初心者が先に読む本と、資産形成が進んだ人が次に読む本の違い",
+            href="/books/just-keep-buying/",
+            link_label="JUST KEEP BUYINGのレビューを見る",
+        ),
+        dict(
+            label="2026年7月の新刊",
+            title="AI相場後の分散投資",
+            books=["『AIバブル後の投資戦略』"],
+            signal="発売直後に楽天の株・資金運用週間ランキング9位。",
+            reason="AI・米国大型株への集中が意識される局面で、分散の意味を考え直す入口になります。",
+            angle="現物株・ETF中心の運用で、地域・業種・資産をどう分散するか",
+            href="https://dashboard.stock-overflow24.com/",
+            link_label="現在の相場を投資の砦で見る",
+        ),
+    ],
+    "sources": [
+        ("楽天市場 株・資金運用デイリーランキング（2026年8月12日更新／8月11日集計）", "https://ranking.rakuten.co.jp/daily/200518/"),
+        ("楽天市場 株・資金運用週間ランキング（2026年7月20日〜26日集計）", "https://ranking.rakuten.co.jp/weekly/200518/"),
+        ("honto 投資・資産運用電子書籍週間ランキング（2026年7月確認）", "https://honto.jp/ranking/gr/bestseller_1101_1204_012_029006020100.html?tpcl=3"),
+        ("トーハン週間ベストセラー（2026年6月8日〜14日集計）", "https://www.tohan.jp/wp/wp-content/uploads/2026/06/20260616.pdf"),
+    ],
+}
 
 
 ADSENSE_CLIENT = "ca-pub-8504127793204920"
@@ -343,8 +402,8 @@ def rakuten_lookup(book, app_id, access_key, aff_id):
     return {"r_title": book["q"], "r_author": "", "cover": "", "price": None, "url": ""}
 
 
-# ── 編集部評価（5点満点・本物の自社評価。構造化データReviewのreviewRatingに使用） ──
-# Googleは評価の捏造を禁止。これは編集部の実際の推薦度であり、ページ上にも可視表示する。
+# ── 運営者評価（5点満点・自サイト評価。構造化データReviewのreviewRatingに使用） ──
+# Googleは評価の捏造を禁止。これは運営者の推薦度であり、ページ上にも可視表示する。
 # 値の調整はここだけ編集すればよい。
 RATINGS = {
     "random-walker": 4.9, "losers-game": 4.7, "index-winner": 4.7, "okane-no-daigaku": 4.6,
@@ -381,7 +440,7 @@ def build_books():
         nb = {**b, **info}
         nb["title"] = b["q"]            # 表示タイトルは短い検索名で統一（版表記の冗長さを避ける）
         nb["author_disp"] = info["r_author"] or b.get("author", "")
-        nb["rating"] = RATINGS.get(b["slug"], 4.5)   # 編集部評価
+        nb["rating"] = RATINGS.get(b["slug"], 4.5)   # 運営者評価
         out.append(nb)
         print(f"  #{b['rank']:2} {b['slug']:18} cover={'Y' if info['cover'] else '-'} aff={'Y' if info['url'] else '-'}", file=sys.stderr)
         if have: time.sleep(1.0)
@@ -514,14 +573,14 @@ def head(title, desc, path, extra_head=""):
 def stars_html(rating):
     """5点満点の星評価。★のみ使用し、小数分はCSSで部分塗り（フォント依存なし）。"""
     pct = round(max(0, min(5, rating)) / 5 * 100, 1)
-    return (f'<div class="bd-rating" aria-label="編集部評価 {rating} / 5">'
+    return (f'<div class="bd-rating" aria-label="運営者評価 {rating} / 5">'
             f'<span class="bd-stars"><span class="bd-stars-fill" style="width:{pct}%"></span></span>'
             f'<span class="bd-rating-num">{rating}</span>'
-            f'<span class="bd-rating-cap">編集部評価</span></div>')
+            f'<span class="bd-rating-cap">運営者評価</span></div>')
 
 
 def book_jsonld(b, path):
-    """書籍ページの構造化データ（Book + 単一の編集部Review）。★リッチリザルト狙い。"""
+    """書籍ページの構造化データ（Book + 単一の運営者Review）。"""
     data = {
         "@context": "https://schema.org",
         "@type": "Book",
@@ -530,7 +589,7 @@ def book_jsonld(b, path):
         "dateModified": TODAY.date().isoformat(),
         "review": {
             "@type": "Review",
-            "author": {"@type": "Organization", "name": EDITOR_NAME},
+            "author": {"@type": "Person", "name": EDITOR_NAME, "url": f"{SITE}/about/"},
             "dateModified": TODAY.date().isoformat(),
             "reviewRating": {"@type": "Rating", "ratingValue": b["rating"], "bestRating": 5, "worstRating": 1},
             "reviewBody": b["review"],
@@ -556,7 +615,7 @@ def header():
     </a>
     <input type="checkbox" id="navToggle" class="nav-toggle" hidden>
     <label for="navToggle" class="nav-btn" aria-label="メニュー"><span></span><span></span><span></span></label>
-    <nav class="gnav"><a href="/">ホーム</a><a href="/guide/">選び方ガイド</a><a href="/compare/first-investment-books/">本を比較</a><a href="/#categories">カテゴリ</a></nav>
+    <nav class="gnav"><a href="/">ホーム</a><a href="/trends/{TREND_REPORT['slug']}/">今月の注目本</a><a href="/guide/">選び方ガイド</a><a href="/compare/first-investment-books/">本を比較</a><a href="/#categories">カテゴリ</a></nav>
   </div>
   <nav class="cat-bar"><div class="cat-bar-inner"><a href="/" class="cat-home">総合</a>{cats}</div></nav>
 </header>"""
@@ -593,7 +652,7 @@ def footer():
     return f"""<footer class="site-footer">
   <div class="footer-inner">
     <p class="footer-brand"><img class="footer-mark" src="/assets/sheep-icon.png" alt="" width="28" height="35">{SITE_NAME}</p>
-    <nav class="footer-nav"><a href="/">ホーム</a><a href="/guide/">選び方ガイド</a><a href="/compare/first-investment-books/">本を比較</a>{cats}</nav>
+    <nav class="footer-nav"><a href="/">ホーム</a><a href="/trends/{TREND_REPORT['slug']}/">今月の注目本</a><a href="/guide/">選び方ガイド</a><a href="/compare/first-investment-books/">本を比較</a>{cats}</nav>
     <p class="footer-role">投資初心者が「最初の一冊」を選ぶための、投資本専門の書評・比較サイトです。</p>
     <nav class="footer-nav"><a href="https://dashboard.stock-overflow24.com/">投資の砦</a><a href="https://yougo.stock-overflow24.com/">やさしい投資用語辞典</a><a href="https://blog.stock-overflow24.com/">迷える子羊たちの株ノート</a><a href="/about/">運営者情報</a><a href="/contact/">お問い合わせ</a><a href="/privacy/">プライバシーポリシー</a></nav>
     <p class="footer-operator">運営：{OPERATOR_NAME}（{OPERATOR_PERSON}）</p>
@@ -709,6 +768,32 @@ def section_title(text, sub=""):
     return f'<h2 class="section-title">{esc(text)}{s}</h2>'
 
 
+def trend_cards(groups, compact=False):
+    cards = []
+    for g in groups:
+        books = "".join(f"<li>{esc(book)}</li>" for book in g["books"])
+        detail = "" if compact else (
+            f'          <p class="trend-reason">{esc(g["reason"])}</p>\n'
+            f'          <dl class="trend-angle"><dt>このサイトで検証すること</dt>'
+            f'<dd>{esc(g["angle"])}</dd></dl>\n'
+        )
+        cards.append(f"""<article class="trend-card{' trend-card--compact' if compact else ''}">
+          <span class="trend-card-label">{esc(g['label'])}</span>
+          <h3>{esc(g['title'])}</h3>
+          <ul class="trend-book-list">{books}</ul>
+          <p class="trend-signal">{esc(g['signal'])}</p>
+{detail}          <a class="trend-card-link" href="{esc(g['href'])}">{esc(g['link_label'])} ›</a>
+        </article>""")
+    return "".join(cards)
+
+
+def trend_sources():
+    return "".join(
+        f'<li><a href="{esc(url)}" target="_blank" rel="nofollow noopener">{esc(label)}</a></li>'
+        for label, url in TREND_REPORT["sources"]
+    )
+
+
 # ───────── ページ生成 ─────────
 def page_home(books):
     top = [b for b in books if b["rank"] <= 8]
@@ -728,6 +813,7 @@ def page_home(books):
         f'<span>選び方・比較</span><strong>{esc(p["short"])}</strong>'
         f'<small>{esc(p["lead"])}</small><b>比較を見る ›</b></a>'
         for p in COMPARISON_PAGES)
+    trend_preview = trend_cards(TREND_REPORT["groups"], compact=True)
     body = f"""
 <section class="hero">
   <div class="hero-inner">
@@ -735,8 +821,8 @@ def page_home(books):
       <p class="hero-kicker">INVESTMENT BOOK GUIDE</p>
       <h1 class="hero-title">投資初心者が最初に読むべき<br><em>投資の名著</em></h1>
       <p class="hero-lead">「何から学べばいいのかわからない」迷いを、長く読み継がれてきた本でほどく。目的別に、最初の一冊と次の一冊を選べる編集ノートです。</p>
-      <div class="hero-actions"><a class="hero-primary" href="#ranking">ランキングを見る</a><a class="hero-secondary" href="/guide/">読む順ガイド</a></div>
-      <p class="hero-meta">UPDATED {UPDATED} / EDITED BY {EDITOR_NAME}</p>
+      <div class="hero-actions"><a class="hero-primary" href="#trends">今月の注目本</a><a class="hero-secondary" href="#ranking">定番ランキング</a><a class="hero-secondary" href="/guide/">読む順ガイド</a></div>
+      <p class="hero-meta">UPDATED {UPDATED} / EDITED BY {EDITOR_NAME} — {EDITOR_ROLE}</p>
     </div>
     <div class="hero-visual" aria-label="紹介している投資本の書影">
       <div class="hero-orbit">READ<br>BEFORE<br>INVEST</div>
@@ -746,6 +832,21 @@ def page_home(books):
 </section>
 <main class="container">
   {breadcrumb([("TOP", None)])}
+  <section id="trends" class="trend-home">
+    <div class="trend-section-head">
+      <div>
+        <p class="trend-kicker">BOOKSTORE RESEARCH / {TREND_REPORT['label']}</p>
+        {section_title("いま読まれている投資本", "直近ランキングから見える4テーマ")}
+        <p class="trend-intro">定番だけでなく「いま何が選ばれているか」も確認します。順位をそのままおすすめにはせず、複数書店の重なりと、初心者・子育て世代への再現性を見て記事候補を選びます。</p>
+      </div>
+      <p class="trend-research-date"><span>調査日</span><strong>{TREND_REPORT['updated']}</strong></p>
+    </div>
+    <div class="trend-grid">{trend_preview}</div>
+    <div class="trend-home-foot">
+      <p><strong>透明性：</strong>ここに掲載した新刊は「売れ筋調査中」の本です。読了前にレビューしたような表現はせず、内容を確認してから評価記事を公開します。</p>
+      <a href="/trends/{TREND_REPORT['slug']}/">調査結果と選定理由を詳しく見る ›</a>
+    </div>
+  </section>
   <section id="categories">
     {section_title("目的から探す", "あなたに合うテーマで")}
     <div class="cat-grid">{cat_cards}</div>
@@ -763,8 +864,20 @@ def page_home(books):
     <div class="compare-link-grid">{comparisons}</div>
   </section>
   <section class="about-box">
-    {section_title("このサイトについて")}
-    <p>「{SITE_NAME}」は、投資を学びたい人が“最初の一冊”で迷わないように、長く読み継がれてきた定番の本を、目的別に厳選して紹介するサイトです。まずは気になった1冊から、あなたの投資の土台を作っていきましょう。</p>
+    {section_title("誰が、どう選んでいるか", "運営者の実体験を判断材料に")}
+    <div class="review-policy-home">
+      <div class="review-policy-profile">
+        <span>運営・編集</span>
+        <strong>{EDITOR_NAME}｜{EDITOR_ROLE}</strong>
+        <p>信用取引で大きな損失を経験し、現在は現物株・ETF中心の運用へ変更しました。投資本の主張を鵜呑みにせず、忙しい子育て世代が続けられるかという視点で整理します。</p>
+      </div>
+      <ol class="review-policy-steps">
+        <li><span>01</span><div><strong>書籍の主張を確認</strong><small>何を根拠に、どんな手法を勧めているか</small></div></li>
+        <li><span>02</span><div><strong>実体験と照合</strong><small>失敗経験・現物株・ETF運用から現実性を考える</small></div></li>
+        <li><span>03</span><div><strong>向かない人も明記</strong><small>利益の期待だけでなく、時間・資金・リスクも示す</small></div></li>
+      </ol>
+    </div>
+    <p class="review-policy-link"><a href="/about/#review-policy">詳しい編集・評価方針を見る ›</a></p>
   </section>
   <section>
     {section_title("投資をもっと深める", "姉妹サイト")}
@@ -772,6 +885,55 @@ def page_home(books):
   </section>
 </main>"""
     return head("投資初心者が最初に読むべき『投資の名著』8選", "投資を始めたい初心者がまず読むべき定番の名著を、初心者向け・NISA・インデックス・バフェット流・FIRE・不動産・米国株など目的別に厳選。選ぶ理由つきで紹介します。", "/") + header() + body + footer()
+
+
+def page_trends():
+    cards = trend_cards(TREND_REPORT["groups"])
+    sources = trend_sources()
+    body = f"""
+<main class="container container--narrowtop trend-report">
+  {breadcrumb([("TOP", "/"), ("今月の注目本", None)])}
+  <header class="page-head trend-report-head">
+    <p class="hero-eyebrow">BOOKSTORE RESEARCH / {TREND_REPORT['label']}</p>
+    <h1 class="page-title">いま読まれている<br><em>投資本の傾向</em></h1>
+    <p class="page-lead">複数の書店ランキングと出版社情報を横断し、現在の売れ筋と、このサイトで次に検証する価値が高い本を整理しました。</p>
+    <p class="page-count">調査日：{TREND_REPORT['updated']}</p>
+  </header>
+  <section class="trend-answer">
+    <span>今回の結論</span>
+    <h2>「配当・増配」と「子育て中の個人投資家」が強い</h2>
+    <p>一時的な1位だけでなく、紙・電子・複数週で重なった動きを優先しました。単なる要約ではなく、運営者の失敗経験と現在の現物株・ETF運用に照らし、再現性と向かない人まで検証します。</p>
+  </section>
+  <section>
+    {section_title("注目する4テーマ", "売れ筋と記事にする理由")}
+    <div class="trend-grid trend-grid--report">{cards}</div>
+  </section>
+  <section class="trend-method">
+    {section_title("ランキングの見方", "売れている＝全員におすすめ、ではない")}
+    <div class="trend-method-grid">
+      <div><span>01</span><strong>複数の集計を重ねる</strong><p>デイリーだけで決めず、週間、紙・電子、一般書ランキングも確認します。</p></div>
+      <div><span>02</span><strong>割引の影響を分ける</strong><p>電子書籍はセールで順位が動くため、他店の順位や重版情報と照合します。</p></div>
+      <div><span>03</span><strong>生活への再現性を見る</strong><p>必要資金、取引時間、損失の大きさを確認し、初心者や子育て世代に現実的か判断します。</p></div>
+    </div>
+  </section>
+  <section class="trend-next">
+    {section_title("次の記事化の順番")}
+    <ol>
+      <li><strong>『ママ投資家が育休中に1億貯めた株式投資』</strong><span>子育て中という共通条件から、短期売買の再現性とリスクを検証</span></li>
+      <li><strong>増配株の人気本3冊比較</strong><span>必要資金・銘柄選び・減配リスク・初心者との相性を横並びで確認</span></li>
+      <li><strong>『富の階段』と『JUST KEEP BUYING』</strong><span>資産形成の戦略と戦術、読む順番の違いを整理</span></li>
+      <li><strong>『AIバブル後の投資戦略』</strong><span>AI集中後の分散を、現物株・ETF中心の視点で考える</span></li>
+    </ol>
+  </section>
+  <aside class="trend-sources">
+    <h2>調査に使った公開情報</h2>
+    <ul>{sources}</ul>
+    <p>順位は各集計時点の販売状況であり、読了者数や将来の投資成果を示すものではありません。</p>
+  </aside>
+</main>"""
+    title = f"{TREND_REPORT['label']}に売れている投資本と注目テーマ"
+    desc = "直近の書店ランキングを横断し、配当・増配株、子育て中の個人投資家、資産形成、AI相場後の分散という投資本の注目テーマを整理します。"
+    return head(title, desc, f"/trends/{TREND_REPORT['slug']}/") + header() + body + footer()
 
 
 def page_theme(t, books):
@@ -896,7 +1058,7 @@ def page_comparison(p, books):
       <p class="hero-eyebrow">目的別・投資本比較</p>
       <h1 class="page-title">{esc(p["title"])}</h1>
       <p class="page-lead">{esc(p["lead"])}</p>
-      <p class="hero-meta">UPDATED {UPDATED} / EDITED BY {EDITOR_NAME}</p>
+      <p class="hero-meta">UPDATED {UPDATED} / EDITED BY {EDITOR_NAME} — {EDITOR_ROLE}</p>
     </header>
     <section class="comparison-answer">
       <span>先に結論</span>
@@ -918,7 +1080,7 @@ def page_comparison(p, books):
     <div class="compare-link-grid">{other}</div>
   </article>
 </main>"""
-    return head(p["title"], p["lead"] + " 向いている人・読みやすさ・読む順番を編集部が比較します。", path) + header() + body + footer()
+    return head(p["title"], p["lead"] + " 向いている人・読みやすさ・読む順番を運営者が比較します。", path) + header() + body + footer()
 
 
 def book_detail_sections(b, rel):
@@ -1037,7 +1199,7 @@ def page_book(b, books):
     {decision_panel(b, rel)}
     <nav class="article-toc" aria-label="この記事の目次">
       <strong>このページで分かること</strong>
-      <a href="#review">編集部レビュー</a>
+      <a href="#review">運営者レビュー</a>
       <a href="#learn">学べること</a>
       <a href="#fit">向いている人・注意点</a>
       <a href="#compare">類書との違い</a>
@@ -1045,7 +1207,7 @@ def page_book(b, books):
     </nav>
     {review_meta(b)}
     <section class="bd-review">
-      <h2 class="section-title" id="review">どんな本？ <span class="section-sub">編集部レビュー</span></h2>
+      <h2 class="section-title" id="review">どんな本？ <span class="section-sub">運営者レビュー</span></h2>
       <p>{esc(b["review"])}</p>
       <h3 class="bd-subh">要点を先に確認</h3>
       <ul class="book-points bd-points">{points}</ul>
@@ -1077,7 +1239,7 @@ def page_guide(books):
   <header class="page-head">
     <p class="hero-eyebrow">はじめての人へ</p>
     <h1 class="page-title">投資本の<br><em>選び方・読む順ガイド</em></h1>
-    <p class="page-lead">「どれから読めばいい？」に編集部が答えます。レベル別の読む順と、本を選ぶときの注意点をまとめました。</p>
+    <p class="page-lead">「どれから読めばいい？」に、育児中の個人投資家Dすけが答えます。レベル別の読む順と、本を選ぶときの注意点をまとめました。</p>
   </header>
   <article class="guide">
     {section_title("読む順番の目安", "初心者→実践")}
@@ -1116,23 +1278,25 @@ def page_about():
   <header class="page-head">
     <p class="hero-eyebrow">このサイトについて</p>
     <h1 class="page-title">運営者情報</h1>
-    <p class="page-lead">「{esc(SITE_NAME)}」は、投資のはじめの一冊を探す人のために、定番の投資本を編集部の視点でレビュー・ランキングするサイトです。</p>
+    <p class="page-lead">「{esc(SITE_NAME)}」は、投資のはじめの一冊を探す人のために、定番と直近の注目本を、育児中の個人投資家の視点で整理するサイトです。</p>
   </header>
   <article class="guide">
     {section_title("サイトの目的")}
-    <p>投資を始めたいけれど「何から読めばいいか分からない」という人に向けて、世代を超えて読み継がれてきた投資の名著を、目的別（初心者／NISA／インデックス／バリュー投資／FIRE／不動産／米国株／高配当）に整理して紹介しています。各書籍のレビュー・要点・ランキング・★評価は、出版社の紹介文を転載せず、編集部が実際に内容を踏まえて作成したオリジナルです。</p>
+    <p>投資を始めたいけれど「何から読めばいいか分からない」という人に向けて、世代を超えて読み継がれてきた名著と直近の売れ筋を分け、目的別（初心者／NISA／インデックス／バリュー投資／FIRE／不動産／米国株／高配当）に整理しています。信用取引で損失を経験し、現物株・ETF中心へ切り替えた運営者が、忙しい子育て世代でも続けられるかという視点を加えます。</p>
     {section_title("運営者")}
     <ul class="guide-notes">
       <li><strong>サイト名</strong>：{esc(SITE_NAME)}（stock-overflow24.com）</li>
       <li><strong>運営</strong>：{esc(OPERATOR_NAME)}（{esc(OPERATOR_PERSON)}）</li>
-      <li><strong>編集</strong>：{esc(EDITOR_NAME)}</li>
+      <li><strong>編集</strong>：{esc(EDITOR_NAME)}（{esc(EDITOR_ROLE)}）</li>
       <li><strong>運営開始</strong>：2026年</li>
       <li><strong>連絡先</strong>：<a href="mailto:{esc(CONTACT_EMAIL)}">{esc(CONTACT_EMAIL)}</a>（詳しくは<a href="/contact/">お問い合わせ</a>ページ）</li>
     </ul>
     <section id="review-policy">
     {section_title("編集・評価方針", "信頼できる情報のために")}
     <ul class="guide-notes">
-      <li><strong>オリジナルの内容</strong>：レビュー・要点・おすすめ理由はすべて編集部が独自に執筆しています。</li>
+      <li><strong>オリジナルの内容</strong>：レビュー・要点・おすすめ理由は、出版社の文章を転載せず、運営者が独自に整理します。</li>
+      <li><strong>読了前は評価しない</strong>：直近ランキングで見つけた本は「調査中」と明記し、内容を確認する前にレビューしたような表現はしません。</li>
+      <li><strong>実体験との照合</strong>：信用取引の失敗、現物株・ETF中心の運用、育児との両立という経験から、再現性を考えます。</li>
       <li><strong>中立性</strong>：報酬の有無で評価をゆがめず、メリットだけでなく注意点も正直に記載します。</li>
       <li><strong>4つの評価軸</strong>：初心者への分かりやすさ、長く使える普遍性、行動につなげやすい実用性、リスクや限界の説明を確認します。</li>
       <li><strong>★評価の意味</strong>：販売サイトの口コミ平均ではなく、上記4軸に基づく当サイト独自の推薦度です。</li>
@@ -1149,7 +1313,7 @@ def page_about():
     <p class="guide-cta-note">広告掲載・アフィリエイトの方針については<a href="/privacy/">プライバシーポリシー</a>をご覧ください。</p>
   </article>
 </main>"""
-    return head("運営者情報", f"{SITE_NAME}（stock-overflow24.com）の運営者情報・編集方針について。投資の名著を編集部の視点でレビュー・ランキングしています。", "/about/") + header() + body + footer()
+    return head("運営者情報", f"{SITE_NAME}（stock-overflow24.com）の運営者情報・編集方針。育児中の個人投資家が、投資本を実体験と照合して紹介します。", "/about/") + header() + body + footer()
 
 
 def page_contact():
@@ -1238,6 +1402,7 @@ def main():
         json.dump(books, f, ensure_ascii=False, indent=2)
 
     write("index.html", page_home(books))
+    write(f"trends/{TREND_REPORT['slug']}/index.html", page_trends())
     write("guide/index.html", page_guide(books))
     write("about/index.html", page_about())
     write("contact/index.html", page_contact())
@@ -1250,7 +1415,7 @@ def main():
         write(f"compare/{p['slug']}/index.html", page_comparison(p, books))
 
     # sitemap.xml（全ページ）
-    urls = ([ "/", "/guide/", "/about/", "/contact/", "/privacy/" ]
+    urls = ([ "/", f"/trends/{TREND_REPORT['slug']}/", "/guide/", "/about/", "/contact/", "/privacy/" ]
             + [f"/{t['slug']}/" for t in THEMES]
             + [f"/books/{b['slug']}/" for b in books]
             + [f"/compare/{p['slug']}/" for p in COMPARISON_PAGES])
@@ -1262,8 +1427,8 @@ def main():
     sm.append("</urlset>\n")
     write("sitemap.xml", "\n".join(sm))
 
-    n_pages = 5 + len(THEMES) + len(books) + len(COMPARISON_PAGES)
-    print(f"[build] {len(books)}冊 / {n_pages}ページ生成（トップ・ガイド・運営者・問合せ・規約・カテゴリ{len(THEMES)}・個別{len(books)}・比較{len(COMPARISON_PAGES)}）", file=sys.stderr)
+    n_pages = 6 + len(THEMES) + len(books) + len(COMPARISON_PAGES)
+    print(f"[build] {len(books)}冊 / {n_pages}ページ生成（トップ・トレンド・ガイド・運営者・問合せ・規約・カテゴリ{len(THEMES)}・個別{len(books)}・比較{len(COMPARISON_PAGES)}）", file=sys.stderr)
 
 
 if __name__ == "__main__":
