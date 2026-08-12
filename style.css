@@ -1152,6 +1152,19 @@ img{max-width:100%;height:auto}
 }
 .footer-nav a{color:#fff;text-decoration:none;font-weight:800;font-size:.85rem}
 .footer-nav a:hover{color:var(--yellow)}
+.footer-role{
+  max-width:740px;
+  margin:0 0 18px;
+  color:#dbe1ea;
+  font-size:.88rem;
+  line-height:1.7;
+}
+.footer-operator{
+  margin:16px 0 0;
+  color:#fff;
+  font-size:.8rem;
+  font-weight:800;
+}
 .footer-note{
   max-width:740px;
   margin:8px 0 0;

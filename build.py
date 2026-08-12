@@ -20,8 +20,11 @@ import requests
 API = "https://openapi.rakuten.co.jp/services/api/BooksBook/Search/20170404"
 HEADERS = {"User-Agent": "Mozilla/5.0", "Referer": "https://stock-overflow24.com/", "Origin": "https://stock-overflow24.com"}
 SITE = "https://stock-overflow24.com"
-SITE_NAME = "迷える子羊たちの株ノート"
-SITE_TAGLINE = "迷える子羊たちへ。投資の“はじめの一冊”を。"
+SITE_NAME = "迷える子羊たちの投資本ガイド"
+SITE_TAGLINE = "初心者が「最初の一冊」を選ぶための書評・比較サイト"
+OPERATOR_NAME = "STOCK OVERFLOW"
+EDITOR_NAME = "STOCK OVERFLOW 編集部"
+OPERATOR_PERSON = "Dすけ"
 JST = datetime.timezone(datetime.timedelta(hours=9))
 TODAY = datetime.datetime.now(JST)
 UPDATED = os.environ.get("SITE_UPDATED", TODAY.strftime("%Y.%m.%d"))
@@ -450,6 +453,31 @@ def yahoo_url(b): return YAHOO_MOSHIMO + requests.utils.quote(yahoo_search(b["q"
 
 def head(title, desc, path, extra_head=""):
     canon = f"{SITE}{path}"
+    identity_jsonld = ""
+    if path == "/":
+        identity = {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "Organization",
+                    "@id": f"{SITE}/#organization",
+                    "name": OPERATOR_NAME,
+                    "url": f"{SITE}/about/",
+                    "description": f"個人投資家{OPERATOR_PERSON}が運営する投資情報サイト群の運営者。",
+                },
+                {
+                    "@type": "WebSite",
+                    "@id": f"{SITE}/#website",
+                    "name": SITE_NAME,
+                    "alternateName": ["投資本ガイド", "迷える子羊たちの投資本"],
+                    "url": f"{SITE}/",
+                    "description": "投資初心者が最初の一冊を選ぶための、投資本専門の書評・比較サイト。",
+                    "inLanguage": "ja",
+                    "publisher": {"@id": f"{SITE}/#organization"},
+                },
+            ],
+        }
+        identity_jsonld = '<script type="application/ld+json">' + json.dumps(identity, ensure_ascii=False) + '</script>'
     return f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -460,7 +488,13 @@ def head(title, desc, path, extra_head=""):
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
 <meta property="og:type" content="article">
+<meta property="og:url" content="{canon}">
+<meta property="og:site_name" content="{SITE_NAME}">
+<meta property="og:locale" content="ja_JP">
 <meta property="og:image" content="{SITE}/assets/sheep-icon.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{esc(title)}">
+<meta name="twitter:description" content="{esc(desc)}">
 <meta property="article:modified_time" content="{TODAY.isoformat()}">
 <link rel="canonical" href="{canon}">
 <link rel="icon" type="image/png" href="/assets/sheep-icon.png">
@@ -469,6 +503,7 @@ def head(title, desc, path, extra_head=""):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css?v={CSS_VER}">
+{identity_jsonld}
 {extra_head}
 {adsense_head()}
 {ga_head()}
@@ -495,7 +530,7 @@ def book_jsonld(b, path):
         "dateModified": TODAY.date().isoformat(),
         "review": {
             "@type": "Review",
-            "author": {"@type": "Organization", "name": SITE_NAME},
+            "author": {"@type": "Organization", "name": EDITOR_NAME},
             "dateModified": TODAY.date().isoformat(),
             "reviewRating": {"@type": "Rating", "ratingValue": b["rating"], "bestRating": 5, "worstRating": 1},
             "reviewBody": b["review"],
@@ -559,7 +594,9 @@ def footer():
   <div class="footer-inner">
     <p class="footer-brand"><img class="footer-mark" src="/assets/sheep-icon.png" alt="" width="28" height="35">{SITE_NAME}</p>
     <nav class="footer-nav"><a href="/">ホーム</a><a href="/guide/">選び方ガイド</a><a href="/compare/first-investment-books/">本を比較</a>{cats}</nav>
-    <nav class="footer-nav"><a href="https://dashboard.stock-overflow24.com/">投資の砦</a><a href="https://yougo.stock-overflow24.com/">用語辞典</a><a href="/about/">運営者情報</a><a href="/contact/">お問い合わせ</a><a href="/privacy/">プライバシーポリシー</a></nav>
+    <p class="footer-role">投資初心者が「最初の一冊」を選ぶための、投資本専門の書評・比較サイトです。</p>
+    <nav class="footer-nav"><a href="https://dashboard.stock-overflow24.com/">投資の砦</a><a href="https://yougo.stock-overflow24.com/">やさしい投資用語辞典</a><a href="https://blog.stock-overflow24.com/">迷える子羊たちの株ノート</a><a href="/about/">運営者情報</a><a href="/contact/">お問い合わせ</a><a href="/privacy/">プライバシーポリシー</a></nav>
+    <p class="footer-operator">運営：{OPERATOR_NAME}（{OPERATOR_PERSON}）</p>
     <p class="footer-note">{esc(affiliate_disclosure())}</p>
     <p class="footer-note">※掲載内容は書籍の紹介であり、特定の投資・銘柄を推奨するものではありません。投資は自己責任で行ってください。</p>
     <p class="footer-copy">© 2026 {SITE_NAME}</p>
@@ -683,7 +720,7 @@ def page_home(books):
         for t in THEMES)
     toc = "".join(f'<li><a href="/books/{b["slug"]}/"><span class="num">{b["rank"]}.</span>{esc(b["title"])}</a></li>' for b in sorted(top, key=lambda x: x["rank"]))
     related = """<div class="related-grid">
-      <a class="related-card" href="https://dashboard.stock-overflow24.com/"><span class="related-body"><span class="related-name">投資の砦</span><span class="related-desc">日本株・米国株の急騰銘柄や決算速報がひと目で分かるダッシュボード。本で学んだら相場をのぞこう。</span><span class="related-go">ダッシュボードを見る ›</span></span></a>
+      <a class="related-card" href="https://dashboard.stock-overflow24.com/"><span class="related-body"><span class="related-name">投資の砦</span><span class="related-desc">日本株の急騰銘柄・決算速報・テーマ株がひと目で分かる定期更新ダッシュボード。本で学んだら相場をのぞこう。</span><span class="related-go">ダッシュボードを見る ›</span></span></a>
       <a class="related-card" href="https://yougo.stock-overflow24.com/"><span class="related-body"><span class="related-name">やさしい投資用語辞典</span><span class="related-desc">PER・PBR・ROEって何？ 投資の専門用語をやさしく解説。分からない言葉が出たらここで。</span><span class="related-go">用語を調べる ›</span></span></a>
     </div>"""
     comparisons = "".join(
@@ -699,7 +736,7 @@ def page_home(books):
       <h1 class="hero-title">投資初心者が最初に読むべき<br><em>投資の名著</em></h1>
       <p class="hero-lead">「何から学べばいいのかわからない」迷いを、長く読み継がれてきた本でほどく。目的別に、最初の一冊と次の一冊を選べる編集ノートです。</p>
       <div class="hero-actions"><a class="hero-primary" href="#ranking">ランキングを見る</a><a class="hero-secondary" href="/guide/">読む順ガイド</a></div>
-      <p class="hero-meta">UPDATED {UPDATED} / EDITED BY {SITE_NAME}</p>
+      <p class="hero-meta">UPDATED {UPDATED} / EDITED BY {EDITOR_NAME}</p>
     </div>
     <div class="hero-visual" aria-label="紹介している投資本の書影">
       <div class="hero-orbit">READ<br>BEFORE<br>INVEST</div>
@@ -859,7 +896,7 @@ def page_comparison(p, books):
       <p class="hero-eyebrow">目的別・投資本比較</p>
       <h1 class="page-title">{esc(p["title"])}</h1>
       <p class="page-lead">{esc(p["lead"])}</p>
-      <p class="hero-meta">UPDATED {UPDATED} / EDITED BY {SITE_NAME}</p>
+      <p class="hero-meta">UPDATED {UPDATED} / EDITED BY {EDITOR_NAME}</p>
     </header>
     <section class="comparison-answer">
       <span>先に結論</span>
@@ -921,7 +958,7 @@ def book_detail_sections(b, rel):
 def review_meta(b):
     """レビューの責任主体・更新日・評価方法を本文上で見えるようにする。"""
     return f"""<aside class="review-meta" aria-label="レビュー情報">
-      <div><span>編集・評価</span><strong>STOCK OVERFLOW 編集部</strong></div>
+      <div><span>編集・評価</span><strong>{EDITOR_NAME}</strong></div>
       <div><span>最終更新</span><strong>{esc(UPDATED)}</strong></div>
       <div><span>評価の考え方</span><strong>初心者への分かりやすさ・普遍性・実用性・注意点</strong></div>
       <p>★評価は販売サイトの口コミ平均ではなく、当サイト独自の推薦度です。評価方法は<a href="/about/#review-policy">運営・編集方針</a>で公開しています。</p>
@@ -1087,7 +1124,8 @@ def page_about():
     {section_title("運営者")}
     <ul class="guide-notes">
       <li><strong>サイト名</strong>：{esc(SITE_NAME)}（stock-overflow24.com）</li>
-      <li><strong>運営</strong>：STOCK OVERFLOW 編集部</li>
+      <li><strong>運営</strong>：{esc(OPERATOR_NAME)}（{esc(OPERATOR_PERSON)}）</li>
+      <li><strong>編集</strong>：{esc(EDITOR_NAME)}</li>
       <li><strong>運営開始</strong>：2026年</li>
       <li><strong>連絡先</strong>：<a href="mailto:{esc(CONTACT_EMAIL)}">{esc(CONTACT_EMAIL)}</a>（詳しくは<a href="/contact/">お問い合わせ</a>ページ）</li>
     </ul>
@@ -1104,8 +1142,9 @@ def page_about():
     </section>
     {section_title("姉妹サイト")}
     <ul class="guide-first">
-      <li><a href="https://dashboard.stock-overflow24.com/">投資の砦</a> — 日本株・米国株の急騰銘柄や決算速報がひと目で分かるダッシュボード。</li>
+      <li><a href="https://dashboard.stock-overflow24.com/">投資の砦</a> — 日本株の急騰銘柄・決算速報・テーマ株がひと目で分かる定期更新ダッシュボード。</li>
       <li><a href="https://yougo.stock-overflow24.com/">やさしい投資用語辞典</a> — PER・PBR・ROEなど、投資の専門用語をやさしく解説。</li>
+      <li><a href="https://blog.stock-overflow24.com/">迷える子羊たちの株ノート</a> — Dすけの投資経験、銘柄分析、相場の記録を届ける個人投資ブログ。</li>
     </ul>
     <p class="guide-cta-note">広告掲載・アフィリエイトの方針については<a href="/privacy/">プライバシーポリシー</a>をご覧ください。</p>
   </article>
