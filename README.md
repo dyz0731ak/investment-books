@@ -1,36 +1,44 @@
-# 迷える子羊たちの株ノート（投資本の紹介サイト）
+# 迷える子羊たちの投資本ガイド
 
-`manabiya.stock-overflow24.com` で公開する、投資の名著を紹介する静的サイト。
-楽天ブックスAPIから表紙・価格・楽天アフィリ購入リンクを取得し、`index.html` に焼き込む。
+本番: https://stock-overflow24.com/ — ConoHa WING。`main` への push で既存の GitHub Actions が FTP デプロイします。
 
-## 構成
-- `index.html` / `style.css` … 公開する静的サイト（`build.py` が生成）
-- `build.py` … 楽天ブックスAPIで書誌情報を取得し index.html / data/books.json を生成するビルドスクリプト
-- `data/books.json` … 生成された書籍データ（公開情報のみ。秘密情報は含まない）
-- `.htaccess` / `robots.txt` / `sitemap.xml` … 公開用設定
-- `.github/workflows/deploy.yml` … main への push で ConoHa WING へFTPデプロイ
+英国の図書館をイメージした、投資本の静的な書評・比較サイトです。27書評、9テーマ、5比較記事など50のインデックス対象ページと、専用404ページを生成します。
 
-## 再ビルド（表紙・価格を更新したいとき）
-楽天ウェブサービスの認証情報を **環境変数** で渡して実行する（コードには絶対に書かない）:
+## 編集とビルド
 
-```bash
-RAKUTEN_APP_ID="<アプリID(UUID)>" \
-RAKUTEN_ACCESS_KEY="<アクセスキー pk_...>" \
-RAKUTEN_AFFILIATE_ID="<楽天アフィリID>" \
+```sh
+python3 -m pip install -r requirements.txt
 python3 build.py
+python3 scripts/audit_site.py
+python3 -m http.server 8765 --bind 127.0.0.1
 ```
 
-生成された `index.html` / `data/books.json` には **表紙URL・公開アフィリリンクのみ** が入り、
-アクセスキー等の秘密情報は含まれない。生成後にコミット→push でデプロイ。
+- `build.py`: 書評・カテゴリ・比較記事、HTML生成、構造化データ、サイトマップ。`CONTENT_DATE` は編集を確認した日にだけ更新します。
+- `library_content.py`: トップの選書、新刊・話題書の出典・刊行情報、FAQ。新刊の書誌紹介と読了レビューを区別します。
+- `style.css`: 共通の文章・比較表レイアウトと図書館テーマ、レスポンシブ、読みやすさの調整。
+- `assets/library.js`: 検索・絞り込み・画像取得失敗時の代替表示。検索条件はURLのハッシュに保存し、検索結果の大量インデックスを避けます。
+- `data/books.json`: 楽天の公開書誌情報のキャッシュ。API認証情報がないビルドでも書影とリンクを維持します。キャッシュ価格は掲載しません。
+- `scripts/audit_site.py`: 全ページの見出し、メタ情報、内部リンク・アンカー、構造化データ、画像寸法、サイトマップ整合性を検証。デプロイ前にも実行します。
+- `.htaccess`: 旧WordPress URLの301を維持し、正規ホスト・index.htmlを集約。404は実際の404ステータスで返します。HTML再検証、バージョン付きCSS/JSのキャッシュ、圧縮を設定します。
 
-## デプロイ（ConoHa WING + GitHub Actions）
-[[収益化サイト運用ハブ]] / 「サブドメインで静的サイトを公開する手順」に準拠。
+楽天APIを明示的に更新する場合のみ `RAKUTEN_APP_ID`、`RAKUTEN_ACCESS_KEY`、`RAKUTEN_AFFILIATE_ID` を環境変数で設定します。秘密情報をファイル・コミットに入れないでください。
 
-1. ConoHa WING で `manabiya.stock-overflow24.com` を作成（無料独自SSL ON）
-2. FTPアカウント作成
-3. GitHub Secrets に登録: `FTP_SERVER` / `FTP_USERNAME` / `FTP_PASSWORD`
-4. main へ push → 自動デプロイ
+生成HTMLもバージョン管理します。編集後は必ずビルドして検証してください。公開時のGA4 IDは既存のGitHub Secretから注入されます。アフィリエイトのリンク属性・計測は維持しています。AdSense Auto Adsは初期表示を優先し、load後のidle時に読み込みます。
 
-## 注意
-- 紹介文・ランキングは当サイトのオリジナル。出版社コピー（APIのitemCaption）は転載しない。
-- 当サイトはアフィリエイトプログラム（楽天アフィリ等）を利用。
+## SEOと運用
+
+- `/`: 投資本・投資のおすすめ本を探す入口。
+- `/beginner/`、`/stocks/`、`/nisa/` など: 検索目的別のカテゴリ。
+- `/books/`: 全27冊の検索可能な一覧。JavaScript無効でも全書評へ移動可能。
+- `/compare/` と既存の比較記事: 本の違い・読む順番に答えるページ。
+- `/new/`: 新刊・話題書の確認日・出典・定番との関連を示す書誌紹介。
+- `/trends/2026-08/`: 過去の売れ筋調査。現在の順位と混同しない表記を維持。
+- `/books/<slug>/`: 個別書評（Book + 既存の運営者Review）。実読体験は確認済みの事実だけを追記してください。
+
+既存URLを移動しない設計です。構造化データは可視情報に対応したWebSite、Organization、BreadcrumbList、ItemList、Book、Review、CollectionPageを使用します。FAQは通常のHTMLに留めています。
+
+公開後はSearch Consoleのサイトマップ読み込み・主要新規URLのインデックスを確認し、対象クエリ群の表示回数・クリック・CTRとページ別流入を比較します。順位上昇を保証するものではなく、実読レビュー・新刊情報の継続的な更新が必要です。
+
+## 画像
+
+図書館写真は2026年9月24日に組み込みimagegenで作成したオリジナルです。`assets/library-hero.webp`（PC）、`library-hero-mobile.webp`（モバイル）、`library-og.webp`（SNS）を参照しています。参考写真自体は転載していません。詳細プロンプト・検証記録は同日のリニューアル記録に保存。

@@ -1,5 +1,17 @@
 RewriteEngine On
 
+# One canonical host and directory URL for each document. Preserve existing paths.
+RewriteCond %{HTTP_HOST} ^www\.stock-overflow24\.com$ [NC]
+RewriteRule ^(.*)$ https://stock-overflow24.com/$1 [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html[?\s] [NC]
+RewriteRule ^(.*/)?index\.html$ https://stock-overflow24.com/$1 [R=301,L]
+
+# The no-JavaScript search fallback uses a query; it is not a new landing page.
+RewriteCond %{QUERY_STRING} (^|&)q= [NC]
+RewriteRule ^books/?$ - [E=SEARCH_RESULT:1]
+
+ErrorDocument 404 /404.html
+
 # ConoHa WING HTTPS強制リダイレクト
 # 方法1: X-Forwarded-Proto
 RewriteCond %{HTTP:X-Forwarded-Proto} ^http$ [NC]
@@ -37,7 +49,18 @@ RewriteRule ^home/?$ https://stock-overflow24.com/ [R=301,L]
 # HTML/JSON は毎回再検証（ConoHaはデフォルトでCache-Controlを付けず、
 # デプロイしても旧版がブラウザにキャッシュされ続ける事象を防ぐ）。
 <IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, follow" env=SEARCH_RESULT
   <FilesMatch "\.(html?|json)$">
     Header set Cache-Control "no-cache, must-revalidate"
   </FilesMatch>
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(webp|png|jpg|jpeg|svg)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml application/xml text/xml
 </IfModule>

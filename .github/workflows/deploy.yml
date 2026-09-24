@@ -16,6 +16,9 @@ jobs:
         env:
           FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
+      - name: Validate generated pages and SEO links
+        run: python3 scripts/audit_site.py
+
       - name: Inject GA4 tag
         env:
           GA4_ID: ${{ secrets.GA4_ID }}
@@ -39,6 +42,8 @@ jobs:
             .claude/**
             *.md
             build.py
+            *.py
+            **/__pycache__/**
             scripts/**
             requirements.txt
             data/**

@@ -151,7 +151,8 @@
     "author": "シーゲル",
     "themes": [
       "us",
-      "dividend"
+      "dividend",
+      "stocks"
     ],
     "tags": [
       "長期投資",
@@ -179,7 +180,8 @@
     "q": "賢明なる投資家",
     "author": "グレアム",
     "themes": [
-      "buffett"
+      "buffett",
+      "stocks"
     ],
     "tags": [
       "古典",
@@ -352,7 +354,8 @@
     "q": "バフェットからの手紙",
     "author": "カニンガム",
     "themes": [
-      "buffett"
+      "buffett",
+      "stocks"
     ],
     "tags": [
       "バリュー投資",
@@ -494,7 +497,8 @@
     "q": "バフェットの銘柄選択術",
     "author": "バフェット",
     "themes": [
-      "buffett"
+      "buffett",
+      "stocks"
     ],
     "tags": [
       "バリュー投資",
@@ -611,7 +615,8 @@
     "q": "ピーター・リンチの株で勝つ",
     "author": "リンチ",
     "themes": [
-      "buffett"
+      "buffett",
+      "stocks"
     ],
     "tags": [
       "個別株",
@@ -639,7 +644,8 @@
     "q": "投資で一番大切な20の教え",
     "author": "マークス",
     "themes": [
-      "buffett"
+      "buffett",
+      "stocks"
     ],
     "tags": [
       "リスク",
@@ -753,7 +759,8 @@
     "q": "オートモードで月18.5万円が入ってくる 高配当株投資",
     "author": "長期株式投資",
     "themes": [
-      "dividend"
+      "dividend",
+      "stocks"
     ],
     "tags": [
       "高配当",
