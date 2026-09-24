@@ -4395,3 +4395,13 @@ summary:focus-visible {
   font-size: 14px;
   margin: 8px 0;
 }
+/* Keep long Japanese book titles comfortable to scan. */
+.bd-title {
+  font-size: clamp(27px, 3vw, 39px);
+  line-height: 1.65;
+}
+@media (max-width: 760px) {
+  .bd-title {
+    font-size: 24px;
+  }
+}

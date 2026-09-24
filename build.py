@@ -229,7 +229,7 @@ THEME_GUIDES["stocks"] = dict(points=["企業の利益や事業を調べる視�
 BOOKS = [
     dict(rank=1, slug="random-walker", q="ウォール街のランダム・ウォーカー", author="マルキール",
          themes=["index", "beginner"], tags=["不朽の定番", "インデックス投資"],
-         who="まず1冊だけ選びたい投資初心者",
+         who="投資の理論と歴史を、時間をかけて学びたい人",
          desc="半世紀読み継がれる、インデックス投資の世界的バイブル。",
          points=["個別株やタイミング投資から卒業できる", "“ほったらかし”で良い理由が腑に落ちる"],
          review="「市場の値動きは誰にも予測できない。だからこそ低コストのインデックスファンドを長く持ち続けるのが最善」——本書が一貫して説くのはこのシンプルな結論です。専門用語は出てきますが、なぜ多くの個人投資家が“市場全体を買う”という選択にたどり着くのか、その理由を歴史とデータで腹落ちさせてくれます。最初の1冊として、遠回りせず本質に届く名著です。"),
@@ -1089,8 +1089,8 @@ def book_detail_sections(b, rel):
     second_point = b["points"][1] if len(b.get("points") or []) > 1 else b["who"]
     if rel:
         cmp = rel[0]
-        compare = (f"同じ{primary}テーマで迷うなら、まず本書で軸を作り、次に"
-                   f"『{cmp['title']}』を読むと理解がつながりやすくなります。")
+        compare = (f"同じ{primary}テーマの『{cmp['title']}』は、{cmp['desc']}"
+                   f"本書の要点と読み比べ、先に知りたい内容を選んでください。")
     else:
         compare = f"{primary}の考え方を、短期の相場材料ではなく長く使える基礎として整理できる点が強みです。"
     if b["rank"] <= 5:
@@ -1128,7 +1128,6 @@ def review_meta(b):
 
 def decision_panel(b, rel):
     primary = THEME_NAME.get(b["themes"][0], "投資")
-    next_book = rel[0]["title"] if rel else "次の定番本"
     point_items = "".join(f"<li>{esc(p)}</li>" for p in b["points"][:2])
     if b["slug"] == "random-walker":
         lead = "投資の理論や歴史までじっくり知りたい人向けです。分量があるので、初めてなら『敗者のゲーム』と読みやすさを比べて選びましょう。"
@@ -1146,7 +1145,7 @@ def decision_panel(b, rel):
       <div class="decision-main">
         <span class="decision-label">迷ったらこの判断</span>
         <h2>{esc(b["title"])}を選ぶ理由</h2>
-        <p>{esc(lead)} まず本書で軸を作り、必要なら『{esc(next_book)}』へ進むと理解がつながります。</p>
+        <p>{esc(lead)}</p>
       </div>
       <ul class="decision-list">{point_items}</ul>
     </section>"""
