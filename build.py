@@ -533,6 +533,14 @@ def yahoo_url(b): return YAHOO_MOSHIMO + requests.utils.quote(yahoo_search(b["q"
 
 def head(title, desc, path, extra_head=""):
     canon = f"{SITE}{path}"
+    # Discovery pages stay free of Auto Ads so media ads cannot obscure book
+    # navigation or consume mobile bandwidth. Long-form editorial pages retain it.
+    article_ads = (
+        (path.startswith("/books/") and path != "/books/")
+        or (path.startswith("/compare/") and path != "/compare/")
+        or path == "/guide/"
+        or path.startswith("/trends/")
+    )
     identity_jsonld = ""
     if path == "/":
         identity = {
@@ -586,7 +594,7 @@ def head(title, desc, path, extra_head=""):
 <link rel="stylesheet" href="/style.css?v={CSS_VER}">
 {identity_jsonld}
 {extra_head}
-{adsense_head()}
+{adsense_head() if article_ads else ""}
 {ga_head()}
 </head>
 <body>
