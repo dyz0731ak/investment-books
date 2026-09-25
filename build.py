@@ -17,6 +17,7 @@ import os, sys, json, html, re, time, shutil, datetime
 import urllib.parse
 import requests
 from library_content import FEATURED, READING_NOTES, NEW_BOOKS, STOCK_SLUGS, FAQ
+from catalog_additions import ADDITIONAL_BOOKS, CATEGORY_ADDITIONS, validate_additions
 
 API = "https://openapi.rakuten.co.jp/services/api/BooksBook/Search/20170404"
 HEADERS = {"User-Agent": "Mozilla/5.0", "Referer": "https://stock-overflow24.com/", "Origin": "https://stock-overflow24.com"}
@@ -31,6 +32,7 @@ JST = datetime.timezone(datetime.timedelta(hours=9))
 TODAY = datetime.datetime.now(JST)
 # Editorial dates must not change just because a scheduled build ran.
 CONTENT_DATE = "2026-09-24"
+CATALOG_DATE = "2026-09-25"
 UPDATED = CONTENT_DATE.replace("-", ".")
 SITEMAP_LASTMOD = CONTENT_DATE
 CONTACT_EMAIL = "info@stock-overflow24.com"  # お問い合わせ表示用（ConoHa WING側でメールボックス作成が必要）
@@ -436,6 +438,7 @@ RATINGS = {
 
 
 def build_books():
+    validate_additions([b['slug'] for b in BOOKS], THEME_NAME)
     app_id = os.environ.get("RAKUTEN_APP_ID", ""); access_key = os.environ.get("RAKUTEN_ACCESS_KEY", "")
     aff_id = os.environ.get("RAKUTEN_AFFILIATE_ID", ""); have = bool(app_id and access_key)
     # 楽天APIキーが無いときは、前回ビルドのキャッシュ(data/books.json)からカバー/アフィリンク等を再利用
@@ -465,6 +468,11 @@ def build_books():
         out.append(nb)
         print(f"  #{b['rank']:2} {b['slug']:18} cover={'Y' if info['cover'] else '-'} aff={'Y' if info['url'] else '-'}", file=sys.stderr)
         if have: time.sleep(1.0)
+    # Verified editions bypass title-search APIs, which can select a different edition.
+    for i, b in enumerate(ADDITIONAL_BOOKS, len(BOOKS) + 1):
+        out.append({**b, 'q': b['title'], 'rank': i, 'themes': [b['theme']],
+                    'author_disp': '、'.join(b['authors']), 'source_based': True,
+                    'tags': [b['label'], b['level']], 'price': None})
     return out
 
 
@@ -482,6 +490,8 @@ def _isbn13_to_10(i13):
 
 def amazon_product_url(b):
     """カバーURL中のISBN13からAmazon商品ページ直リンクを生成。取れなければ検索URLにフォールバック。"""
+    if b.get('isbn'):
+        return "https://www.amazon.co.jp/dp/" + _isbn13_to_10(b['isbn'])
     m = re.search(r"(97[89]\d{10})", b.get("cover", "") or "")
     if m:
         return "https://www.amazon.co.jp/dp/" + _isbn13_to_10(m.group(1))
@@ -521,14 +531,14 @@ def _rakuten_dest(b):
         return urllib.parse.unquote(m.group(1))
     if u.startswith("http") and "hb.afl.rakuten" not in u:
         return u
-    return "https://search.rakuten.co.jp/search/mall/" + requests.utils.quote(b["q"]) + "/"
+    return "https://search.rakuten.co.jp/search/mall/" + requests.utils.quote(b.get('isbn') or b["q"]) + "/"
 def rakuten_url(b): return RAKUTEN_MOSHIMO + requests.utils.quote(_rakuten_dest(b), safe="")
 
 
 # もしもアフィリエイト経由のYahoo!ショッピングリンク（提携済み・HTMLに出る公開アフィリID）
 YAHOO_MOSHIMO = "https://af.moshimo.com/af/c/click?a_id=5620985&p_id=1225&pc_id=1925&pl_id=18502&url="
 def yahoo_search(t): return "https://shopping.yahoo.co.jp/search?p=" + requests.utils.quote(t)
-def yahoo_url(b): return YAHOO_MOSHIMO + requests.utils.quote(yahoo_search(b["q"]), safe="")
+def yahoo_url(b): return YAHOO_MOSHIMO + requests.utils.quote(yahoo_search(b.get('isbn') or b["q"]), safe="")
 
 
 def head(title, desc, path, extra_head=""):
@@ -612,6 +622,19 @@ def stars_html(rating):
 
 def book_jsonld(b, path):
     """書籍ページの構造化データ（Book + 単一の運営者Review）。"""
+    if b.get('source_based'):
+        data = {'@context': 'https://schema.org', '@type': 'Book',
+                'name': b['title'], 'url': SITE + path, 'isbn': b['isbn'],
+                'author': [{'@type': b.get('author_type', 'Person'), 'name': a} for a in b['authors']],
+                'publisher': {'@type': 'Organization', 'name': b['publisher']},
+                'inLanguage': 'ja', 'description': b['desc'], 'sameAs': b['source']}
+        if len(b['published']) == 10:
+            data['datePublished'] = b['published']
+        if b.get('subtitle'):
+            data['alternateName'] = b['title'] + ' — ' + b['subtitle']
+        if b.get('cover'):
+            data['image'] = urllib.parse.urljoin(SITE, b['cover'])
+        return jsonld(data)
     data = {
         "@context": "https://schema.org",
         "@type": "Book",
@@ -716,7 +739,8 @@ def cta(b, context="primary"):
     aurl = amazon_url(b)
     if aurl:
         buttons.append(f'<a class="btn btn-amazon" href="{esc(aurl)}" target="_blank" rel="sponsored nofollow noopener" data-store="amazon" data-book="{esc(b["slug"])}" data-title="{esc(b["title"])}" data-cta="{esc(context)}" aria-label="{esc(b["title"])}をAmazonで見る">Amazon</a>')
-    buttons.append(f'<a class="btn btn-rakuten" href="{esc(rakuten_url(b))}" target="_blank" rel="sponsored nofollow noopener" data-store="rakuten" data-book="{esc(b["slug"])}" data-title="{esc(b["title"])}" data-cta="{esc(context)}" aria-label="{esc(b["title"])}を楽天ブックスで見る">楽天ブックス</a>')
+    rakuten_label = '楽天ブックス' if 'books.rakuten.co.jp' in _rakuten_dest(b) else '楽天市場'
+    buttons.append(f'<a class="btn btn-rakuten" href="{esc(rakuten_url(b))}" target="_blank" rel="sponsored nofollow noopener" data-store="rakuten" data-book="{esc(b["slug"])}" data-title="{esc(b["title"])}" data-cta="{esc(context)}" aria-label="{esc(b["title"])}を{rakuten_label}で見る">{rakuten_label}</a>')
     buttons.append(f'<a class="btn btn-yahoo" href="{esc(yahoo_url(b))}" target="_blank" rel="sponsored nofollow noopener" data-store="yahoo" data-book="{esc(b["slug"])}" data-title="{esc(b["title"])}" data-cta="{esc(context)}" aria-label="{esc(b["title"])}をYahoo!ショッピングで見る">Yahoo!ショッピング</a>')
     return '<div class="book-cta" data-book="' + esc(b["slug"]) + '" data-cta="' + esc(context) + '">\n      ' + "\n      ".join(buttons) + "\n    </div>"
 
@@ -783,12 +807,13 @@ def book_card(b, show_rank=True):
 
 def book_grid_card(b):
     note = READING_NOTES.get(b["slug"], (b["who"], b["desc"], "テーマ別"))
-    search = " ".join([b["title"], b["author_disp"], b["desc"], *[THEME_NAME[t] for t in b["themes"]]])
+    search = " ".join([b["title"], b["author_disp"], b["desc"], b.get('isbn', ''), *[THEME_NAME[t] for t in b["themes"]]])
+    reading_label = '書籍紹介を読む' if b.get('source_based') else '書評を読む'
     return f"""<article class="shelf-card" data-book-card data-themes="{' '.join(b['themes'])}" data-search="{esc(search)}">
-      <a class="shelf-cover-link" href="/books/{b['slug']}/" aria-label="{esc(b['title'])}の書評"><span class="shelf-cover-stage">{cover_html(b, 'shelf-cover')}</span></a>
+      <a class="shelf-cover-link" href="/books/{b['slug']}/" aria-label="{esc(b['title'])}の紹介"><span class="shelf-cover-stage">{cover_html(b, 'shelf-cover')}</span></a>
       <div class="shelf-info"><span class="shelf-label">{esc(note[0])}</span><h3><a href="/books/{b['slug']}/">{esc(b['title'])}</a></h3>
       <p class="shelf-author">{esc(b['author_disp'])}</p><p class="shelf-desc">{esc(note[1])}</p>
-      <a class="shelf-read" href="/books/{b['slug']}/">書評を読む <span aria-hidden="true">↗</span></a></div>
+      <a class="shelf-read" href="/books/{b['slug']}/">{reading_label} <span aria-hidden="true">↗</span></a></div>
     </article>"""
 
 def hero_cover_stack(books):
@@ -852,12 +877,12 @@ def page_home(books):
     <h1>投資の知恵は、<br>一冊の本から。</h1>
     <p class="library-hero-lead">時代を超えて読み継がれる名著から、<br>いま気になる新刊まで。<br>あなたの「次に読みたい」が見つかる、投資本の書斎。</p>
     <div class="library-hero-actions"><a class="brass-button" href="#bookshelf">おすすめの投資本を探す <span aria-hidden="true">→</span></a><a class="hero-text-link" href="/guide/">最初の一冊に迷ったら <span aria-hidden="true">↗</span></a></div>
-    <div class="hero-footnote"><span>27 BOOK REVIEWS</span><i></i><span>9 THEMES</span><i></i><span>SELECTED BY Dすけ</span></div>
+    <div class="hero-footnote"><span>{len(books)} SELECTED BOOKS</span><i></i><span>9 THEMES</span><i></i><span>SELECTED BY Dすけ</span></div>
   </div><span class="hero-caption">THE INVESTOR’S LIBRARY / EST. 2026</span>
 </section>
 <div class="library-search-strip"><div class="library-width"><span class="search-strip-label">あなたの本棚を、見つけよう。</span><form class="book-search-form" action="/books/" role="search"><label class="sr-only" for="home-search">本のタイトル・著者・テーマ</label><input id="home-search" name="q" placeholder="本のタイトル・著者・テーマから探す" type="search"><button type="submit" aria-label="本を検索">{search_icon()}</button></form><a href="/books/">すべての本を見る <span aria-hidden="true">↗</span></a></div></div>
 <section id="bookshelf" class="library-section library-width"><span id="ranking" aria-hidden="true"></span>
-  <div class="library-heading"><div><p class="eyebrow">THE ESSENTIAL COLLECTION</p><h2>まず出会いたい、投資の名著。</h2><p>投資本のおすすめを、売上順ではなく「学びたいこと」で選びました。</p></div><a class="underlined-link" href="/books/">全27冊の本棚へ <span aria-hidden="true">→</span></a></div>
+  <div class="library-heading"><div><p class="eyebrow">THE ESSENTIAL COLLECTION</p><h2>まず出会いたい、投資の名著。</h2><p>投資本のおすすめを、売上順ではなく「学びたいこと」で選びました。</p></div><a class="underlined-link" href="/books/">全{len(books)}冊の本棚へ <span aria-hidden="true">→</span></a></div>
   <div class="library-tabs" role="group" aria-label="おすすめ本のテーマで絞り込み" data-shelf-filters><button type="button" data-filter="all" aria-pressed="true">編集部のおすすめ</button><button type="button" data-filter="beginner" aria-pressed="false">初心者に</button><button type="button" data-filter="index" aria-pressed="false">長期・積立に</button><button type="button" data-filter="stocks" aria-pressed="false">個別株に</button><button type="button" data-filter="fire" aria-pressed="false">お金と人生に</button></div>
   <div class="home-bookshelf" data-shelf>{cards}</div><p class="filter-status sr-only" role="status" data-shelf-status></p>
   <p class="shelf-footnote">選書：Dすけ / <a href="/about/#review-policy">選定・評価の考え方</a>　<span>※売上ランキングではありません</span></p>
@@ -868,7 +893,7 @@ def page_home(books):
 <section class="library-width library-section editor-note"><div class="editor-monogram" aria-hidden="true">{book_icon()}<span>EDITOR’S NOTE</span></div><div><p class="eyebrow">この書斎について</p><h2>一冊を選ぶ、その理由まで。</h2><p>信用取引での大きな損失を経て、現物株・ETF中心の運用へ。育児中の個人投資家として、忙しい日々にも役立つ投資の知恵を探しています。</p><p>何を学べるか。どんな人に向いているか。そして、どんな注意が必要か。購入前に知りたいことを、書評と比較でお届けします。</p><a class="underlined-link" href="/about/">Dすけのプロフィール・編集方針 <span aria-hidden="true">→</span></a></div></section>
 <section class="library-width library-section faq-section"><div class="library-heading"><div><p class="eyebrow">BEFORE YOU OPEN A BOOK</p><h2>投資本選びの、よくある疑問。</h2></div></div>{faq_html()}</section>
 </main>"""
-    return head("投資本のおすすめ27冊｜初心者・株・NISAの本を目的別に探す", "投資のおすすめ本27冊を、初心者・株・NISA・インデックス投資など9テーマで紹介。定番の名著から新刊・話題書まで、学べること・向く人・読む順番を比較して次の一冊を選べます。", "/", list_jsonld(featured, "編集部が選ぶ投資本のおすすめ")) + header() + body + footer()
+    return head(f"投資本のおすすめ{len(books)}冊｜初心者・株・NISAの本を目的別に探す", f"投資のおすすめ本{len(books)}冊を、初心者・株・NISA・インデックス投資など9テーマで紹介。定番の名著から新刊・話題書まで、学べること・向く人・読む順番を比較して次の一冊を選べます。", "/", list_jsonld(featured, "編集部が選ぶ投資本のおすすめ")) + header() + body + footer()
 
 
 def new_cards():
@@ -945,6 +970,9 @@ def page_theme(t, books):
     title = (f"株のおすすめ本{len(items)}選｜企業分析・高配当・名著の選び方" if t["slug"] == "stocks" else f"{t['name']}のおすすめ投資本{len(items)}選｜選び方と読む順番")
     heading = f'株のおすすめ本 <em>{len(items)}選</em>' if t["slug"] == "stocks" else f'{esc(t["name"])}の<br><em>おすすめ投資本</em>'
     stock_intro = ""
+    addition_title, addition_intro, addition_choices = CATEGORY_ADDITIONS[t['slug']]
+    addition_links = ''.join(f'<li><a href="/books/{slug}/">{esc(label)}</a></li>' for slug, label in addition_choices)
+    additions_nav = f'<section class="catalogue-note"><h2>{esc(addition_title)}</h2><p>{esc(addition_intro)}</p><ul>{addition_links}</ul><p class="discovery-source">追加書籍の書誌確認：{CATALOG_DATE}。各紹介ページに刊行版・出典を記載しています。</p></section>'
     if t["slug"] == "stocks":
         stock_intro = '<section class="stock-paths"><h2>株の本は「何を判断したいか」で選ぶ</h2><div class="editorial-grid"><div><h3>企業を調べる入口</h3><p>身近な会社から調べたいなら<a href="/books/peter-lynch/">ピーター・リンチの株で勝つ</a>。事業の強さを数字と結びつけたいなら<a href="/books/mary-buffett/">バフェットの銘柄選択術</a>へ。</p></div><div><h3>価格と価値を見極める</h3><p><a href="/books/kenmei/">賢明なる投資家</a>で安全域を、<a href="/books/marks-20/">投資で一番大切な20の教え</a>でリスクと市場心理を学ぶ流れです。用語に慣れてからじっくり読む人向け。</p></div><div><h3>配当と長期保有を考える</h3><p><a href="/books/mirai/">株式投資の未来</a>から配当再投資の理論へ。日本株と米国株の実践書は<a href="/compare/dividend-books/">高配当投資本の比較</a>で読み分けられます。</p></div></div><p>投資自体が初めてなら、先に<a href="/beginner/">投資初心者向けの本</a>で分散・資金管理の全体像をつかみましょう。</p></section>'
     body = f"""
@@ -969,6 +997,7 @@ def page_theme(t, books):
     </aside>
   </section>
   {stock_intro}
+  {additions_nav}
   <section class="book-grid">
     {cards if items else '<p>準備中です。</p>'}
   </section>
@@ -1170,7 +1199,53 @@ def purchase_box(b):
     </section>"""
 
 
+def page_book_introduction(b, books):
+    """Same detail-page design, with verified bibliography instead of an unread review."""
+    checked = CATALOG_DATE.replace('-', '.')
+    by_slug = {o['slug']: o for o in books}
+    primary = b['themes'][0]
+    tags = ''.join(f'<span class="tag">{esc(t)}</span>' for t in b['tags'])
+    points = ''.join(f'<li>{esc(p)}</li>' for p in b['points'])
+    related = ''.join(f'<li>{esc(reason)}：<a href="/books/{slug}/">{esc(by_slug[slug]["title"])}</a></li>' for slug, reason in b['related'])
+    related_cards = ''.join(f'<a class="mini-card" href="/books/{slug}/">{cover_html(by_slug[slug], "mini-cover")}<span class="mini-title">{esc(by_slug[slug]["title"])}</span></a>' for slug, _ in b['related'])
+    source_links = ''.join(f'<li><a href="{esc(url)}" target="_blank" rel="noopener">{esc(label)} ↗</a></li>' for label, url in [(b['source_label'], b['source']), *b.get('extra_sources', [])])
+    date_parts = [int(v) for v in b['published'].split('-')]
+    pubdate = f'{date_parts[0]}年{date_parts[1]}月' + (f'{date_parts[2]}日' if len(date_parts) == 3 else '')
+    date_label = '刊行・発売' if len(b['published']) == 10 else '刊行年月'
+    subtitle = f'<p class="bd-author">{esc(b["subtitle"])}</p>' if b.get('subtitle') else ''
+    contributors = f'<li><strong>翻訳・監修</strong>：{esc(b["contributors"])}</li>' if b.get('contributors') else ''
+    pubnote = f'<p>{esc(b["publication_note"])}</p>' if b.get('publication_note') else ''
+    path = f'/books/{b["slug"]}/'
+    body = f'''<main id="main" class="container container--narrowtop">
+    {breadcrumb([('TOP', '/'), (THEME_NAME[primary], f'/{primary}/'), (b['title'], None)])}
+    <article class="book-detail">
+      <div class="bd-head"><div class="bd-coverwrap">{cover_html(b, 'bd-cover')}</div><div class="bd-meta">
+        <div class="book-tags">{tags}</div><h1 class="bd-title">{esc(b['title'])}</h1>{subtitle}
+        <p class="bd-author">{esc(b['author_disp'])}</p><p class="book-price">{esc(b['publisher'])} / {pubdate}</p>
+        <p class="bd-who"><span>こんな人におすすめ</span>{esc(b['who'])}</p>{cta(b, 'book_hero')}
+      </div></div>
+      <nav class="article-toc" aria-label="この記事の目次"><strong>このページで分かること</strong>
+        <a href="#about-book">どんな本？</a><a href="#learn">学べるテーマ</a><a href="#fit">向いている人・注意点</a><a href="#compare">次に読む本</a><a href="#bibliography">書誌・出典</a><a href="#purchase">購入先</a>
+      </nav>
+      <aside class="review-meta" aria-label="紹介情報"><div><span>情報確認</span><strong>{checked}</strong></div><div><span>紹介の種類</span><strong>公開情報に基づく書籍紹介</strong></div>
+        <p>出版社・書誌データの公開情報を確認して紹介しています。読了レビューや星評価ではありません。向き不向きと読む順番は当サイトの選書判断です。<a href="/about/#review-policy">編集方針</a></p></aside>
+      <section class="bd-review"><h2 class="section-title" id="about-book">どんな本？ <span class="section-sub">内容と選んだ理由</span></h2><p>{esc(b['intro'])}</p>
+        <h2 class="bd-subh" id="learn">この本で学べるテーマ</h2><ul class="book-points bd-points">{points}</ul>
+        <h2 class="bd-subh" id="fit">向いている人と、購入前の注意点</h2><p><strong>{esc(b['who'])}</strong>に向けた選択肢です。読む目安は{esc(b['level'])}です。</p><p class="review-caution">{esc(b['caution'])}</p>
+        <h2 class="bd-subh" id="compare">既存の本との読み分け・次に読む本</h2><ul class="guide-notes">{related}</ul>
+        <h2 class="bd-subh" id="bibliography">紹介している版と情報源</h2>
+        <ul class="guide-notes"><li><strong>書名</strong>：{esc(b['title'])}{' — ' + esc(b['subtitle']) if b.get('subtitle') else ''}</li><li><strong>著者・編者</strong>：{esc(b['author_disp'])}</li>{contributors}<li><strong>出版社</strong>：{esc(b['publisher'])}</li><li><strong>{date_label}</strong>：<time datetime="{b['published']}">{pubdate}</time></li><li><strong>ISBN</strong>：{b['isbn']}</li></ul>{pubnote}
+        <p>書名・著者・刊行情報・内容紹介の確認先（{checked}確認）：</p><ul>{source_links}</ul>
+        <div class="bd-theme-links">関連テーマ：<a class="chip" href="/{primary}/">{esc(THEME_NAME[primary])}のおすすめ本</a> <a class="chip" href="/books/">すべての投資本</a></div>
+      </section>
+      <section class="purchase-box" id="purchase"><div class="purchase-copy"><span class="purchase-label">読みたい一冊が決まったら</span><h2>{esc(b['title'])}の購入先</h2><p>紹介したISBNと版を確かめ、各書店で価格・在庫をご確認ください。</p></div>{cta(b, 'introduction_end')}</section>
+    </article><section class="about-box">{section_title('あわせて読みたい')}<div class="mini-grid">{related_cards}</div></section></main>'''
+    return head(f'{b["title"]}｜内容・対象読者と選び方', f'{b["title"]}（{b["author_disp"]}）の内容・対象読者・刊行版を出典付きで紹介。{b["desc"]}', path, book_jsonld(b, path)) + header() + body + footer()
+
+
 def page_book(b, books):
+    if b.get('source_based'):
+        return page_book_introduction(b, books)
     # related: same-theme books (excluding self), up to 4
     rel = []
     for o in books:
@@ -1191,6 +1266,10 @@ def page_book(b, books):
     relevant_guides = [p for p in COMPARISON_PAGES if b["slug"] in p["books"]]
     guide_links = ''.join(f'<li><a href="/compare/{p["slug"]}/">{esc(p["short"])}</a></li>' for p in relevant_guides[:2])
     compare_nav = f'<aside class="book-comparison-nav"><h2>迷っている本と比較する</h2><ul>{guide_links}</ul></aside>' if guide_links else ''
+    companions = [o for o in books if o.get('source_based') and b['slug'] in [slug for slug, _ in o['related']]]
+    if companions:
+        links = ''.join(f'<li><a href="/books/{o["slug"]}/">{esc(o["title"])}</a> — {esc(o["who"])}</li>' for o in companions)
+        compare_nav += f'<aside class="book-comparison-nav"><h2>この本から広がる読書</h2><ul>{links}</ul></aside>'
     body = f"""
 <main id="main" class="container container--narrowtop">
   {breadcrumb([("TOP", "/"), (THEME_NAME.get(primary_theme, "投資本"), f"/{primary_theme}/"), (b["title"], None)])}
@@ -1307,7 +1386,8 @@ def page_about():
     {section_title("編集・評価方針", "信頼できる情報のために")}
     <ul class="guide-notes">
       <li><strong>オリジナルの内容</strong>：レビュー・要点・おすすめ理由は、出版社の文章を転載せず、運営者が独自に整理します。</li>
-      <li><strong>読了前は評価しない</strong>：直近ランキングで見つけた本は「調査中」と明記し、内容を確認する前にレビューしたような表現はしません。</li>
+      <li><strong>読了前は評価しない</strong>：公開情報を確認した本は「書籍紹介」として掲載し、書誌・出典・確認日を明記します。読了した感想や星評価と区別し、未確認の本は調査中として扱います。</li>
+      <li><strong>選書の根拠</strong>：書店の売れ筋・検索結果は候補探しに使い、同じ本の別出品や版の違いを整理します。売上順位だけでなく、既存の本との違い・対象読者・学べるテーマから掲載カテゴリを決めます。</li>
       <li><strong>実体験との照合</strong>：信用取引の失敗、現物株・ETF中心の運用、育児との両立という経験から、再現性を考えます。</li>
       <li><strong>中立性</strong>：報酬の有無で評価をゆがめず、メリットだけでなく注意点も正直に記載します。</li>
       <li><strong>4つの評価軸</strong>：初心者への分かりやすさ、長く使える普遍性、行動につなげやすい実用性、リスクや限界の説明を確認します。</li>
@@ -1396,37 +1476,44 @@ def page_catalog(books):
     filters = ''.join(f'<option value="{t["slug"]}">{t["name"]}</option>' for t in THEMES)
     body = f"""<main id="main" class="container catalogue">
     {breadcrumb([("ホーム", "/"), ("投資本一覧", None)])}
-    <header class="page-head"><p class="eyebrow">EXPLORE THE COLLECTION</p><h1 class="page-title">投資本の本棚 <em>全27冊</em></h1><p class="page-lead">初心者の最初の一冊から、株・資産形成を深める名著まで。学びたいテーマや著者から、次の一冊を選べます。</p></header>
+    <header class="page-head"><p class="eyebrow">EXPLORE THE COLLECTION</p><h1 class="page-title">投資本の本棚 <em>全{len(books)}冊</em></h1><p class="page-lead">初心者の最初の一冊から、株・資産形成を深める名著まで。学びたいテーマや著者から、次の一冊を選べます。</p></header>
     <form class="catalogue-controls" id="search" role="search" action="/books/">
       <div><label for="catalogue-query">タイトル・著者・テーマ</label><input type="search" id="catalogue-query" name="q" placeholder="例：バフェット、NISA、敗者のゲーム"></div>
       <div><label for="catalogue-theme">本棚で絞り込む</label><select id="catalogue-theme"><option value="all">すべてのテーマ</option>{filters}</select></div>
       <button type="reset" class="plain-button">条件をクリア</button>
     </form>
     <noscript><p>本の一覧はすべて表示しています。テーマ別には<a href="/#categories">目的別の本棚</a>からお選びください。</p></noscript>
-    <p id="catalogue-status" class="catalogue-status" role="status">全27冊を表示しています</p><div class="catalogue-grid" data-catalogue>{cards}</div>
+    <p id="catalogue-status" class="catalogue-status" role="status">全{len(books)}冊を表示しています</p><div class="catalogue-grid" data-catalogue>{cards}</div>
     <div id="no-results" class="empty-state" hidden><h2>条件に合う本が見つかりませんでした</h2><p>短いキーワードに変えるか、テーマを「すべて」にしてお試しください。</p><button class="brass-button" type="button" id="clear-search">すべての本を表示</button><p>新刊の書誌紹介は<a href="/new/">新刊・話題の本</a>をご覧ください。</p></div>
     <aside class="catalogue-note"><h2>どの投資本を選ぶか迷ったら</h2><p>知識ゼロから始める方は<a href="/beginner/">初心者向けの投資本</a>、企業を調べたい方は<a href="/stocks/">株のおすすめ本</a>へ。似ている本は<a href="/compare/">比較ガイド</a>で違いを確認できます。</p></aside></main>"""
-    return head("投資本一覧27冊｜タイトル・著者・テーマでおすすめ本を探す", "投資本27冊を検索・比較できる本棚。株、NISA、インデックス、FIREなど目的別に絞り込み、学べることと書評から自分に合う一冊を探せます。", "/books/", list_jsonld(books, "投資本一覧27冊")) + header() + body + footer()
+    return head(f"投資本一覧{len(books)}冊｜タイトル・著者・テーマでおすすめ本を探す", f"投資本{len(books)}冊を検索・比較できる本棚。株、NISA、インデックス、FIREなど目的別に絞り込み、学べることと書評から自分に合う一冊を探せます。", "/books/", list_jsonld(books, f"投資本一覧{len(books)}冊")) + header() + body + footer()
 
 
-def page_new():
+def page_new(books):
     cards = []
+    by_slug = {b["slug"]: b for b in books}
     for b in NEW_BOOKS:
-        purchase = {"q": b["title"], "title": b["title"], "slug": b["slug"]}
+        purchase = {"q": b["title"], "title": b["title"], "slug": b["slug"], "isbn": b["isbn"]}
         cards.append(f"""<article class="discovery-book" id="{b['slug']}"><div class="discovery-cover"><img src="{b['cover']}" width="200" height="280" alt="{b['title']}の表紙" loading="lazy" decoding="async"></div><div><span class="new-label">{b['label']}</span><h2>{b['title']}</h2><p class="discovery-meta">{b['author']} 著 / {b['published']} / ダイヤモンド社</p><p>{b['desc']}</p><h3>この本に注目した理由</h3><p>{b['note']}</p><h3>購入前に確認したいこと</h3><p>{b['caution']}</p><p class="discovery-source">書誌情報：<a href="{b['source']}" target="_blank" rel="noopener">{b['source_label']} ↗</a> / ISBN {b['isbn']}</p>{cta(purchase, 'new_book_info')}<a class="discovery-related" href="/books/{b['related']}/">{b['related_label']} →</a></div></article>""")
-    body = f"""<main id="main" class="container new-page">{breadcrumb([("ホーム", "/"), ("新刊・話題の投資本", None)])}<header class="page-head"><p class="eyebrow">ON THE READING DESK</p><h1 class="page-title">新刊・話題の<em>投資本</em></h1><p class="page-lead">刊行情報、売れ筋の記録、定番とのつながりから、次に読みたい本を探します。</p><p class="page-count">書誌情報確認：2026年9月24日</p></header><aside class="editorial-disclosure"><strong>このページの紹介について</strong><p>出版社の書誌・目次などの公開情報を確認した選書です。読了した感想や星評価は掲載していません。売れ筋は集計時点を明記し、現在の順位とは区別しています。</p></aside>{''.join(cards)}<section class="catalogue-note"><h2>売れ筋の記録と、定番の選び方</h2><p>売れ行きと自分に合う本は、別の判断材料です。<a href="/trends/2026-08/">2026年8月の売れ筋調査</a>も参考にしつつ、<a href="/compare/first-investment-books/">最初の3冊の比較</a>で基礎の本を選んでみてください。</p><p>『ママ投資家が育休中に1億貯めた株式投資』の順位出典：<a href="https://www.tohan.jp/wp/wp-content/uploads/2026/06/20260616.pdf">トーハン・2026年6月8日〜14日集計（PDF）</a>。</p></section></main>"""
-    data = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "新刊・話題の投資本", "url": SITE + "/new/", "dateModified": CONTENT_DATE, "about": [{"@type": "Book", "name": b["title"], "isbn": b["isbn"], "author": {"@type": "Person", "name": b["author"]}, "sameAs": b["source"]} for b in NEW_BOOKS]}
-    return head("新刊・話題の投資本｜刊行情報と定番との読み分け", "2026年の新刊と話題の投資本を出版社情報から紹介。AIバブル後の投資戦略、ママ投資家、富の階段の刊行情報、注目する理由、定番と併せて読むヒントをまとめます。", "/new/", jsonld(data)) + header() + body + footer()
+    for i, b in enumerate(NEW_BOOKS):
+        if b['slug'] in by_slug:
+            cards[i] = cards[i].replace('</div></article>', f'<p><a class="text-link" href="/books/{b["slug"]}/">対象読者・読む順番と書誌情報を見る →</a></p></div></article>')
+    latest = [by_slug[slug] for slug in ['ir-seminar', 'realestate-roadmap']]
+    for b in reversed(latest):
+        cards.insert(0, f'''<article class="discovery-book" id="{b['slug']}"><div class="discovery-cover">{cover_html(b)}</div><div><span class="new-label">{esc(b['label'])}</span><h2><a href="/books/{b['slug']}/">{esc(b['title'])}</a></h2><p class="discovery-meta">{esc(b['author_disp'])} / 2026年9月16日発売 / {esc(b['publisher'])}</p><p>{esc(b['desc'])}</p><h3>購入前に確認したいこと</h3><p>{esc(b['caution'])}</p><p class="discovery-source">書誌情報：<a href="{b['source']}" target="_blank" rel="noopener">{esc(b['source_label'])} ↗</a> / ISBN {b['isbn']}</p><a class="text-link" href="/books/{b['slug']}/">内容・対象読者と読む順番を見る →</a></div></article>''')
+    body = f"""<main id="main" class="container new-page">{breadcrumb([("ホーム", "/"), ("新刊・話題の投資本", None)])}<header class="page-head"><p class="eyebrow">ON THE READING DESK</p><h1 class="page-title">新刊・話題の<em>投資本</em></h1><p class="page-lead">刊行情報、売れ筋の記録、定番とのつながりから、次に読みたい本を探します。</p><p class="page-count">書誌情報確認：2026年9月25日</p></header><aside class="editorial-disclosure"><strong>このページの紹介について</strong><p>出版社の書誌・目次などの公開情報を確認した選書です。読了した感想や星評価は掲載していません。売れ筋は集計時点を明記し、現在の順位とは区別しています。</p></aside>{''.join(cards)}<section class="catalogue-note"><h2>売れ筋の記録と、定番の選び方</h2><p>売れ行きと自分に合う本は、別の判断材料です。<a href="/trends/2026-08/">2026年8月の売れ筋調査</a>も参考にしつつ、<a href="/compare/first-investment-books/">最初の3冊の比較</a>で基礎の本を選んでみてください。</p><p>『ママ投資家が育休中に1億貯めた株式投資』の順位出典：<a href="https://www.tohan.jp/wp/wp-content/uploads/2026/06/20260616.pdf">トーハン・2026年6月8日〜14日集計（PDF）</a>。</p></section></main>"""
+    data = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "新刊・話題の投資本", "url": SITE + "/new/", "dateModified": CATALOG_DATE, "about": [{"@type": "Book", "name": b["title"], "isbn": b["isbn"], "author": {"@type": "Person", "name": b["author"]}, "sameAs": b["source"]} for b in [*NEW_BOOKS, *[{**b, 'author': b['author_disp']} for b in latest]]]}
+    return head("新刊・話題の投資本｜刊行情報と定番との読み分け", "2026年の新刊と話題の投資本を出版社情報から紹介。IR分析・不動産投資の9月新刊からママ投資家、富の階段まで、刊行情報と定番と併せて読むヒントをまとめます。", "/new/", jsonld(data)) + header() + body + footer()
 
 
 def page_comparison_index():
     cards = ''.join(f'<a class="editorial-card" href="/compare/{p["slug"]}/"><span class="eyebrow">READING GUIDE · {i:02}</span><h2>{esc(p["title"])}</h2><p>{esc(p["lead"])}</p><span class="text-link">比較を読む →</span></a>' for i, p in enumerate(COMPARISON_PAGES, 1))
-    body = f"""<main id="main" class="container">{breadcrumb([("ホーム", "/"), ("投資本の比較ガイド", None)])}<header class="page-head"><p class="eyebrow">READING GUIDES</p><h1 class="page-title">投資本を比較して、<br><em>次の一冊を決める。</em></h1><p class="page-lead">初心者の最初の一冊、NISAの準備、インデックスと高配当。同じテーマの本を、目的・読みやすさ・読む順番で比較します。</p></header><div class="editorial-grid comparison-index">{cards}</div><aside class="catalogue-note"><h2>学びたいテーマから選ぶ</h2><p>まだテーマが決まらない方は<a href="/guide/">投資本の選び方・読む順ガイド</a>へ。タイトルや著者で探すなら<a href="/books/">全27冊の本棚</a>をご利用ください。</p></aside></main>"""
+    body = f"""<main id="main" class="container">{breadcrumb([("ホーム", "/"), ("投資本の比較ガイド", None)])}<header class="page-head"><p class="eyebrow">READING GUIDES</p><h1 class="page-title">投資本を比較して、<br><em>次の一冊を決める。</em></h1><p class="page-lead">初心者の最初の一冊、NISAの準備、インデックスと高配当。同じテーマの本を、目的・読みやすさ・読む順番で比較します。</p></header><div class="editorial-grid comparison-index">{cards}</div><aside class="catalogue-note"><h2>学びたいテーマから選ぶ</h2><p>まだテーマが決まらない方は<a href="/guide/">投資本の選び方・読む順ガイド</a>へ。タイトルや著者で探すなら<a href="/books/">目的別の本棚</a>をご利用ください。</p></aside></main>"""
     return head("投資本の比較ガイド｜初心者・NISA・高配当の本の違いと読む順", "投資本を目的・読みやすさ・読む順番で比較。初心者向け3冊、ランダム・ウォーカーと敗者のゲーム、NISA、高配当など5本の比較記事から一冊を選べます。", "/compare/") + header() + body + footer()
 
 
 def page_not_found():
-    return head("ページが見つかりません", "投資本をお探しなら、全27冊の本棚や目的別カテゴリをご利用ください。", "/404.html", '<meta name="robots" content="noindex,follow">') + header() + '<main id="main" class="container not-found"><p class="eyebrow">404 / A DIFFERENT SHELF</p><h1>お探しのページが見つかりません。</h1><p>URLが変わったか、ページが存在しない可能性があります。</p><a class="brass-button" href="/books/">本棚から探す →</a> <a href="/">書斎の入口へ</a></main>' + footer()
+    return head("ページが見つかりません", "投資本をお探しなら、目的別の本棚や目的別カテゴリをご利用ください。", "/404.html", '<meta name="robots" content="noindex,follow">') + header() + '<main id="main" class="container not-found"><p class="eyebrow">404 / A DIFFERENT SHELF</p><h1>お探しのページが見つかりません。</h1><p>URLが変わったか、ページが存在しない可能性があります。</p><a class="brass-button" href="/books/">本棚から探す →</a> <a href="/">書斎の入口へ</a></main>' + footer()
 
 
 # ───────── 出力 ─────────
@@ -1455,7 +1542,7 @@ def main():
 
     write("index.html", page_home(books))
     write("books/index.html", page_catalog(books))
-    write("new/index.html", page_new())
+    write("new/index.html", page_new(books))
     write("compare/index.html", page_comparison_index())
     write("404.html", page_not_found())
     write(f"trends/{TREND_REPORT['slug']}/index.html", page_trends())
@@ -1476,9 +1563,15 @@ def main():
             + [f"/books/{b['slug']}/" for b in books]
             + [f"/compare/{p['slug']}/" for p in COMPARISON_PAGES])
     lastmod = SITEMAP_LASTMOD
+    # Preserve the old review dates; only changed pages receive the catalogue date.
+    changed_paths = {'/', '/books/', '/new/', '/about/', '/compare/'}
+    changed_paths.update(f'/{t["slug"]}/' for t in THEMES)
+    changed_paths.update(f'/books/{b["slug"]}/' for b in ADDITIONAL_BOOKS)
+    changed_paths.update(f'/books/{slug}/' for b in ADDITIONAL_BOOKS for slug, _ in b['related'])
     sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for u in urls:
-        sm.append(f"  <url><loc>{SITE}{u}</loc><lastmod>{lastmod}</lastmod></url>")
+        page_date = CATALOG_DATE if u in changed_paths else lastmod
+        sm.append(f"  <url><loc>{SITE}{u}</loc><lastmod>{page_date}</lastmod></url>")
     sm.append("</urlset>\n")
     write("sitemap.xml", "\n".join(sm))
 

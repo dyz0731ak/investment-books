@@ -60,6 +60,8 @@ def main():
                 errors.append(f'{url}: missing anchor {href}')
         for img in p.images:
             if 'alt' not in img or 'width' not in img or 'height' not in img: errors.append(f'{url}: incomplete image dimensions/alt {img.get("src")}')
+            src=urlsplit(img.get('src','')).path
+            if img.get('src','').startswith('/') and not (ROOT/src.lstrip('/')).is_file(): errors.append(f'{url}: missing image {src}')
         if url.startswith('/books/') and url!='/books/':
             schema=[d for d in p.structured if d.get('@type')=='Book']
             if len(schema)!=1: errors.append(f'{url}: missing Book schema')
@@ -72,6 +74,20 @@ def main():
     intended={u for u,p in pages.items() if 'noindex' not in p.robots}
     if set(locations)!=intended: errors.append(f'Sitemap mismatch: {set(locations)^intended}')
     if len(locations)!=len(set(locations)): errors.append('Duplicate sitemap URLs')
+    # An unread book must never acquire a fabricated rating or lose its verified edition.
+    additions=json.loads((ROOT/'data/catalog_additions.json').read_text())
+    for book in additions:
+        url=f'/books/{book["slug"]}/';p=pages.get(url)
+        if not p:
+            errors.append(f'{url}: missing introduction');continue
+        schema=[d for d in p.structured if d.get('@type')=='Book']
+        if len(schema)!=1: continue
+        data=schema[0]
+        if data.get('isbn')!=book['isbn'] or data.get('sameAs')!=book['source']: errors.append(f'{url}: mismatched bibliography')
+        if 'review' in data or 'aggregateRating' in data: errors.append(f'{url}: unverified review/rating')
+        if book['source'] not in p.links: errors.append(f'{url}: missing visible source')
+        category=pages.get(f'/{book["theme"]}/')
+        if not category or url not in category.links: errors.append(f'{url}: missing category link')
     result={'pages':len(pages),'indexable_pages':len(locations),'internal_links_checked':link_count,'errors':errors}
     print(json.dumps(result,ensure_ascii=False,indent=2))
     return bool(errors)
