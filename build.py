@@ -722,7 +722,7 @@ def footer():
     <p class="footer-brand"><img class="footer-mark" src="/assets/sheep-icon-64.png" alt="" width="28" height="35">{SITE_NAME}</p>
     <nav class="footer-nav"><a href="/">ホーム</a><a href="/new/">新刊・話題の本</a><a href="/guide/">選び方ガイド</a><a href="/compare/">本を比較</a>{cats}</nav>
     <p class="footer-role">投資初心者が「最初の一冊」を選ぶための、投資本専門の書評・比較サイトです。</p>
-    <nav class="footer-nav"><a href="https://dashboard.stock-overflow24.com/">投資の砦</a><a href="https://yougo.stock-overflow24.com/">やさしい投資用語辞典</a><a href="https://blog.stock-overflow24.com/">迷える子羊たちの株ノート</a><a href="/about/">運営者情報</a><a href="/contact/">お問い合わせ</a><a href="/privacy/">プライバシーポリシー</a></nav>
+    <nav class="footer-nav"><a href="https://dashboard.stock-overflow24.com/">投資の砦</a><a href="https://yougo.stock-overflow24.com/">やさしい投資用語辞典</a><a href="https://ipo.stock-overflow24.com/">IPO TORANOMAKI</a><a href="https://blog.stock-overflow24.com/">迷える子羊たちの株ノート</a><a href="/about/">運営者情報</a><a href="/contact/">お問い合わせ</a><a href="/privacy/">プライバシーポリシー</a></nav>
     <p class="footer-operator">運営：{OPERATOR_NAME}（{OPERATOR_PERSON}）</p>
     <p class="footer-note">{esc(affiliate_disclosure())}</p>
     <p class="footer-note">※掲載内容は書籍の紹介であり、特定の投資・銘柄を推奨するものではありません。投資は自己責任で行ってください。</p>
@@ -1400,6 +1400,7 @@ def page_about():
     <ul class="guide-first">
       <li><a href="https://dashboard.stock-overflow24.com/">投資の砦</a> — 日本株の急騰銘柄・決算速報・テーマ株がひと目で分かる定期更新ダッシュボード。</li>
       <li><a href="https://yougo.stock-overflow24.com/">やさしい投資用語辞典</a> — PER・PBR・ROEなど、投資の専門用語をやさしく解説。</li>
+      <li><a href="https://ipo.stock-overflow24.com/">IPO TORANOMAKI</a> — 日本株IPOのスケジュール・上場予定と、新規上場銘柄の上場後の株価チャートをまとめて確認できるIPO情報サイト。</li>
       <li><a href="https://blog.stock-overflow24.com/">迷える子羊たちの株ノート</a> — Dすけの投資経験、銘柄分析、相場の記録を届ける個人投資ブログ。</li>
     </ul>
     <p class="guide-cta-note">広告掲載・アフィリエイトの方針については<a href="/privacy/">プライバシーポリシー</a>をご覧ください。</p>
